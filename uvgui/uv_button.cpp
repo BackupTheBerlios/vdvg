@@ -6,6 +6,8 @@ uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabe
     text.init("Test.ttf",20);
 	text.set_color(0xff,0x88,0x00);
 	text.text << mlabel;
+	cout << "Höhe: "<< text.get_height()<<endl;
+	cout << "Breite: "<< text.get_width()<<endl;
 
 }
 
@@ -31,7 +33,7 @@ void uv_button::draw()
         glVertex2i (get_absolute_x (), get_absolute_y() + get_h ());
         glEnd ();
 
-        text.print(get_absolute_x(),get_absolute_y()); //sehr, sehr, sehr unschön...
+        text.print(get_absolute_x()+(get_w()-text.get_width())/2 ,get_absolute_y()+(get_h()-text.get_height())/2);
 
     }
 }

@@ -6,6 +6,7 @@ uv_text::uv_text()
 	red=0xff;
 	blue=0xff;
 	green=0xff;
+	len = 10001;
 }
 
 
@@ -113,7 +114,7 @@ void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex
 
     //increment the raster position as if we were a bitmap font.
     //(only needed if you want to calculate text length)
-    //glBitmap(0,0,0,0,face->glyph->advance.x >> 6,0,NULL);
+    glBitmap(0,0,0,0,face->glyph->advance.x >> 6,0,NULL);
 
     //Finnish the display list
     glEndList();
@@ -209,10 +210,13 @@ void uv_text::pop_projection_matrix()
 
 }
 
-void uv_text::print( float x, float y)
+void uv_text::print( int x, int y)
 {
     // We want a coordinate system where things coresponding to window pixels.
     pushScreenCoordinateMatrix();
+	
+	//Es ist einfacher, ein anderes Koordinatensystem zu wählen,
+	//da sonst die Buchstaben nicht unten sondern oben bündig werden.
 	//y muss ins Koordinantensystem umgerechnet werden:
 	GLint	viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport); //Bildschirmgrösse abholen
@@ -222,46 +226,6 @@ void uv_text::print( float x, float y)
     GLuint font=list_base;
     float h=this->h/.63f;						//We make the height about 1.5* that of
 	
-
-    /*const char		*text;								// Holds Our String
-    va_list		ap;										// Pointer To List Of Arguments
-
-    if (fmt == NULL)									// If There's No Text
-        *text=0;											// Do Nothing
-
-    else {
-        va_start(ap, fmt);									// Parses The String For Variables
-        vsprintf(text, fmt, ap);						// And Converts Symbols To Actual Numbers
-        va_end(ap);											// Results Are Stored In Text
-    } */
-	
-	//text = this->text.str().c_str();
-
-				//Here is some code to split the text that we have been
-				//given into a set of lines.
-				//This could be made much neater by using
-				//a regular expression library such as the one avliable from
-				//boost.org (I've only done it out by hand to avoid complicating
-				//this tutorial with unnecessary library dependencies). Ugly, ugly...
-				/*const char *start_line=text;
-				
-			
-				const char * c = text;;
-			
-				//for(const char *c=text;*c;c++) {
-				for(;*c;c++) {
-					if(*c=='\n') {
-						string line;
-						for(const char *n=start_line;n<c;n++) line.append(1,*n);
-						lines.push_back(line);
-						start_line=c+1;
-					}
-				}
-				if(start_line) {
-					string line;
-					for(const char *n=start_line;n<c;n++) line.append(1,*n);
-					lines.push_back(line);
-				}*/
 
     glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
     glMatrixMode(GL_MODELVIEW);
@@ -300,13 +264,12 @@ void uv_text::print( float x, float y)
         //  know the length of the text that you are creating.
         //  If you decide to use it make sure to also uncomment the glBitmap command
         //  in make_dlist().
-        //	glRasterPos2f(0,0);
-			//Hier sind die Daten fehlerhaft...
+        	glRasterPos2f(0,0);
         glCallLists(lines[i].length(), GL_UNSIGNED_BYTE, lines[i].c_str());
-		//glCallLists(this->text.str().length(), GL_UNSIGNED_BYTE, this->text.str().c_str());
-        //	float rpos[4];
-        //	glGetFloatv(GL_CURRENT_RASTER_POSITION ,rpos);
-        //	float len=x-rpos[0];
+        	int rpos[4];
+        	glGetIntegerv(GL_CURRENT_RASTER_POSITION ,rpos);
+		//cout << rpos[0] << endl;
+        	len=x-rpos[0];
 
         glPopMatrix();
 
@@ -338,4 +301,16 @@ void uv_text::splitup()
 		pos = this->text.str().find('\n',pos)+1;
 	}
 	if (lines.empty()) lines.push_back(this->text.str());
+}
+
+int uv_text::get_width()
+{
+	if( len > 10000) print(0,0);
+	return (int)len*-1+15; //+15, Korrektur für das Font System, das irgendwetwas falsch macht. 
+}
+
+int uv_text::get_height()
+{
+	splitup();
+	return lines.size()*(h);
 }
