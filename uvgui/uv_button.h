@@ -39,9 +39,8 @@ public:
 private:
    //Schon initialisiert?
    bool is_init;
-
+   uv_image backa, backb;
    uv_image obenrechts, oben, obenlinks, links, untenlinks, unten, untenrechts, rechts;
-   //uv_image backa, backb;
    uv_text text; 
    std::string textspeicher;
    GLuint stranslation, etranslation, drawing1, drawing2;

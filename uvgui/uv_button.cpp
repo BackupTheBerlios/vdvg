@@ -36,8 +36,10 @@ bool uv_button::initialize(attribute init)
   untenrechts= oben.make_attribut(this, get_w()-5, get_h()-5, 5, 5, "oben", design, 2.0/3.0, 2/3.0, 3/3.0, 3/3.0);
   rechts     = oben.make_attribut(this, get_w()-5, 5, 5, get_h()-10, "oben", design, 2.0/3.0, 1/3.0, 3/3.0, 2/3.0); 
   obenrechts = oben.make_attribut(this, get_w()-5, 0, 5, 5, "oben", design, 2/3.0, 0,       3/3.0, 1/3.0);
-  oben       = oben.make_attribut(this, 5, 0, get_w()-10, 5, "oben", design, 1/3.0, 0, 2/3.0, 0);
+  oben       = oben.make_attribut(this, 5, 0, get_w()-10, 5, "oben", design, 1/3.0, 0, 2/3.0, 1/3.0);
 
+  backa      = oben.make_attribut(this, 5, 5, get_w()-10, get_h()-10, "oben", design, 5/15.0, 5/15.0, 6/15.0, 6/15.0);
+  backb      = oben.make_attribut(this, 5, 5, get_w()-10, get_h()-10, "oben", design, 6/15.0, 5/15.0, 7/15.0, 6/15.0);
 
 
    //init.image_attribute.parent = this;
@@ -89,44 +91,26 @@ void uv_button::draw(vector<GLuint> * clist)
       retranslate = false;
    }
 
-/*   if(redraw)
+   if(redraw)
    {
-      glNewList(drawing1, GL_COMPILE);
-      glBindTexture(GL_TEXTURE_2D, 0);
-      glBegin (GL_QUADS);
-         glColor3ub (100, 100, 100);
-         glVertex2i (0, 0);             // Links Oben
-         glVertex2i (get_w(), 0);       // Rechts Oben
-         glColor3ub (255, 255, 255);
-         glVertex2i (get_w(), get_h()); // Rechts Unten
-         glVertex2i (0, get_h());       // Links Unten
-      glEnd ();
-      glEndList();
-
-      glNewList(drawing2, GL_COMPILE);
-      glBindTexture(GL_TEXTURE_2D, 0);
-      glBegin (GL_QUADS);
-         glColor3ub (150, 150, 150);
-         glVertex2i (0, 0);             // Links Oben
-         glVertex2i (get_w(), 0);       // Rechts Oben
-         glColor3ub (255, 255, 255);
-         glVertex2i (get_w(), get_h()); // Rechts Unten
-         glVertex2i (0, get_h());       // Links Unten
-      glEnd ();
-      glEndList();
-
+    
       redraw = false;
-   }*/
+   }
 
 //   clist->push_back(stranslation);
    if(!mouse_over())
-      clist->push_back(drawing1);
+	{
+     backa.set_visible(1);
+     backb.set_visible(0); 
+	}
    else
-      clist->push_back(drawing2);
+	{
+     backa.set_visible(0);
+     backb.set_visible(1);
+	}
 
-	clist->push_back(stranslation);
+   clist->push_back(stranslation);
    draw_childs(clist);
-
    clist->push_back(etranslation);
 }
 //---------------------------------------------------------------------------
