@@ -6,6 +6,15 @@
 //---------------------------------------------------------------------------
 #include "uv_text.h"
 //---------------------------------------------------------------------------
+//            Definitionen der statischen Klassenelemente:                 //
+//            ********************************************                 //
+//-------------------------------------------------------------------------//
+dstack<uv_text::font_set> uv_text::font_sets;
+
+//---------------------------------------------------------------------------
+//             Definitionen der Funktionen von "uv_text":                  //
+//             ******************************************                  //
+//-------------------------------------------------------------------------//
 uv_text::uv_text()
 {
    //Noch nicht initialisiert
@@ -14,14 +23,10 @@ uv_text::uv_text()
 //---------------------------------------------------------------------------
 uv_text::~uv_text()
 {
-   if(bbreiteninit == true)
-      delete[] bbreiten;
-   // Nun, wo die Display Liste erzeugt wurde, benötigen wir die Face Informationen
-   // nicht mehr, weshalb wir die damit verbundenen Ressourcen wieder freigeben.
-   FT_Done_Face(face);
-
-   // Ditto für die Font Library
-   FT_Done_FreeType(library);
+   for(int i=font_sets.Elemente()-1; i>=0; i--)
+   {
+      font_sets.outpos(i).free();
+   };
 };
 //---------------------------------------------------------------------------
 bool uv_text::initialize(attribute init)
@@ -31,7 +36,7 @@ bool uv_text::initialize(attribute init)
    green=0xff;
    len = 10001;
 
-   bbreiteninit = false;
+//   bbreiteninit = false;
 
    //Display-Listen Zeugs:
    if(!(stranslation = glGenLists(3)))
@@ -192,33 +197,20 @@ void uv_text::make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuin
    // Beende die Displayliste
    glEndList();
 
-   bbreiten[ch] = (face->glyph->metrics.horiAdvance >> 6);
+   font_sets.outpos(fontindex).bbreiten[ch] = (face->glyph->metrics.horiAdvance >> 6);
+//   bbreiten[ch] = (face->glyph->metrics.horiAdvance >> 6);
 }
 //---------------------------------------------------------------------------
-bool uv_text::init(const char * fname, unsigned int h)
+bool uv_text::init(const char * fname, unsigned int height)
 {
    //Wie viele Zeichen sollen erstellt werden?
    int anzahl_zeichen = 256;
 
-   //Prüfen, ob diese Schrift bereits geladen ist...
-   this->font_height=h;
-   font_set temp;
-   temp.filename = fname;
-   temp.size = h;
-   static map<font_set,GLuint> fontindex;
-   map<font_set,GLuint>::iterator ite;
-   ite = fontindex.find(temp);
-//   if ( ite != fontindex.end()) //Dieses font_set wird bereits verwendet...
-//   {
-//      list_base = ite->second; //Laden
-//      return 1;
-//   }
-
-   // Alloziere etwas Speicher um die Textur IDs zu speichern.
-   textures = new GLuint[anzahl_zeichen];
+   // Ein neues font_set erzeugen.
+   font_set fs;
 
    // erzeuge und initialisiere eine FreeType Font Library
-   if(FT_Init_FreeType(&library))
+   if(FT_Init_FreeType(&fs.library))
    {
       //Initialisierung fehlgeschlagen!
       cout << "FT_Init_FreeType failed";
@@ -233,50 +225,57 @@ bool uv_text::init(const char * fname, unsigned int h)
    // Der dritte Parameter von FT_New_Face, der "face_index", gibt an, welches
    // face geladen werden soll, falls im Font-File mehrere Faces enthalten sind.
    // Hier wird immer der Index 0 verwendet, welcher immer funktioniert.
-   if(FT_New_Face(library, fname, 0, &face))
+   if(FT_New_Face(fs.library, fname, 0, &fs.face))
    {
       //Laden der Font Informationen fehlgeschlagen!
       cout << "FT_New_Face failed (there is probably a problem with your font file)";
-      return 0;
+      return false;
    }
 
-   // Nun ermitteln wir, wie viele Faces das Font-File enthält
-   // Vorerst verzichten wir darauf, eventuell weitere Faces zu laden
-   anzahl_faces = face->num_faces;
+   // Die nötigen Daten ins font_set eintragen
+   fs.family_name = fs.face->family_name;
+   fs.style_name  = fs.face->style_name;
+   fs.height = height;
+
+   // Alloziere etwas Speicher um die Textur IDs zu speichern.
+   fs.textures = new GLuint[anzahl_zeichen];
 
    // Aus unerklärlichen Gründen ist die Masseinheit der Font Größe in Freetype
-   // in 1/64tel Points angegeben (1 Point == 1/27 Inch). Deshalb müssen wir,
+   // in 1/64tel Points angegeben (1 Point == 1/72 Inch). Deshalb müssen wir,
    // wenn wir einen Font h Pixel hoch haben wollen, die Größe auf h*64 anpassen.
    // (h << 6 ist lediglich ein hübscherer Weg h*64 zu schreiben)
    // Achtung: Hier werden noch keine Fixed-Size Fonts berücksichtigt
-   FT_Set_Char_Size(face, h << 6, h << 6, 72, 72);
+   FT_Set_Char_Size(fs.face, fs.height << 6, fs.height << 6, 72, 72);
 
    // Hier fragen wir OpenGL an, Ressourcen für all die Texturen und
    // Display-Listen die wir erzeugen wollen, zu allozieren.
-   list_base = glGenLists(anzahl_zeichen+12); //Die letzten 12 werden für Translations benutzt
-   glGenTextures(anzahl_zeichen, textures);
+   fs.list_base = glGenLists(anzahl_zeichen+12); //Die letzten 12 werden für Translations benutzt
+   glGenTextures(anzahl_zeichen, fs.textures);
 
    //Die charmap muss geändert werden um Umlaute zu benutzen...
    // find_unicode_charmap(face); //Ist irgendwie nicht nötig???
 
    //Hier überprüfen wir, ob unsere Font kerning unterstützt.
-   kerning_support = FT_HAS_KERNING(face);
+   fs.kerning_support = FT_HAS_KERNING(fs.face);
 
    //Die Breiten der Glyphen abspeichern:
-   bbreiten = new long[anzahl_zeichen];
-   bbreiteninit = true;
+   fs.bbreiten = new long[anzahl_zeichen];
+   fs.bbreiteninit = true;
+
+   font_sets.pushb(fs);
+   fontindex = font_sets.Elemente()-1;
 
    // Hier erzeugen wir die einzelnen Fonts Display-Listen.
    for(int i=0;i<anzahl_zeichen;i++)
    {
-      make_dlist(face, i, list_base, textures);
+      make_dlist(fs.face, i, fs.list_base, fs.textures);
    };
 
    // Hier erzeugen wir die Display-Listen für die Translationen.
    for(int i=0;i<12;i++)
    {
       //Das ganze eventuell noch in eine eigene Funktion auslagern...
-      glNewList(list_base+anzahl_zeichen+i, GL_COMPILE);
+      glNewList(fs.list_base+anzahl_zeichen+i, GL_COMPILE);
          int x_motion;
          switch(i)
          {
@@ -321,10 +320,10 @@ bool uv_text::init(const char * fname, unsigned int h)
       glEndList();
    };
 
-   //Das neue Font wurde geladen
-   fontindex.insert(pair<font_set,GLuint>(temp,list_base));
-
    return true;
+   // Nun ermitteln wir, wie viele Faces das Font-File enthält
+   // Vorerst verzichten wir darauf, eventuell weitere Faces zu laden
+//   anzahl_faces = face->num_faces;
 };
 //---------------------------------------------------------------------------
 void uv_text::clean()
@@ -332,9 +331,9 @@ void uv_text::clean()
     //
     int anzahl_zeichen = 256;
 
-    glDeleteLists(list_base, anzahl_zeichen+12);
-    glDeleteTextures(anzahl_zeichen ,textures);
-    delete [] textures;
+//    glDeleteLists(list_base, anzahl_zeichen+12);
+//    glDeleteTextures(anzahl_zeichen ,textures);
+//    delete [] textures;
 
 }
 //---------------------------------------------------------------------------
@@ -355,13 +354,13 @@ void uv_text::print(int x, int y)
    for(int i=0;i<line.length();i++)
    {
       //Den jetztigen Glyph laden
-      glyph_index = FT_Get_Char_Index(face, line[i]);
+      glyph_index = FT_Get_Char_Index(font_sets.outpos(fontindex).face, line[i]);
 
       //Prüfen ob Kerning durchgeführt wird.
-      if(kerning_support && previous && glyph_index)
+      if(font_sets.outpos(fontindex).kerning_support && previous && glyph_index)
       {
          FT_Vector delta;
-         FT_Get_Kerning(face, previous, glyph_index,
+         FT_Get_Kerning(font_sets.outpos(fontindex).face, previous, glyph_index,
                         FT_KERNING_DEFAULT, &delta);
          int xmotion = delta.x >> 6;
 
@@ -451,7 +450,7 @@ void uv_text::print(int x, int y)
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-   glListBase(list_base);
+   glListBase(font_sets.outpos(fontindex).list_base);
 
    // This is where the text display actually happens.
    // For each line of text we reset the modelview matrix
@@ -496,21 +495,47 @@ void uv_text::splitup()
 {
 };
 //---------------------------------------------------------------------------
-int uv_text::get_width()
+int uv_text::get_width(int pos)
 {
-   int breite = 0;
-   for(int i=0; i<line.length(); i++)
-   {
-      breite += bbreiten[(unsigned char)line[i]];
-   }
+   if(pos < -1)
+      return 0;
 
-   return breite; //+15, Korrektur für das Font System, das irgendetwas falsch macht.
+   int breite = 0;
+
+   //Den String zur Längenberechnung vorbereiten
+   FT_UInt previous = 0; //Den vorherigen Glyph auf 0 setzen.
+   FT_UInt glyph_index;  //Der momentane Glyph.
+
+   for(int i=0;i<line.length() && (i<pos || pos==-1);i++)
+   {
+      //Den jetztigen Glyph laden
+      glyph_index = FT_Get_Char_Index(font_sets.outpos(fontindex).face, line[i]);
+
+      //Prüfen ob Kerning durchgeführt wird.
+      if(font_sets.outpos(fontindex).kerning_support && previous && glyph_index)
+      {
+         FT_Vector delta;
+         FT_Get_Kerning(font_sets.outpos(fontindex).face, previous, glyph_index,
+                        FT_KERNING_DEFAULT, &delta);
+         breite += (delta.x >> 6);
+      };
+
+      // Die Länge des Buchstabens einfügen
+      if(font_sets.outpos(fontindex).bbreiteninit)
+      {
+         breite += font_sets.outpos(fontindex).bbreiten[static_cast<unsigned char>(line[i])];
+      }
+
+      previous = glyph_index;
+   };
+
+   return breite;
 };
 //---------------------------------------------------------------------------
 int uv_text::get_height()
 {
 
-   return (int)font_height;
+   return font_sets.outpos(fontindex).height;//(int)font_height;
 
 };
 //---------------------------------------------------------------------------
@@ -526,36 +551,32 @@ void uv_text::draw(vector<GLuint> * clist)
          if(false)
          {
             int startpos=0, endpos=0;
-            for(int i=0; i<line.length() && i<0; i++)
-            {
-               startpos += bbreiten[(unsigned char)line[i]];
-            };
-            for(int i=0; i<line.length() && i<cursor_position; i++)
-            {
-               endpos += bbreiten[(unsigned char)line[i]];
-            };
+//            for(int i=0; i<line.length() && i<0; i++)
+//            {
+//               startpos += bbreiten[(unsigned char)line[i]];
+//            };
+//            for(int i=0; i<line.length() && i<cursor_position; i++)
+//            {
+//               endpos += bbreiten[(unsigned char)line[i]];
+//            };
             glColor4ub(0, 255, 0, 255);
             glBegin(GL_QUADS);
-               glVertex2f(get_x()+startpos, get_y()-font_height);
+               glVertex2f(get_x()+startpos, get_y()-font_sets.outpos(fontindex).height);//font_height);
                glVertex2f(get_x()+startpos, get_y()+4);
                glVertex2f(get_x()+endpos,   get_y()+4);
-               glVertex2f(get_x()+endpos,   get_y()-font_height);
+               glVertex2f(get_x()+endpos,   get_y()-font_sets.outpos(fontindex).height);//font_height);
             glEnd();
          }
          print(get_x(), get_y());
          //Cursor zeichnen
-         if(bbreiteninit && draw_cursor)
+         if(draw_cursor)
          {
-            int xcursorpos = 0;
-            //Position des Cursors berechnen:
-            for(int i=0; i<line.length() && i<cursor_position; i++)
-            {
-               xcursorpos += bbreiten[(unsigned char)line[i]];
-            };
+            int xcursorpos = get_width(cursor_position);
+
             glColor4ub(0, 0, 0, 255);
             glLineWidth(2.0f);
             glBegin (GL_LINES);
-               glVertex2f (get_x()+xcursorpos, get_y()-font_height);
+               glVertex2f (get_x()+xcursorpos, get_y()-font_sets.outpos(fontindex).height);
                glVertex2f (get_x()+xcursorpos, get_y());
             glEnd();
          }
@@ -573,6 +594,18 @@ bool uv_text::set_cursor(bool draw_cursor, int position)
 {
    this->draw_cursor = draw_cursor;
    cursor_position = position;
+};
+//---------------------------------------------------------------------------
+bool uv_text::load_font(const char * fname, unsigned int height)
+{
+   return init(fname, height);
+   //string string_fname = fname;
+   //return load_font(string_fname, height);
+};
+//---------------------------------------------------------------------------
+bool uv_text::load_font(string fname, unsigned int height)
+{
+   return init(fname.c_str(), height);
 };
 //---------------------------------------------------------------------------
 // <Function>
@@ -691,3 +724,24 @@ bool uv_text::set_cursor(bool draw_cursor, int position)
 //    { ... }
 };
 //--------------------------------------------------------------------------- */
+
+//-------------------------------------------------------------------------//
+//       Nun folgen die Definitionen der Unterklassen von "uv_text"        //
+//                                                                         //
+//                          uv_text::font_set:                             //
+//                          ******************                             //
+//                                                                         //
+//-------------------------------------------------------------------------//
+bool uv_text::font_set::free()
+{
+   if(bbreiteninit == true)
+      delete[] bbreiten;
+
+   // Die von face besetzten Ressourcen wieder freigeben
+//   FT_Done_Face(face);
+
+   // Ditto für die Font Library
+//   FT_Done_FreeType(library);
+};
+//---------------------------------------------------------------------------
+

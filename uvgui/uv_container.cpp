@@ -21,11 +21,16 @@ bool uv_container::initialize(attribute atr)
 
 void uv_container::key_action(int key, int sym, int mod, int what)
 {
- 	if(get_visible()) key_action_childs(key, sym, mod, what);
+   if(get_visible()) key_action_childs(key, sym, mod, what);
 }
 
 bool uv_container::mouse_action(int x, int y, int button, int what)
 {	
+    if(what==SDL_MOUSEBUTTONDOWN && get_visible())
+   {
+      get_parent()->set_focus(this);
+   }
+
     if(get_visible()) return mouse_action_childs(x, y, button, what);
     return 1;
 }

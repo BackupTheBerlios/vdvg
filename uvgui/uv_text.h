@@ -18,16 +18,16 @@
 #include <freetype/internal/ftstream.h>
 #include <freetype/internal/sfnt.h>
 #include <freetype/ttnameid.h>
-
+//---------------------------------------------------------------------------
 //SDL Headers
 #include "SDL.h"
 #include "SDL_opengl.h"
 #include "SDL_image.h"
-
+//---------------------------------------------------------------------------
 //Eigene Headers
 #include "uv_widget.h"
 #include "uv_group.h"
-
+//---------------------------------------------------------------------------
 //Und noch ein bisschen STL
 #include <iostream>
 #include <vector>
@@ -53,10 +53,28 @@ struct font_set
    };
 };
 //---------------------------------------------------------------------------
-// Drawing routines are stolen from Nehe, Lesson 46
+// Drawing routines are stolen from Nehe, Lesson 46 (Man erkennt davon fast
+// nichts mehr) 
 //---------------------------------------------------------------------------
 class uv_text:public uv_widget
 {
+   private:
+      struct font_set
+      {
+         // Variabeln von "FreeType 2":
+         FT_Face face;
+         FT_Library library;
+         string family_name, style_name;
+         unsigned int height, ID;
+         GLuint * textures; // Array mit den Textur IDs
+         GLuint list_base;  // Variable mit der ID der ersten "display list"
+         long* bbreiten;    // ACHTUNG: Keine delete[] !!!!!!!!!!
+         bool bbreiteninit;
+         bool kerning_support; //wird kerning unterstützt?
+        // font_set();
+        // ~font_set();
+         bool free();
+      };
    public:
       struct attribute
       {
@@ -73,17 +91,11 @@ class uv_text:public uv_widget
       //Schon initialisiert?
       bool is_init;
 
-      //Free-Type Variabeln:
-      FT_Library library; //Handle für die FreeType-Library
-      FT_Face face; //Handle für das FreeType-Face_Objekt
+      //Container mit den Font-Sets:
+      static dstack<font_set> font_sets;
+      int fontindex;
 
-      //Variabeln:
-      GLuint * textures; // Array mit den Textur IDs
-      GLuint list_base;  // Variable mit der ID der ersten "display list"
-      float font_height; // Schrifthöhe
-      long anzahl_faces; // Anzahl Faces, die das Font-File enthält
       float len;
-      bool kerning_support; //wird kerning unterstützt?
 
       bool draw_cursor; //Soll ein Cursor gezeichnet werden
       int cursor_position; //Wo befindet sich der Cursor?
@@ -91,9 +103,6 @@ class uv_text:public uv_widget
       string line;
       uv_color font_color; //Textfarbe
       GLubyte red, green, blue; //Textfarbe
-
-      long* bbreiten;
-      bool bbreiteninit;
 
       //Funktionen:
       void splitup(); //text -> lines
@@ -108,6 +117,7 @@ class uv_text:public uv_widget
       GLuint stranslation, etranslation, drawing;
       bool redraw, retranslate;
       int last_abs_x, last_abs_y; //Nötig, um zu prüfen ob verschoben wurde.
+      bool init(const char * fname, unsigned int height);
    public:
       //Konstruktor
       uv_text();
@@ -122,14 +132,19 @@ class uv_text:public uv_widget
                                      string name, string text,
                                      string font, uv_color font_color);
 
-      bool init(const char * fname, unsigned int h);
+      //Funktionen zur Schriftenverwaltung:
+      bool load_font(const char * fname, unsigned int height);
+      bool load_font(string fname, unsigned int height);
+//      bool delete_font(); // Zählt herunter und löscht wenn nötig den Font
+//      bool delete_font_always(); //Löscht den Font sofort
+
       void set_color(GLubyte red,GLubyte green,GLubyte blue);
       bool set_cursor(bool draw_cursor, int position);
       void clean();
       void pushtext(string str);
       void print(int x, int y);
       int get_height();
-      int get_width();
+      int get_width(int pos=-1);
       void draw(vector<GLuint> * clist);
 };
 //---------------------------------------------------------------------------

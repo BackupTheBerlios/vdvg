@@ -27,6 +27,7 @@ bool uv_textbox::initialize(attribute init)
    init.text_attribute.parent = this;
    text = init.text_attribute;
    text.set_pos(5,((get_h()+text.get_height())/2)-2);
+   text.set_cursor(true, 0);
 
    redraw = true;
    retranslate = true;

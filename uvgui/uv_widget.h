@@ -111,7 +111,7 @@ class uv_widget
 
       char* get_label();      //Label zurueckgeben
 
-      void set_visible(bool visible);  //wenn visible=0, nicht zeichnen
+      void set_visible(bool visible, bool in_front=false);  //wenn visible=0, nicht zeichnen
       bool get_visible(); //visible?
 
       bool kann_focus_haben();

@@ -129,9 +129,11 @@ char* uv_widget::get_label()
 };
 //---------------------------------------------------------------------------
 //Wenn visible == false ==> Widget wird nicht gezeichnet
-void uv_widget::set_visible(bool visible)
+void uv_widget::set_visible(bool visible, bool in_front)
 {
    this->visible=visible;
+   if(visible && in_front)
+      get_parent()->set_focus(this);
 };
 //---------------------------------------------------------------------------
 //Gibt an, ob das Widget sichtbar ist oder nicht.

@@ -128,11 +128,11 @@ void gameinit()
       }
    }
 
-   uv_main::gexit = uv_button::make_attribut(&uv_main::game, 2*agh+3*ak+16*bu, agv+60, 150, 40, "a", "Menü","");//2*agh+3*ak+16*bu, agv,120,50,"a","Menü","");
+   uv_main::gexit = uv_button::make_attribut(&uv_main::game, 2*agh+3*ak+16*bu, agv+60, 200, 50, "a", "Menü","");//2*agh+3*ak+16*bu, agv,120,50,"a","Menü","");
    uv_main::gexit.set_callback((voidcallback) menucallback);
-   uv_main::new_game = uv_button::make_attribut(&uv_main::game, 2*agh+3*ak+16*bu, agv, 150, 40, "a", "Neues Spiel","");
+   uv_main::new_game = uv_button::make_attribut(&uv_main::game, 2*agh+3*ak+16*bu, agv, 200, 50, "a", "Neues Spiel","");
    uv_main::new_game.set_callback((voidcallback) gamestartcallback);
-   uv_main::exit = uv_button::make_attribut(&uv_main::game, 2*agh+3*ak+16*bu, agv+120, 150, 40, "a", "Beenden","");
+   uv_main::exit = uv_button::make_attribut(&uv_main::game, 2*agh+3*ak+16*bu, agv+120, 200, 50, "a", "Beenden","");
    uv_main::exit.set_callback((voidcallback) exitcallback);
 
    uv_main::lost = uv_window::make_attribut(&uv_main::mainwindow, (width-500)/2, (height-200)/2, 500, 150, "Lost_window", "Verloren!", "", "windowdesign.tga", false, false, true, false);
