@@ -16,11 +16,10 @@ uv_image::uv_image():uv_widget(0,0,0,0,0,0)
 //---------------------------------------------------------------------------
 uv_image::uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *mlabel):uv_widget(mx,my,mw,mh,parent,0)
 {
-    parent->add_child(this);
-	loaded=false;
+    loaded=false;
     w=0;
     h=0;
-	LoadImageFile(mlabel);
+    LoadImageFile(mlabel);
 };
 //---------------------------------------------------------------------------
 bool uv_image::LoadImageFile(string fname)

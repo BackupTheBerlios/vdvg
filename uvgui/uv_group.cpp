@@ -13,6 +13,18 @@ void uv_group::add_child(uv_widget *widget)
     childs.pushb(widget);
 };
 //---------------------------------------------------------------------------
+void uv_group::remove_child(uv_widget *widget)
+{
+   for(int i=0; i<childs.Elemente(); i++)
+   {
+      if(childs.outpos(i)==widget)
+      {
+         childs.poppos(i);
+         break;
+      }
+   };
+};
+//---------------------------------------------------------------------------
 void uv_group::add_child_in_front(uv_widget *widget)
 {
     childs.pushf(widget);

@@ -33,7 +33,8 @@ public:
     void set_start_child(); 		//Iterator == 0
     void set_end_child();
     void mouse_move_rel(int rel_x, int rel_y);
-    void add_child(uv_widget* );
+    void add_child(uv_widget*);
+    void remove_child(uv_widget* widget);
     void add_child_in_front(uv_widget* );
     void set_to_end();
     bool draw_childs();
