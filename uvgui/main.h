@@ -18,11 +18,14 @@
 #include "uv_box.h"
 #include "uv_text.h"*/
 //---------------------------------------------------------------------------
+
 namespace uv_main
 {
-   const int width = 1024, height = 768;
-   uv_mainwindow mainwindow(width, height, false, "4D4G");
+	uv_config konfig;
+   // konfig.load_file("config.conf");
 
+   const int width = 1024, height = 768;
+   uv_mainwindow mainwindow(width, height, true, "4D4G");
    //Die Fenster
    uv_window window1, window2, aaa, bbb, ccc, ddd, eee, fff;
    //Die Buttons
@@ -34,5 +37,6 @@ namespace uv_main
    uv_fpscounter fps;
    uv_textbox test1, test2;
 };
+
 //---------------------------------------------------------------------------
 #endif
