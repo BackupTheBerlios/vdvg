@@ -8,18 +8,19 @@ uv_window::uv_window (int breite, int hoehe, int win_x, int win_y,
                                                       parent, label)
 {
     static bool sdl_initialized = 0;
-    if (!sdl_initialized)	// SDL ist noch nicht initialisiert
+    // SDL ist noch nicht initialisiert
+    if (!sdl_initialized)
     {
         init_SDL ();
         sdl_initialized = 1;
         is_root_window = 1;
         set_root_pointer (this);
     }
-    else			// Ansonsten
+    else
     {
         is_root_window = 0;
-        parent->add_me (this);	// Window als neues Child window
-        // hinzufügen
+        // Window als neues Child window hinzufügen
+        parent->add_me (this);
     }
 }
 
@@ -40,7 +41,6 @@ void uv_window::draw ()		// Zeichenfunktion
 {
     if (is_root_window)
     {
-        DEBUGPRINT;
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
         // Bildschirm löschen
@@ -48,15 +48,18 @@ void uv_window::draw ()		// Zeichenfunktion
     else
     {
         glBegin (GL_QUADS);
+        // Links Oben
         glColor3ub (255, 0, 0);
-        glVertex2i (get_absolute_x(), get_absolute_y());	// Links Oben
+        glVertex2i (get_absolute_x(), get_absolute_y());
+        // Rechts Oben
         glColor3ub (0, 255, 0);
-        glVertex2i (get_absolute_x () + get_w (), get_absolute_y());	// Rechts Oben
+        glVertex2i (get_absolute_x () + get_w (), get_absolute_y());
+        // Rechts Unten
         glColor3ub (0, 0, 255);
-        glVertex2i (get_absolute_x () + get_w (), get_absolute_y() + get_h ());	// Rechts
-        // Unten
+        glVertex2i (get_absolute_x () + get_w (), get_absolute_y() + get_h ());
+        // Links Unten
         glColor3ub (255, 255, 0);
-        glVertex2i (get_absolute_x (), get_absolute_y() + get_h ());	// Links Unten
+        glVertex2i (get_absolute_x (), get_absolute_y() + get_h ());
         glEnd ();
     }
 
@@ -191,8 +194,8 @@ void uv_window::init_SDL (int breite, int hoehe, int bit,
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity ();
 
-    // glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClearColor (0.2f, 0.4f, 1.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    //glClearColor (0.2f, 0.4f, 1.0f, 0.0f);
     glClearDepth (1.0f);
     // glClearStencil(24);
     glEnable (GL_DEPTH_TEST);
@@ -214,7 +217,7 @@ void uv_window::init_SDL (int breite, int hoehe, int bit,
 
 }
 
-void uv_window::key_action (char key)
+void uv_window::key_action (int key,int mod, int what)
 {
 
 }

@@ -56,7 +56,8 @@ public:
     {visible=vis;}
     bool get_visible()									//visible?
     {return visible;}
-    virtual void key_action(char key)=0;
+    //key=Taste, mod=Modifiers, what=UP,Down
+    virtual void key_action(int key,int mod, int what)=0;
     virtual void mouse_action(int x, int y,int what)=0;
 };
 

@@ -2,11 +2,12 @@
 //#include "sdl.h"
 //Diese Source Datei beinhaltet einige Zeiger und globale Funktionen...
 
-
+#include <iostream>
+using namespace std;
 
 static uv_window *root_pointer;	//Das root windows
 static int mouse_x;		//aktuelle Maus x- Koordinate
-static int mouse_y;
+static int mouse_y;		//aktuelle Maus y- Koordinate
 
 int get_mouse_x()
 {
@@ -32,9 +33,11 @@ void run()
             return;
             break;
         case SDL_KEYDOWN:
+        case SDL_KEYUP:
             if (event.key.keysym.sym == SDLK_ESCAPE) {
                 return;
             }
+            root_pointer->key_action((int)event.key.keysym.sym,(int)event.key.keysym.mod,(int)event.key.type);
             break;
         case SDL_MOUSEMOTION:	//uuh, mouse has moved...
             mouse_x = event.motion.x;

@@ -43,7 +43,7 @@ public:
     void draw ();
     // Neues Child widget hinzufügen
     void add_me (uv_widget * new_child);
-    void key_action (char key);
+    void key_action (int key,int mod, int what);
     void mouse_action (int x, int y, int what);
 };
 
