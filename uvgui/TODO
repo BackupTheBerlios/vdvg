@@ -1,0 +1,9 @@
+ALLES 		- parent-> add_child(this) in den Konstruktor von uv_widget
+uv_group 	- Funktion zum entfernen eines childs
+uv_widget  	- set_parent(...), zuerst parent abmelden
+uv_image	- Sinnvolle Konstruktoren erstellen.
+uv_text		- Sinnvolle Konstruktoren erstellen
+ALLES		- Keyboardhandling
+ALLES		- Mehr Widgets (label, textbox, dropdown...)
+ALLES		- Include Dateien aufräumen
+ALLES		- Design
