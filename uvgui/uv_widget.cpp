@@ -169,6 +169,7 @@ voidcallback uv_widget::get_callback()
 //Löse den Callback aus
 void uv_widget::do_callback(uv_callback * cb)
 {
+   cb->userpointer = userptr; //zeiger für userdaten
    if(callback)(*callback)(cb);
 };
 //---------------------------------------------------------------------------
@@ -199,4 +200,8 @@ void uv_widget::set_mouse_over_off()
 {
    mouseover = false;
 };
-//---------------------------------------------------------------------------
+
+void uv_widget::set_userpointer(void *ptr)
+{
+userptr = ptr;
+};//---------------------------------------------------------------------------

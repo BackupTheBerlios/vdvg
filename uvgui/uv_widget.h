@@ -22,6 +22,7 @@ using namespace std;
 struct uv_callback
 {
    int ID;
+   void *userpointer;
 };
 //---------------------------------------------------------------------------
 struct uv_color
@@ -71,6 +72,7 @@ class uv_widget
 
       //Wurde das Widget initialisier?
       bool is_init;
+ 	  void *userptr;
    public:
       uv_widget();
 
@@ -116,6 +118,8 @@ class uv_widget
 
       bool kann_focus_haben();
       bool mouse_over();
+
+	  void set_userpointer(void *ptr); //Setzen fuer userbedingte Callback zeiger
 
       //key=Taste, mod=Modifiers, what=UP,Down
       virtual void key_action(int key, int sym, int mod, int what);
