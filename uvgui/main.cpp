@@ -12,10 +12,15 @@ void mainloop(uv_callback * cb);   //Hauptschleife
 void fensterinit();
 //---------------------------------------------------------------------------
 //Hauptprogramm
+uv_mainwindow mainwindow;
+
 int main (int argc, char *argv[])
 {
-   uv_mainwindow mainwindow;
+   uv_box bx1;
    mainwindow = uv_mainwindow::make_attribut(1024,768,0,"4D4G");
+//   uv_box bx1;
+
+   bx1 = uv_box::make_attribut(&mainwindow, 20, 150, 40, 80, uv_color::make_color(0, 0, 0), "bx1");
 
 //   uv_main::mainwindowpt = &mainwindow;
 
@@ -23,7 +28,8 @@ int main (int argc, char *argv[])
    // Irgendwie funktioniert mainwindow nicht mit dem make_attribut (d.h. kompiliert fehlerfrei, zeigt aber nur
    // leeren (schwarzen) Bildschirm an.
 //   mainwindow.set_callback(mainloop);
-   uv_image im; im = uv_image::make_attribut(&mainwindow, 0, 0, 500, 768, "Hintergrund", "Test3.bmp");
+    uv_image im;
+    im = uv_image::make_attribut(&mainwindow, 0, 0, 500, 768, "Hintergrund", "Test3.bmp");
    uv_main::img = uv_image::make_attribut(&mainwindow, 0, 0, 1024, 768, "Hintergrund", "background.jpg");
 //   uv_main::testa = uv_image::make_attribut(&uv_main::window2, 20, 110, 64, 64, "testa","test3.tga");
 //   fensterinit();
