@@ -5,6 +5,7 @@
 #include "uv_window.h"
 #include "uv_image.h"
 #include "uv_fpscounter.h"
+#include "uv_box.h"
 #include "main.h"
 //---------------------------------------------------------------------------
 void calli();      //Button1 Action
