@@ -2,7 +2,7 @@
 // File:       uv_textbox.cpp
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sun Sep-12-2004 21:19:43 by Benny>
+// Version:    1.0 <last modification: Fri Oct-01-2004 21:56:07 by Benny>
 //---------------------------------------------------------------------------
 #include "uv_textbox.h"
 //---------------------------------------------------------------------------
@@ -36,8 +36,22 @@ void uv_textbox::draw()
          // Links Unten
          glVertex2i (get_absolute_x (), get_absolute_y() + get_h ());
       glEnd ();
-      
-      draw_childs();
+
+      // Nutze Scissor Testing für das clipping des Textes:
+      GLint viewport[4];
+      glGetIntegerv(GL_VIEWPORT, viewport); //Bildschirmgrösse abholen
+      int hight = viewport[3]; //Bildschirmhöhe
+      // Definiere die  Scissor Region
+      glScissor(get_absolute_x()+3, hight-get_absolute_y()-get_h()+1,
+                get_w()-6, get_h()-2);//hight-get_h()+2);
+      // aktiviere Scissor Testing
+      glEnable(GL_SCISSOR_TEST);
+
+         //Die childs zeichnen:
+         draw_childs();
+
+      // deaktiviere Scissor Testing
+      glDisable(GL_SCISSOR_TEST);
    }
 };
 //---------------------------------------------------------------------------
