@@ -166,6 +166,7 @@ void uv_mainwindow::run()
 {
     SDL_Event event;
     bool last_was_mouse_down = false;
+	bool last_was_key_down = false;
     while (SDL_PollEvent(&event) >= 0)
     {
         switch (event.type)
@@ -173,11 +174,21 @@ void uv_mainwindow::run()
         case SDL_QUIT:
             return;
         case SDL_KEYDOWN:
-        case SDL_KEYUP:
-            if(event.key.keysym.sym == SDLK_ESCAPE)
+			if(event.key.keysym.sym == SDLK_ESCAPE) 
                 return;
+			if(last_was_key_down)
+				break;
+			key_action(event.key.keysym.sym, event.key.keysym.mod, event.key.type);
+			last_was_key_down = true;
+			break;
+			
+        case SDL_KEYUP:
+			 if(!last_was_key_down)
+                break;
             key_action(event.key.keysym.sym, event.key.keysym.mod, event.key.type);
+			last_was_key_down = false;
             break;
+			
         case SDL_MOUSEMOTION:
             set_mouse_x(event.motion.x);
             set_mouse_y(event.motion.y);
@@ -236,4 +247,3 @@ bool uv_mainwindow::get_run()
     return is_run;
 };
 //---------------------------------------------------------------------------
-

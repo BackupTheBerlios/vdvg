@@ -153,5 +153,6 @@ bool uv_group::mouse_move_rel_childs(int rel_x, int rel_y)
 bool uv_group::key_action_childs(int key, int mod, int what)
 {
    (childs.outpos(childs.Elemente()-1))->key_action(key, mod, what);
+	return 1;
 };
 //---------------------------------------------------------------------------
