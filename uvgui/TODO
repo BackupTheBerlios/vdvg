@@ -1,9 +1,25 @@
-Neue TODO Liste:
+VERSION 0.1
+===========
+-neue Widgets: - Optionbox
+               - Dropdownlist
 
-Primäre Ziele:
-- Die jetztigen Widgets noch vervollständigen (uv_butten z.B. mit Bild usw.)
-- Neue Widgets: checkbox, optionbox, DropDown Liste (am kompliziertesten)
+-Widget Design: -Schrift auf Windows?
+				-Button ans restliche Design anpassen
 
-Sekundäre Ziele:
-- Multithreading
-- Spiel einbauen
+-Schrift(?)
+
+-Spielmodi: -Mensch vs. Mensch
+            -Mensch vs. Maschine
+
+-Optionsmenü: -Auflösung
+
+-Multithreading
+
+-Spiel einbauen: -Spielbrett designen
+                 -Diverse Statusmeldungen (Sie haben gewonnen etc.), ev. extra Messagebox?
+                 -Mit KI verknüpfen
+
+VERSION X.Y
+===========
+-Sound
+-Netzwerkunterstützung
