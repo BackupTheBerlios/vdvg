@@ -9,11 +9,8 @@ uv_text::uv_text():uv_widget(0,0,0,0,0,0)
 
 uv_text::uv_text(int mx,int my,int mh,int mw,uv_group *parent,char *label):uv_widget(mx,my,mh,mw, parent,label)
 {
-   parent->add_child(this);
-   red=0xff;
-   blue=0xff;
-   green=0xff;
-   len = 10001;
+   	parent->add_child(this);
+	uv_text();
 }
 
 
@@ -129,10 +126,24 @@ void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex
 
 bool uv_text::init(const char * fname, unsigned int h)
 {
+	//Prüfen ob bereits diese Schrift geladen ist...
+	this->h=h;
+	font_set temp;
+	temp.filename = fname;
+	temp.size = h;
+	static map<font_set,GLuint> fontindex;
+	map<font_set,GLuint>::iterator ite;
+	ite = fontindex.find(temp); 
+	if ( ite != fontindex.end()) //Dieses font_set wird bereits verwendet...
+	{ 
+		list_base = ite->second; //Laden
+		return 1;
+	}
+	
     //Allocate some memory to store the texture ids.
     textures = new GLuint[128];
 
-    this->h=h;
+    
 
     //Create and initilize a freetype font library.
     FT_Library library;
@@ -177,7 +188,9 @@ bool uv_text::init(const char * fname, unsigned int h)
 
     //Ditto for the library.
     FT_Done_FreeType(library);
-
+	
+	//Das neue Font wurde geladen
+	fontindex.insert(pair<font_set,GLuint>(temp,list_base));
     return 1;
 }
 

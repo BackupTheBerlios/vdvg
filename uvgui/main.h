@@ -17,6 +17,9 @@ uv_window window2(400,450,300,200,&mainwindow,"jkh");
 //uv_text testtext(400, 300, 200, 30, &mainwindow, "test");
 uv_button Button1(30,30,256,64,&window1,"Klick Mich !");
 uv_button Button2(30,30,256,64,&window2,"Beenden");
+
+//Dies ist Lukis Kommentar
+
 };
 //---------------------------------------------------------------------------
 #endif

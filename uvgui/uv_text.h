@@ -19,9 +19,25 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <map>
 using namespace std;
 
-
+struct font_set
+{
+	const char *filename;
+	unsigned int size;	
+	bool operator<(const font_set &t) const
+	{
+		if( size < t.size ) return 1;
+		if( size > t.size ) return 0;
+		for(int i=0;;i++)
+		{
+			if( filename[i] < t.filename[i]) return 1;
+			if( filename[i] > t.filename[i]) return 0;
+			if( !(filename[i] && t.filename[i]) ) return 0; //Die beiden sind gleich
+		}
+	}
+};
 // Drawing routines are stolen from Nehe, Lesson 46
 
 class uv_text:public uv_widget
@@ -52,6 +68,7 @@ public:
 	int get_height();
 	int get_width();
 	void draw(){
+	
 		print(get_absolute_x(),get_absolute_y());
 		};
 };
