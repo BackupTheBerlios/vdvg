@@ -1,3 +1,9 @@
+//---------------------------------------------------------------------------
+// File:       uv_box.cpp
+// Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
+// Created on: 2004
+// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+//---------------------------------------------------------------------------
 #include "uv_box.h"
 
 uv_box::uv_box(int mx, int my, int mw, int mh, uv_group *parent):uv_widget(mx, my, mw,mh,parent,0)

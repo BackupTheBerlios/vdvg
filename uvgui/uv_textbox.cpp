@@ -1,15 +1,21 @@
 //---------------------------------------------------------------------------
+// File:       uv_textbox.cpp
+// Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
+// Created on: 2004
+// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+//---------------------------------------------------------------------------
 #include "uv_textbox.h"
 //---------------------------------------------------------------------------
 uv_textbox::uv_textbox(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel)
-                       : uv_group(mx,my,mw,mh,parent,mlabel)
+                       : uv_group(mx,my,mw,mh,parent,mlabel),
+                         text(0, 0, 0, 0, this, "Textbox")
 {
-    text.set_parent(this);
-    text.init("Franklin-Italic.ttf",12);
+    text.init("Franklin-Italic.ttf",16);
     text.set_color(0,0,0);
-    text.text << mlabel;
+    //text.text << mlabel;
+    text.pushtext(mlabel);
     //Den Text auf dem Button zentrieren
-    text.set_pos(5,(get_h()-text.get_height())/2);
+    text.set_pos(5,((get_h()-text.get_height())/2)-2);
     for(int i=0; i<256; i++) str[i]=0;
     iter = str.end();
     pos = 0;
@@ -31,7 +37,7 @@ void uv_textbox::draw()
          // Links Unten
          glVertex2i (get_absolute_x (), get_absolute_y() + get_h ());
       glEnd ();
-
+      
       draw_childs();
    }
 }
@@ -106,24 +112,6 @@ void uv_textbox::key_action(int key, int sym, int mod, int what)
       };
    }
 
-
-    /*
-   if( mod & KMOD_NUM ) printf( "NUMLOCK " );
-   if( mod & KMOD_CAPS ) printf( "CAPSLOCK " );
-   if( mod & KMOD_LCTRL ) printf( "LCTRL " );
-   if( mod & KMOD_RCTRL ) printf( "RCTRL " );
-   if( mod & KMOD_RSHIFT ) printf( "RSHIFT " );
-   if( mod & KMOD_LSHIFT ) printf( "LSHIFT " );
-   if( mod & KMOD_RALT ) printf( "RALT " );
-   if( mod & KMOD_LALT ) printf( "LALT " );
-   if( mod & KMOD_CTRL ) printf( "CTRL " );
-   if( mod & KMOD_SHIFT ) printf( "SHIFT " );
-   if( mod & KMOD_ALT ) printf( "ALT " ); */
-
-   //text.text.clear();
-   //text.text.flush();
-   //text.text << str;
-
-  text.pushtext(str);
+   text.pushtext(str);
 };
 //---------------------------------------------------------------------------

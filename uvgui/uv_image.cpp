@@ -1,4 +1,9 @@
 //---------------------------------------------------------------------------
+// File:       uv_image.cpp
+// Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
+// Created on: 2004
+// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+//---------------------------------------------------------------------------
 #include "uv_image.h"
 //---------------------------------------------------------------------------
 uv_image::uv_image(string filename):uv_widget(0,0,0,0,0,0)

@@ -1,4 +1,9 @@
 //---------------------------------------------------------------------------
+// File:       uv_image.h
+// Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
+// Created on: 2004
+// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+//---------------------------------------------------------------------------
 #ifndef _UV_DRAW_IMG_
 #define _UV_DRAW_IMG_
 //---------------------------------------------------------------------------

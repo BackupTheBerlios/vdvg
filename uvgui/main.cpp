@@ -1,4 +1,9 @@
 //---------------------------------------------------------------------------
+// File:       main.cpp
+// Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
+// Created on: 2004
+// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+//---------------------------------------------------------------------------
 #include "main.h"
 //---------------------------------------------------------------------------
 void calli();      //Button1 Action
@@ -31,3 +36,5 @@ void calli2()
     uv_main::mainwindow.set_run(false);
 };
 //---------------------------------------------------------------------------
+
+

@@ -1,4 +1,9 @@
 //---------------------------------------------------------------------------
+// File:       uv_window.cpp
+// Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
+// Created on: 2004
+// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+//---------------------------------------------------------------------------
 #include "uv_window.h"
 //---------------------------------------------------------------------------
 uv_window::uv_window(int mx, int my, int width, int height,

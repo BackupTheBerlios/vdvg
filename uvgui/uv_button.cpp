@@ -1,15 +1,24 @@
+//---------------------------------------------------------------------------
+// File:       uv_button.cpp
+// Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
+// Created on: 2004
+// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+//---------------------------------------------------------------------------
 #include "uv_button.h"
 
-uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel):uv_group(mx,my,mw,mh,parent,mlabel)
+uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel)
+                     :uv_group(mx,my,mw,mh,parent,mlabel), text(0, 0, 0, 0, this, "")
 {
-    text.set_parent(this);
-    text.init("Test.ttf",20);
+    text.init("Test.ttf",25);
     text.set_color(0xff,0x88,0x00);
-    text.text << mlabel;
+
+    static string test = mlabel;
+    test = mlabel;
+
+    text.pushtext(test);
+
     //Den Text auf dem Button zentrieren
-    text.set_pos((get_w()-text.get_width())/2,(get_h()-text.get_height())/2);
-    //cout << "Höhe: "<< text.get_height()<<endl;
-    //cout << "Breite: "<< text.get_width()<<endl;
+    text.set_pos((get_w()-text.get_width())/2, (get_h()-text.get_height())/2);
 }
 
 void uv_button::draw()

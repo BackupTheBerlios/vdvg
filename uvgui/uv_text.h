@@ -1,7 +1,12 @@
+//---------------------------------------------------------------------------
+// File:       uv_text.h
+// Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
+// Created on: 2004
+// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+//---------------------------------------------------------------------------
 #ifndef _UV_TEXT_
 #define _UV_TEXT_
-
-
+//---------------------------------------------------------------------------
 //FreeType Headers
 #include <ft2build.h>
 #include <freetype/freetype.h>
@@ -9,70 +14,91 @@
 #include <freetype/ftoutln.h>
 #include <freetype/fttrigon.h>
 
+#include <freetype/internal/ftdebug.h>
+#include <freetype/internal/ftstream.h>
+#include <freetype/internal/sfnt.h>
+#include <freetype/ttnameid.h>
 
+//SDL Headers
 #include "SDL.h"
 #include "SDL_opengl.h"
 #include "SDL_image.h"
+
+//Eigene Headers
 #include "uv_widget.h"
 #include "uv_group.h"
+
+//Und noch ein bisschen STL
 #include <iostream>
 #include <vector>
 #include <string>
-#include <sstream>
 #include <map>
+//---------------------------------------------------------------------------
 using namespace std;
-
+//---------------------------------------------------------------------------
 struct font_set
 {
-	const char *filename;
-	unsigned int size;	
-	bool operator<(const font_set &t) const
-	{
-		if( size < t.size ) return 1;
-		if( size > t.size ) return 0;
-		for(int i=0;;i++)
-		{
-			if( filename[i] < t.filename[i]) return 1;
-			if( filename[i] > t.filename[i]) return 0;
-			if( !(filename[i] && t.filename[i]) ) return 0; //Die beiden sind gleich
-		}
-	}
+   const char *filename;
+   unsigned int size;
+   bool operator<(const font_set &t) const
+   {
+      if( size < t.size ) return true;
+      if( size > t.size ) return false;
+      for(int i=0;;i++)
+      {
+	 if( filename[i] < t.filename[i]) return true;
+	 if( filename[i] > t.filename[i]) return false;
+	 if( !(filename[i] && t.filename[i]) ) return false; //Die beiden sind gleich
+      }
+   };
 };
+//---------------------------------------------------------------------------
 // Drawing routines are stolen from Nehe, Lesson 46
-
+//---------------------------------------------------------------------------
 class uv_text:public uv_widget
 {
-private:
-    //font_data ft_font;
-    GLuint * textures;	///< Holds the texture id's
-    GLuint list_base;	///< Holds the first display list id
-    float h;			///< Holds the height of the font.
+   private:
+      //Variabeln:
+      //font_data ft_font;
+      GLuint * textures; // Variable mit der Textur ID
+      GLuint list_base;  // Variable mit der ID der ersten "display list"
+      float h;           // Schrifthöhe
+      float len;
 
-	vector<string> lines;	//EnthÃ¤lt pro Element eine Zeile vom Text...
-	GLubyte red, green, blue; //Textfarbe
-	void splitup();			//text -> lines
-    void pop_projection_matrix();
-    inline int next_p2 ( int a )	{int rval=1;while(rval<a) rval<<=1;	return rval;};
-    void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base );
-    void pushScreenCoordinateMatrix();
-	float len;
-        bool manual;
+      vector<string> lines;     //Enthält pro Element eine Zeile vom Text...
+      string line;
+      GLubyte red, green, blue; //Textfarbe
 
-public:
-    uv_text(int mx,int my,int mw,int mh,uv_group *parent,char *label); //does currently nothing
-	uv_text();
-    bool init(const char * fname, unsigned int h);
-	void set_color(GLubyte red,GLubyte green,GLubyte blue);
-	stringstream text;
-    void clean();
-    void pushtext(const string str);
-    void print(int x, int y);
-	int get_height();
-	int get_width();
-	void draw(){
+      int* bbreiten;
+      bool bbreiteninit;
 
-		print(get_absolute_x(),get_absolute_y());
-		};
+      //Funktionen:
+      void splitup(); //text -> lines
+      void pop_projection_matrix();
+      inline int next_p2 (int a) //Gibt die nächstgrössere 2er Potenz an
+      {
+         int rval=1; while(rval<a) rval<<=1; return rval;
+      };
+      void make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuint * tex_base);
+      void pushScreenCoordinateMatrix();
+      void find_unicode_charmap(FT_Face face);
+
+   public:
+      //Konstruktor
+      uv_text(int x, int y, int width, int height, uv_group *parent, char *label);
+      ~uv_text();
+      bool init(const char * fname, unsigned int h);
+      void set_color(GLubyte red,GLubyte green,GLubyte blue);
+      void clean();
+      void pushtext(const string str);
+      void print(int x, int y);
+      int get_height();
+      int get_width();
+      void draw()
+      {
+         print(get_absolute_x(),get_absolute_y());
+      };
 };
-
-#endif
+//---------------------------------------------------------------------------
+#endif // _UV_TEXT_
+//---------------------------------------------------------------------------

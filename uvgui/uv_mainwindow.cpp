@@ -1,4 +1,9 @@
 //---------------------------------------------------------------------------
+// File:       uv_mainwindow.cpp
+// Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
+// Created on: 2004
+// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+//---------------------------------------------------------------------------
 #include "uv_mainwindow.h"
 //---------------------------------------------------------------------------
 uv_mainwindow::uv_mainwindow(int mw, int mh,bool fullscreen, char *mlabel)
