@@ -1,14 +1,17 @@
-CC = gcc -Wall -ansi -O2
+CC = gcc -Wall -ansi -O2 
 FILES = main.cpp uv_mainwindow.cpp uv_group.cpp uv_gui.cpp uv_button.cpp uv_widget.cpp uv_window.cpp uv_image.cpp uv_text.cpp uv_array.cpp uv_fpscounter.cpp uv_box.cpp uv_textbox.cpp
 LIBS = -lGL -lGLU -lfreetype -lSDL_image `sdl-config --libs` 
 INCLUDES = -I/usr/include/freetype2 `sdl-config --cflags`
+OBJECTS = main.o uv_array.o uv_box.o uv_button.o uv_fpscounter.o uv_group.o uv_gui.o uv_image.o uv_mainwindow.o uv_text.o uv_textbox.o uv_widget.o uv_window.o
 LINKER = g++
-
 
 all: uvgui
 
-uvgui: main.o uv_array.o uv_box.o uv_button.o uv_fpscounter.o uv_group.o uv_gui.o uv_image.o uv_mainwindow.o uv_text.o uv_textbox.o uv_widget.o uv_window.o
-	$(LINKER) -o uvgui $(LIBS) main.o uv_array.o uv_box.o uv_button.o uv_fpscounter.o uv_group.o uv_gui.o uv_image.o uv_mainwindow.o uv_text.o uv_textbox.o uv_widget.o uv_window.o 
+debug: 
+	make "CC=$(CC) -g"
+
+uvgui: $(OBJECTS) 
+	$(LINKER) -o uvgui $(LIBS) $(OBJECTS)
 
 main.o: main.cpp main.h
 	$(CC) $(INCLUDES) -c main.cpp
@@ -49,11 +52,8 @@ uv_widget.o: uv_widget.cpp uv_widget.h
 uv_window.o: uv_window.cpp uv_window.h
 	$(CC) $(INCLUDES) -c uv_window.cpp
 
-
-#debug:
-#	$(CC) $(INCLUDES) $(FILES) $(LIBS) -g  -o uvgui
- 
 clean: 
 	@echo Cleaning Up...
 	@rm uvgui
+	@rm $(OBJECTS)
 	@echo Done.
