@@ -16,6 +16,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sstream>
 using namespace std;
 
 
@@ -29,8 +30,9 @@ private:
     GLuint list_base;	///< Holds the first display list id
     float h;			///< Holds the height of the font.
 
+	vector<string> lines;	//Enthält pro Element eine Zeile vom Text...
 	GLubyte red, green, blue; //Textfarbe
-
+	void splitup();			//text -> lines
     void pop_projection_matrix();
     inline int next_p2 ( int a )	{int rval=1;while(rval<a) rval<<=1;	return rval;};
     void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base );
@@ -40,8 +42,9 @@ public:
     uv_text(); //does currently nothing
     bool init(const char * fname, unsigned int h);
 	void set_color(GLubyte red,GLubyte green,GLubyte blue);
+	stringstream text;
     void clean();
-    void print(float x, float y, const char *fmt, ...);
+    void print(float x, float y);
 };
 
 #endif

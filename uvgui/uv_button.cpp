@@ -3,8 +3,9 @@
 uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel):uv_widget(mx,my,mw,mh,parent,mlabel)
 {
     parent->add_child(this);
-    text.init("Test.ttf",16);
-	text.set_color(0xff,0x00,0x00);
+    text.init("Test.ttf",20);
+	text.set_color(0xff,0x88,0x00);
+	text.text << mlabel;
 
 }
 
@@ -30,7 +31,7 @@ void uv_button::draw()
         glVertex2i (get_absolute_x (), get_absolute_y() + get_h ());
         glEnd ();
 
-        text.print(get_absolute_x(),get_absolute_y(),get_label()); //sehr, sehr, sehr unschön...
+        text.print(get_absolute_x(),get_absolute_y()); //sehr, sehr, sehr unschön...
 
     }
 }

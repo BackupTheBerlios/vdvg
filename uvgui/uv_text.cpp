@@ -209,7 +209,7 @@ void uv_text::pop_projection_matrix()
 
 }
 
-void uv_text::print( float x, float y, const char *fmt, ...)
+void uv_text::print( float x, float y)
 {
     // We want a coordinate system where things coresponding to window pixels.
     pushScreenCoordinateMatrix();
@@ -223,7 +223,7 @@ void uv_text::print( float x, float y, const char *fmt, ...)
     float h=this->h/.63f;						//We make the height about 1.5* that of
 	
 
-    char		text[256];								// Holds Our String
+    /*const char		*text;								// Holds Our String
     va_list		ap;										// Pointer To List Of Arguments
 
     if (fmt == NULL)									// If There's No Text
@@ -233,34 +233,35 @@ void uv_text::print( float x, float y, const char *fmt, ...)
         va_start(ap, fmt);									// Parses The String For Variables
         vsprintf(text, fmt, ap);						// And Converts Symbols To Actual Numbers
         va_end(ap);											// Results Are Stored In Text
-    }
+    } */
+	
+	//text = this->text.str().c_str();
 
-
-    //Here is some code to split the text that we have been
-    //given into a set of lines.
-    //This could be made much neater by using
-    //a regular expression library such as the one avliable from
-    //boost.org (I've only done it out by hand to avoid complicating
-    //this tutorial with unnecessary library dependencies).
-    const char *start_line=text;
-    vector<string> lines;
-
-    const char * c = text;;
-
-    //for(const char *c=text;*c;c++) {
-    for(;*c;c++) {
-        if(*c=='\n') {
-            string line;
-            for(const char *n=start_line;n<c;n++) line.append(1,*n);
-            lines.push_back(line);
-            start_line=c+1;
-        }
-    }
-    if(start_line) {
-        string line;
-        for(const char *n=start_line;n<c;n++) line.append(1,*n);
-        lines.push_back(line);
-    }
+				//Here is some code to split the text that we have been
+				//given into a set of lines.
+				//This could be made much neater by using
+				//a regular expression library such as the one avliable from
+				//boost.org (I've only done it out by hand to avoid complicating
+				//this tutorial with unnecessary library dependencies). Ugly, ugly...
+				/*const char *start_line=text;
+				
+			
+				const char * c = text;;
+			
+				//for(const char *c=text;*c;c++) {
+				for(;*c;c++) {
+					if(*c=='\n') {
+						string line;
+						for(const char *n=start_line;n<c;n++) line.append(1,*n);
+						lines.push_back(line);
+						start_line=c+1;
+					}
+				}
+				if(start_line) {
+					string line;
+					for(const char *n=start_line;n<c;n++) line.append(1,*n);
+					lines.push_back(line);
+				}*/
 
     glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
     glMatrixMode(GL_MODELVIEW);
@@ -284,6 +285,7 @@ void uv_text::print( float x, float y, const char *fmt, ...)
     //down by h. This is because when each character is
     //draw it modifies the current matrix so that the next character
     //will be drawn immediatly after it.
+	splitup();
 	glColor3ub(red,green,blue); //passende Farbe laden
 	
     for(unsigned int i=0;i<lines.size();i++) {
@@ -299,7 +301,9 @@ void uv_text::print( float x, float y, const char *fmt, ...)
         //  If you decide to use it make sure to also uncomment the glBitmap command
         //  in make_dlist().
         //	glRasterPos2f(0,0);
+			//Hier sind die Daten fehlerhaft...
         glCallLists(lines[i].length(), GL_UNSIGNED_BYTE, lines[i].c_str());
+		//glCallLists(this->text.str().length(), GL_UNSIGNED_BYTE, this->text.str().c_str());
         //	float rpos[4];
         //	glGetFloatv(GL_CURRENT_RASTER_POSITION ,rpos);
         //	float len=x-rpos[0];
@@ -321,4 +325,17 @@ void uv_text::set_color(GLubyte red,GLubyte green,GLubyte blue)
 	this->red=red;
 	this->blue=blue;
 	this->green=green;
+}
+
+void uv_text::splitup()
+{
+	lines.clear();
+	int pos=0;
+	//int lastpos=0;
+	while (text.str().find('\n',pos) != string::npos)
+	{
+		lines.push_back(text.str().substr(pos, text.str().find('\n',pos)-pos));
+		pos = this->text.str().find('\n',pos)+1;
+	}
+	if (lines.empty()) lines.push_back(this->text.str());
 }
