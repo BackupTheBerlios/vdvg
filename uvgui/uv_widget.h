@@ -15,6 +15,7 @@ class uv_group;  //forward-Deklaration von uv_group
 #include <SDL_opengl.h>
 #include <iostream>
 #include <string>
+#include <vector>
 //---------------------------------------------------------------------------
 using namespace std;
 //---------------------------------------------------------------------------
@@ -84,7 +85,7 @@ class uv_widget
       //Grösse und Position eines Widgets verändern/setzen
       bool set_size(int x, int y, int width, int height);
 
-      virtual void draw(basic_string<GLuint> * clist)=0; //Zeichnet das Widget
+      virtual void draw(vector<GLuint> * clist)=0; //Zeichnet das Widget
 
       //Setz einen Funktionszeiger für Callback
       void set_callback(voidcallback callback);

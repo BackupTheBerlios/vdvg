@@ -119,7 +119,7 @@ class uv_text:public uv_widget
       void print(int x, int y);
       int get_height();
       int get_width();
-      void draw(basic_string<GLuint> * clist);
+      void draw(vector<GLuint> * clist);
 };
 //---------------------------------------------------------------------------
 #endif // _UV_TEXT_

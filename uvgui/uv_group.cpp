@@ -111,7 +111,7 @@ void uv_group::set_to_end()
         childs.move(childs.getiterator()+1, childs.Elemente()-1);
 };
 //---------------------------------------------------------------------------
-bool uv_group::draw_childs(basic_string<GLuint> * clist)
+bool uv_group::draw_childs(vector<GLuint> * clist)
 {
     //Speicher für einen uv_widget Zeiger anlegen
     uv_widget *child;

@@ -45,7 +45,7 @@ std::string uv_fpscounter::IntToString(const int & value)
     return ss.str();
 };
 //---------------------------------------------------------------------------
-void uv_fpscounter::draw(basic_string<GLuint> * clist)
+void uv_fpscounter::draw(vector<GLuint> * clist)
 {
    static int frames=0;
    static long tickdiff=0;

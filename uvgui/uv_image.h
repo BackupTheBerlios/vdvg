@@ -79,7 +79,7 @@ public:
 
     bool set_size(int x, int y, int w=-1, int h=-1,
                   float picx=-1, float picy=-1, float picw=-1, float pich=-1);
-    void draw(basic_string<GLuint> * clist);
+    void draw(vector<GLuint> * clist);
 };
 //---------------------------------------------------------------------------
 #endif

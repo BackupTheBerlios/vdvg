@@ -43,7 +43,7 @@ uv_box::attribute uv_box::make_attribut(uv_group * parent,
    return attr;
 };
 //---------------------------------------------------------------------------
-void uv_box::draw(basic_string<GLuint> * clist)
+void uv_box::draw(vector<GLuint> * clist)
 {
    if(retranslate)
    {

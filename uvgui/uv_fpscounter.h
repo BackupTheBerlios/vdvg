@@ -40,7 +40,7 @@ class uv_fpscounter:public uv_group
       bool initialize(attribute init);
       bool operator=(attribute init) {return initialize(init);};
 
-      void draw(basic_string<GLuint> * clist);
+      void draw(vector<GLuint> * clist);
 
       static attribute make_attribut(uv_group * parent,
                                      int x, int y, int width, int height,

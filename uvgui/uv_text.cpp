@@ -404,7 +404,7 @@ int uv_text::get_height()
 
 };
 //---------------------------------------------------------------------------
-void uv_text::draw(basic_string<GLuint> * clist)
+void uv_text::draw(vector<GLuint> * clist)
 {
    if(!get_visible())
       return;

@@ -75,7 +75,7 @@ bool uv_window::is_initialized()
    return is_init;
 };
 //---------------------------------------------------------------------------
-void uv_window::draw(basic_string<GLuint> * clist)
+void uv_window::draw(vector<GLuint> * clist)
 {
     if(!get_visible()) return;
 

@@ -16,7 +16,7 @@ uv_mainwindow::uv_mainwindow(int mw, int mh,bool fullscreen, char *mlabel)
     init_SDL(mw, mh, fullscreen, 32, 24, 24, 1, 0, mlabel);
 };
 //---------------------------------------------------------------------------
-void uv_mainwindow::draw(basic_string<GLuint> * clist)
+void uv_mainwindow::draw(vector<GLuint> * clist)
 {
     //Überreste aus den Buffern löschen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -221,10 +221,22 @@ void uv_mainwindow::run()
                          event.button.button, event.button.type);
             break;
         };
-        basic_string<GLuint> clist;
+        //basic_string<GLuint> clist;
+        vector<GLuint> clist;
         draw(&clist);
         glListBase(0);
-        glCallLists(clist.length(), GL_UNSIGNED_INT, clist.c_str());
+		int *test = new int[clist.size()];
+		vector<int>::iterator iter;
+		int pi=0;
+		for(pi=0; pi<clist.size(); pi++)
+		{
+		test[pi]=clist[pi];
+		}	
+	//	for(iter=clist.begin(); iter == clist.end(); iter++)
+	//	{
+	//		test[pi++] = iter;
+	//	}
+        glCallLists(clist.size(), GL_UNSIGNED_INT, test);
         //Hauptschleifenfunktion aufrufen
         uv_callback var = {0};
         do_callback(&var);

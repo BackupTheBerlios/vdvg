@@ -32,7 +32,7 @@ private:
     bool is_run;
 public:
     uv_mainwindow(int width, int height, bool fullscreen=1, char * titel=0);
-    void draw(basic_string<GLuint> * clist);
+    void draw(vector<GLuint> * clist);
     void key_action(int key, int sym, int mod, int what);
     bool mouse_action(int x, int y, int key, int what);
     void mouse_move_rel(int rel_x, int rel_y);

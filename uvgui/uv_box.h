@@ -38,7 +38,7 @@ class uv_box:public uv_widget
       bool initialize(attribute init);
       bool operator=(attribute init) {return initialize(init);};
 
-      void draw(basic_string<GLuint> * clist);
+      void draw(vector<GLuint> * clist);
       void set_color(GLubyte red,GLubyte green, GLubyte blue)
       {
 	 this->red=red;

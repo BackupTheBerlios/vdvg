@@ -48,7 +48,7 @@ uv_textbox::attribute uv_textbox::make_attribut(uv_group * parent,
    return attr;
 };
 //---------------------------------------------------------------------------
-void uv_textbox::draw(basic_string<GLuint> * clist)
+void uv_textbox::draw(vector<GLuint> * clist)
 {
    if(!get_visible())
       return;

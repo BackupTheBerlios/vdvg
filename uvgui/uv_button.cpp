@@ -47,7 +47,7 @@ uv_button::attribute uv_button::make_attribut(uv_group * parent,
    return attr;
 };
 //---------------------------------------------------------------------------
-void uv_button::draw(basic_string<GLuint> * clist)
+void uv_button::draw(vector<GLuint> * clist)
 {
    if(!get_visible())
       return;

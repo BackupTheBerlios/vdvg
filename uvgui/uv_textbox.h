@@ -41,7 +41,7 @@ class uv_textbox: public uv_group
       bool initialize(attribute init);
       bool operator=(attribute init) {return initialize(init);};
 
-      void draw(basic_string<GLuint> * clist);
+      void draw(vector<GLuint> * clist);
       void key_action(int key, int sym, int mod, int what);
       bool mouse_action(int x, int y, int button, int what);
       static attribute make_attribut(uv_group * parent,

@@ -58,7 +58,7 @@ class uv_group:public uv_widget
       void remove_child(uv_widget* widget);
       void add_child_in_front(uv_widget* );
       void set_to_end();
-      bool draw_childs(basic_string<GLuint> * clist);
+      bool draw_childs(vector<GLuint> * clist);
       bool mouse_action_childs(int x, int y, int button, int what);
       bool key_action_childs(int key, int sym, int mod, int what);
       bool mouse_move_rel_childs(int rel_x, int rel_y);

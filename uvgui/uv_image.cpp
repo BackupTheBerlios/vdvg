@@ -229,7 +229,7 @@ void uv_image::draw_size(int x, int y, int w, int h,
    glBindTexture(GL_TEXTURE_2D, 0); //Textur unbinden, für andere Zeichnungsop.
 };
 //---------------------------------------------------------------------------
-void uv_image::draw(basic_string<GLuint> * clist)
+void uv_image::draw(vector<GLuint> * clist)
 {
    if(!get_visible())
       return;
