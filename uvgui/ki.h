@@ -11,6 +11,7 @@ namespace ki
    {
       int feld[4][4][4][4]; // 0 == leer, 1 == Spieler 1, 2 == Spieler 2
       int gewonnen;         // 0 == niemand, 1 == Sp. 1, 2 == Sp. 2
+      int schwierigkeitsgrad;
       bool fehler;          // false == alles j.o., true == etwas stimmt nicht
       bool reset();
       void operator=(const spielfeld& other);

@@ -318,18 +318,21 @@ bool uv_mainwindow::key_action (int key, int sym, int mod, int what)
 bool uv_mainwindow::mouse_action (int x, int y, int button, int what)
 {
    if(on_top_widget) 
-	{
-		if(on_top_widget->mouse_action(x-on_top_widget->get_absolute_x(),y-on_top_widget->get_absolute_y(),button,what)){}
-		else
-		{
-			mouse_action_childs(x, y, button, what);
-		}
-	}
-	else
-	{
-			mouse_action_childs(x, y, button, what);
-	}
-	return 0;
+   {
+      if(on_top_widget->mouse_action(x-on_top_widget->get_absolute_x(),y-on_top_widget->get_absolute_y(),button,what))
+      {
+
+      }
+      else
+      {
+	 mouse_action_childs(x, y, button, what);
+      }
+   }
+   else
+   {
+      mouse_action_childs(x, y, button, what);
+   }
+   return 0;
 };
 //---------------------------------------------------------------------------
 void uv_mainwindow::mouse_move_rel(int rel_x, int rel_y)

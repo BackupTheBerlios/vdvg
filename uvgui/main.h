@@ -7,6 +7,10 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 //---------------------------------------------------------------------------
+#include <string>
+#include <iostream>
+#include <sstream>  //für stringstream
+
 #include "uv_include.h"
 #include "uv_textbox.h"
 #include "uv_config.h"
@@ -39,7 +43,17 @@ namespace uv_main
    uv_gamebutton  gbuttons[256];
    uv_button	  gexit, new_game, exit, ok1, ok2;
    uv_window      lost, won;
-   uv_text        verloren, gewonnen;
+   uv_text        verloren, gewonnen1, gewonnen2;
+
+   //Gameoptionen:
+   uv_window      gameoptionen;
+   uv_button      gook, goleichter, goschwerer;
+   uv_text        goschwierigkeitsgrad, goschwierigkeitsstufe, goschwierigkeit;
+   uv_text        gospielmodus;
+   uv_checkbox    gomenschcomp, gocompmensch, gomenschmensch;
+
+   //Hilfsfunktion
+   std::string IntToString(const int & value);
 };
 
 //---------------------------------------------------------------------------

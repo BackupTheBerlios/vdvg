@@ -116,7 +116,7 @@ void uv_button::draw(vector<GLuint> * clist)
 //---------------------------------------------------------------------------
 bool uv_button::mouse_action(int x, int y,int button,int what)
 {
-    if( what==SDL_MOUSEBUTTONDOWN && get_visible())  //Nur reagieren, wenn der Button sichtbar ist...
+    if( what==SDL_MOUSEBUTTONUP && get_visible())//SDL_MOUSEBUTTONDOWN && get_visible())  //Nur reagieren, wenn der Button sichtbar ist...
     {
         callback var;
         var.ID = 11;

@@ -160,7 +160,7 @@ bool uv_group::mouse_action_childs(int x, int y, int button, int what)
         if(what==SDL_MOUSEBUTTONUP) //Damit nur bei ursprünglichem Widget up
             break;
     };
-	uv_widget::mouse_action(x,y,button,what);
+    uv_widget::mouse_action(x,y,button,what);
     return true;
 };
 //---------------------------------------------------------------------------

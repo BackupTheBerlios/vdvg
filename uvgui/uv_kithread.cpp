@@ -86,6 +86,7 @@ bool ki::spielfeld::reset()
    }
    gewonnen = 0;
    fehler = false;
+   schwierigkeitsgrad = 5;
 }
 //---------------------------------------------------------------------------
 void ki::spielfeld::operator=(const ki::spielfeld& other)
@@ -107,6 +108,7 @@ void ki::spielfeld::operator=(const ki::spielfeld& other)
       }
       gewonnen = other.gewonnen;
       fehler   = other.fehler;
+      schwierigkeitsgrad = other.schwierigkeitsgrad;
    }
 }
 //---------------------------------------------------------------------------

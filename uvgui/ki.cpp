@@ -20,7 +20,7 @@ int ki::tiefe;
 ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
 {
    //Die Suchtiefe wird momentan mit einem Fixen Wert angegeben.
-   schwierigkeitsgrad = 9;
+   schwierigkeitsgrad = Feld.schwierigkeitsgrad;
    if(schwierigkeitsgrad > 5)
       suchtiefe = 2;
    else
