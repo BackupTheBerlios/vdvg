@@ -48,7 +48,8 @@ void mainloop(uv_callback * cb)
    //momentan noch leer
    if(ki_thread::check_end_of_calculations())
    {
-      ki_thread::s_feld = ki_thread::hole_ergebnis();
+      //ki_thread::s_feld = ki_thread::hole_ergebnis();
+	  ki_thread::get_s_feld() = ki_thread::hole_ergebnis();
       //Spielfeld zurücksetzen
       for(int x=0; x<4; x++)
       {
@@ -58,17 +59,17 @@ void mainloop(uv_callback * cb)
 	    {
 	       for(int u=0; u<4; u++)
 	       {
-                  uv_main::gbuttons[x+y*4+z*16+u*64].set_status(ki_thread::s_feld.feld[x][y][z][u]);
+                  uv_main::gbuttons[x+y*4+z*16+u*64].set_status(ki_thread::get_s_feld().feld[x][y][z][u]);
                }
             }
          }
       }
-      if(ki_thread::s_feld.gewonnen==1)
+      if(ki_thread::get_s_feld().gewonnen==1)
       {
          // Anzeigen, dass sp 1 gewonnen
          uv_main::won.set_visible(true);
       }
-      if(ki_thread::s_feld.gewonnen==2)
+      if(ki_thread::get_s_feld().gewonnen==2)
       {
          // Anzeigen, dass comp gewonnen
          uv_main::lost.set_visible(true);
@@ -163,7 +164,7 @@ void gamestartcallback()
       }
    }
 
-   ki_thread::s_feld.reset();
+   ki_thread::get_s_feld().reset();
 }
 //---------------------------------------------------------------------------
 void menucallback()
@@ -178,12 +179,12 @@ void artificial_intelligence(uv_callback * cb)
       return;
    uv_gamebutton::callback * gbcb;
    gbcb = static_cast<uv_gamebutton::callback*>(cb);
-   if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
+   if(ki_thread::get_s_feld().feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::get_s_feld().gewonnen)
       uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_status(1);
-   if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
-      ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] = 1;
+   if(ki_thread::get_s_feld().feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::get_s_feld().gewonnen)
+      ki_thread::get_s_feld().feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] = 1;
 
-   ki_thread::start_calculations(ki_thread::s_feld);
+   ki_thread::start_calculations(ki_thread::get_s_feld());
 }
 //---------------------------------------------------------------------------
 void ok1callback(uv_callback * cb)

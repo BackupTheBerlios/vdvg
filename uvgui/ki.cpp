@@ -3,6 +3,15 @@
 //---------------------------------------------------------------------------
 //  Die echten KI-Funktionen:
 //---------------------------------------------------------------------------
+int feld[4][4][4][4];    //x,y,z,w 0=leer, 1=X, 2=O
+int suchtiefe;
+int dimensionen;
+int wertefeld[4][4][4][4][3];
+int wertefeldebene[4][4][4][4][3][6];
+int bewertung;
+int tiefe;
+int sieg;                //Hat jemand 4Gewinnt
+
 ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
 {
    suchtiefe = 2;

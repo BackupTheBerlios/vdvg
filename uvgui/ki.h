@@ -59,11 +59,6 @@ namespace ki
    //Die echte KI-Funktion, die den Computerzug berechnet:
    spielfeld calculate_computer_move(spielfeld feld);
    //Die KI-Hilfsfunktionen:
-   int feld[4][4][4][4];    //x,y,z,w 0=leer, 1=X, 2=O
-   int sieg;                //Hat jemand 4Gewinnt
-   int suchtiefe;
-   int dimensionen;
-
    char typ_gegenteil(char typ);
    resultat suchebene(int sx,int sy,int sz,int sw,int st,char typ,
                       int pos_neg, alpha_beta_cutoff abc);
@@ -75,11 +70,8 @@ namespace ki
    bool bewerte_update_up(point p);
    int bewerte();//int x,int y, int z, int w);
    //Bewertungsvariabeln:
-   int wertefeld[4][4][4][4][3];
-   int wertefeldebene[4][4][4][4][3][6];
-   int bewertung;
-   int tiefe;
    bool set(point startpunkt);
-}
+};
 //---------------------------------------------------------------------------
 #endif
+

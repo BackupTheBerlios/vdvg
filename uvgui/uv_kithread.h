@@ -8,18 +8,15 @@
 //---------------------------------------------------------------------------
 namespace ki_thread
 {
-   int berechnungsstatus; // 0 keine Ber., 1 Ber. läuft, 2 Ber. beendet
-   bool threadend;
-   SDL_Thread * thread;
-
-   ki::spielfeld s_feld, ki_rueckgabefeld;
-
-   bool start_calculations(ki::spielfeld feld);
-   ki::spielfeld hole_ergebnis();
-   int threadFunktion(void * daten);
-   bool kill_thread();
-   bool check_end_of_calculations();
+	ki::spielfeld& get_s_feld();
+	ki::spielfeld& get_ki_rueckgabefeld();
+	bool start_calculations(ki::spielfeld feld);
+	ki::spielfeld hole_ergebnis();
+	int threadFunktion(void * daten);
+	bool kill_thread();
+	bool check_end_of_calculations();
 };
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------
+

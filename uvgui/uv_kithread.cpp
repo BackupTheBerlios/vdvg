@@ -1,6 +1,11 @@
 //---------------------------------------------------------------------------
 #include "uv_kithread.h"
 //---------------------------------------------------------------------------
+int berechnungsstatus; // 0 keine Ber., 1 Ber. läuft, 2 Ber. beendet
+bool threadend;
+SDL_Thread * thread;
+ki::spielfeld s_feld, ki_rueckgabefeld;
+
 bool ki_thread::start_calculations(ki::spielfeld feld)
 {
    if(berechnungsstatus != 0)
@@ -103,4 +108,13 @@ void ki::spielfeld::operator=(const ki::spielfeld& other)
    }
 }
 //---------------------------------------------------------------------------
- 
+ki::spielfeld& ki_thread::get_s_feld()
+{
+return s_feld;
+}
+
+ki::spielfeld& ki_thread::get_ki_rueckgabefeld()
+{
+return ki_rueckgabefeld;
+}
+
