@@ -25,7 +25,7 @@ class uv_window:public uv_group
 {
 private:
     bool dragged;
-    uv_image oben;
+    uv_image oben, obenl, obenr, but1, but2, but3, but4, links, rechts, unten, untenl, untenr, mitte;
     GLuint stranslation, etranslation, drawing;
     bool redraw, retranslate;
 public:

@@ -65,7 +65,7 @@ class uv_text:public uv_widget
       float h;           // Schrifthöhe
       float len;
 
-      vector<string> lines;     //Enthält pro Element eine Zeile vom Text...
+      vector<std::string> lines;     //Enthält pro Element eine Zeile vom Text...
       string line;
       GLubyte red, green, blue; //Textfarbe
 
@@ -85,6 +85,7 @@ class uv_text:public uv_widget
 
       GLuint stranslation, etranslation, drawing;
       bool redraw, retranslate;
+      int last_abs_x, last_abs_y; //Nötig, um zu prüfen ob verschoben wurde.
    public:
       //Konstruktor
       uv_text(int x, int y, int width, int height, uv_group *parent, char *label);

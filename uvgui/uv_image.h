@@ -22,8 +22,7 @@ using namespace std;
 class uv_image:public uv_widget
 {
 private:
-    GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord );
-    int power_of_two(int input);
+    //Variabeln:
     int w, h;
     GLuint textur;
     bool loaded;
@@ -32,56 +31,33 @@ private:
 
     GLuint stranslation, etranslation, drawing;
     bool redraw, retranslate;
-public:
-    bool LoadImageFile(string fname);
 
-//    uv_image(string filename);
-//    uv_image();
-    uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *label=0);
+    float picx, picy, picw, pich;
 
-    GLfloat get_texMinX()
-    {
-       return texMinX;
-    };
-    GLfloat get_texMinY()
-    {
-       return texMinY;
-    };
-    GLfloat get_texMaxX()
-    {
-       return texMaxX;
-    };
-    GLfloat get_texMaxY()
-    {
-       return texMaxY;
-    };
-
-    void set_texcoordinaten(float x, float y, float mx, float my)
-    {
-       texMinX = x; texMinY = y; texMaxX = mx; texMaxY = my;
-    };
-    GLuint get_texture_index()
-    {
-        return textur;
-    };
-    int get_texture_w()
-    {
-        return w;
-    };
-    int get_texture_h()
-    {
-        return h;
-    };
-    bool is_texture_successfully_loaded()
-    {
-        return loaded;
-    };
+    //Funktionen:
+    int power_of_two(int input);
+    GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord );
     void draw_size(int x, int y, int w, int h,
                    float picx=-1, float picy=-1, float picw=-1, float pich=-1);
-    void draw_original_size(int x, int y)
-    {
-        draw_size(x, y, get_texture_w(), get_texture_h());
-    };
+
+public:
+    uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *label=0);
+
+    bool LoadImageFile(string fname);
+
+    GLfloat get_texMinX();
+    GLfloat get_texMinY();
+    GLfloat get_texMaxX();
+    GLfloat get_texMaxY();
+
+    void set_texcoordinaten(float x, float y, float mx, float my);
+    GLuint get_texture_index();
+    int get_texture_w();
+    int get_texture_h();
+    bool is_texture_successfully_loaded();
+
+    bool set_size(int x, int y, int w=-1, int h=-1,
+                  float picx=-1, float picy=-1, float picw=-1, float pich=-1);
     void draw(basic_string<GLuint> * clist);
 };
 //---------------------------------------------------------------------------

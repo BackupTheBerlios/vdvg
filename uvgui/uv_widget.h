@@ -14,6 +14,7 @@ class uv_group;  //forward-Deklaration von uv_group
 #include <SDL_main.h>
 #include <SDL_opengl.h>
 #include <iostream>
+#include <string>
 //---------------------------------------------------------------------------
 using namespace std;
 

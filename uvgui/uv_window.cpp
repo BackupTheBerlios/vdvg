@@ -9,7 +9,19 @@
 uv_window::uv_window(int mx, int my, int width, int height,
                      uv_group *parent, char *label)
                      :uv_group(mx, my, width, height, parent, label, true)
-                      , oben(0, 0, get_w(), 20, this, "Test.bmp")
+                      , oben(5, 0, get_w()-10, 20, this, "windowdesign.tga")
+                      , obenl(0, 0, 5, 20, this, "windowdesign.tga")
+                      , obenr(get_w()-5, 0, 5, 20, this, "windowdesign.tga")
+                      , but1(get_w()-21, 0, 16, 20, this, "windowdesign.tga")
+                      , but2(get_w()-37, 0, 16, 20, this, "windowdesign.tga")
+                      , but3(get_w()-53, 0, 16, 20, this, "windowdesign.tga")
+                      , but4(get_w()-69, 0, 16, 20, this, "windowdesign.tga")
+                      , links(0, 20, 5, get_h()-25, this, "windowdesign.tga")
+                      , rechts(get_w()-5, 20, 5, get_h()-25, this, "windowdesign.tga")
+                      , unten(5, get_h()-5, get_w()-10, 5, this, "windowdesign.tga")
+                      , untenl(0, get_h()-5, 5, 5, this, "windowdesign.tga")
+                      , untenr(get_w()-5, get_h()-5, 5, 5, this, "windowdesign.tga")
+                      , mitte(5, 20, get_w()-10, get_h()-25, this, "windowdesign.tga")
 {
     dragged = 0;
 
@@ -21,6 +33,21 @@ uv_window::uv_window(int mx, int my, int width, int height,
 
     redraw = true;
     retranslate = true;
+
+    //Design
+    oben.set_texcoordinaten(5.0/75.0, 0.0, 6.0/75.0, 20.0/26.0);
+    obenl.set_texcoordinaten(0.0, 0.0, 5.0/75.0, 20.0/26.0);
+    obenr.set_texcoordinaten(70.0/75.0, 0.0, 1.0, 20.0/26.0);
+    but4.set_texcoordinaten(6.0/75.0, 0.0, 22.0/75.0, 20.0/26.0);
+    but3.set_texcoordinaten(22.0/75.0, 0.0, 38.0/75.0, 20.0/26.0);
+    but2.set_texcoordinaten(38.0/75.0, 0.0, 54.0/75.0, 20.0/26.0);
+    but1.set_texcoordinaten(54.0/75.0, 0.0, 70.0/75.0, 20.0/26.0);
+    links.set_texcoordinaten(0.0, 20.0/26.0, 5.0/75.0, 21.0/26.0);
+    rechts.set_texcoordinaten(70.0/75.0, 20.0/26.0, 1.0, 21.0/26.0);
+    unten.set_texcoordinaten(5.0/75.0, 21.0/26.0, 6.0/75.0, 1.0);
+    untenl.set_texcoordinaten(0.0, 21.0/26.0, 5.0/75.0, 1.0);
+    untenr.set_texcoordinaten(70.0/75.0, 21.0/26.0, 1.0, 1.0);
+    mitte.set_texcoordinaten(5.0/75.0, 20.0/26.0, 6.0/75.0, 21.0/26.0);
 };
 //---------------------------------------------------------------------------
 void uv_window::draw(basic_string<GLuint> * clist)

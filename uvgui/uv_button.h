@@ -25,6 +25,7 @@ class uv_button: public uv_group
 {
 private:
     uv_text text;
+    std::string textspeicher;
     GLuint stranslation, etranslation, drawing1, drawing2;
     bool redraw, retranslate;
 public:

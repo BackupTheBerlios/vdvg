@@ -19,6 +19,8 @@ class uv_textbox: public uv_group
       std::string str;
       int pos;
 
+      int last_abs_x, last_abs_y; //Nötig, um zu prüfen ob Box verschoben wurde.
+
       GLuint stranslation, etranslation, drawing, scissoran, scissoraus;
       bool redraw, retranslate;
    public:

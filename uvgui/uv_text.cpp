@@ -25,6 +25,7 @@ uv_text::uv_text(int x,int y,int width,int height,uv_group *parent,char *label)
 
    redraw = true;
    retranslate = true;
+   last_abs_x = -1; last_abs_y = -1;
 }
 //---------------------------------------------------------------------------
 uv_text::~uv_text()
@@ -328,10 +329,10 @@ void uv_text::print(int x, int y)
    //draw it modifies the current matrix so that the next character
    //will be drawn immediatly after it.
 
-   //   splitup();
+//   splitup();
    glColor3ub(red,green,blue); //passende Farbe laden
 
-   for(unsigned int i=0;i<lines.size();i++)
+   for(unsigned int i=0;i<1;i++)//lines.size();i++)
    {
       glPushMatrix();
       glLoadIdentity();
@@ -342,8 +343,13 @@ void uv_text::print(int x, int y)
       //  If you decide to use it make sure to also uncomment the glBitmap command
       //  in make_dlist().
       glRasterPos2f(0,0);
-      const char* test = lines[i].c_str();
+//      const char* test = lines[i].c_str();
+//      const char tst = lines[i].operator [](0);
+//      int r = lines[i].length();
+//      if(!(lines[i].operator [](0) == 0 && lines[i].length() > 0))
+//      {
       glCallLists(lines[i].length(), GL_UNSIGNED_BYTE, lines[i].c_str());
+//      }
       int rpos[4];
       glGetIntegerv(GL_CURRENT_RASTER_POSITION ,rpos);
       //cout << rpos[0] << endl;
@@ -370,6 +376,9 @@ void uv_text::pushtext(const string str)
    line = str;
    lines.clear();
    lines.push_back(str);
+
+   //Text neu zeichnen.
+   redraw = true;
 };
 //---------------------------------------------------------------------------
 void uv_text::splitup()
@@ -403,7 +412,9 @@ int uv_text::get_width()
 //---------------------------------------------------------------------------
 int uv_text::get_height()
 {
+
    return lines.size()*((int)h);
+
 };
 //---------------------------------------------------------------------------
 void uv_text::draw(basic_string<GLuint> * clist)
@@ -411,29 +422,18 @@ void uv_text::draw(basic_string<GLuint> * clist)
    if(!get_visible())
       return;
 
-   if(retranslate)
+   if(redraw || last_abs_x != get_absolute_x() || last_abs_y != get_absolute_y())
    {
-      glNewList(stranslation, GL_COMPILE);
       glTranslatef(get_absolute_x(), get_absolute_y(), 0);
-      glEndList();
-
-      glNewList(etranslation, GL_COMPILE);
-      glTranslatef(-1*get_absolute_x(), -1*get_absolute_y(), 0);
-      glEndList();
-
-      //retranslate = false;
-   }
-
-   glCallList(stranslation);
-   if(redraw)
-   {
       glNewList(drawing, GL_COMPILE);
          print(0, 0);
       glEndList();
+      glTranslatef(-1*get_absolute_x(), -1*get_absolute_y(), 0);
 
-      //redraw = false;
+      last_abs_x = get_absolute_x();
+      last_abs_y = get_absolute_y();
+      redraw = false;
    }
-   glCallList(etranslation);
 
    clist->push_back(drawing);
 };

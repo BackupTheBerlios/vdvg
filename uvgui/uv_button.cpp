@@ -12,10 +12,9 @@ uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabe
     text.init("Test.ttf",25);
     text.set_color(0xff,0x88,0x00);
 
-    static string test = mlabel;
-    test = mlabel;
+    textspeicher = mlabel;
 
-    text.pushtext(test);
+    text.pushtext(textspeicher);
 
     //Den Text auf dem Button zentrieren
     text.set_pos((get_w()-text.get_width())/2, (get_h()+text.get_height())/2);
@@ -51,6 +50,7 @@ void uv_button::draw(basic_string<GLuint> * clist)
 
    if(redraw)
    {
+      text.pushtext(textspeicher);
       glNewList(drawing1, GL_COMPILE);
       glBindTexture(GL_TEXTURE_2D, 0);
       glBegin (GL_QUADS);
