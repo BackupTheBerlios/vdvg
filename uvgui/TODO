@@ -1,9 +1,9 @@
-ALLES 		- parent-> add_child(this) in den Konstruktor von uv_widget
-uv_group 	- Funktion zum entfernen eines childs
-uv_widget  	- set_parent(...), zuerst parent abmelden
-uv_image	- Sinnvolle Konstruktoren erstellen.
-uv_text		- Sinnvolle Konstruktoren erstellen
-ALLES		- Keyboardhandling
-ALLES		- Mehr Widgets (label, textbox, dropdown...)
-ALLES		- Include Dateien aufräumen
-ALLES		- Design
+Neue TODO Liste:
+
+Primäre Ziele:
+- Die jetztigen Widgets noch vervollständigen (uv_butten z.B. mit Bild usw.)
+- Neue Widgets: checkbox, optionbox, DropDown Liste (am kompliziertesten)
+
+Sekundäre Ziele:
+- Multithreading
+- Spiel einbauen

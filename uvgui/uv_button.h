@@ -11,6 +11,7 @@
 //#include "uv_group.h"
 //#include "uv_text.h"
 #include "uv_include.h"
+#include "uv_image.h"
 #include <SDL.h>
 #include <SDL_opengl.h>
 //---------------------------------------------------------------------------
@@ -28,6 +29,7 @@ public:
    {
       uv_group * parent;
       int x, y, width, height;
+      uv_image::attribute image_attribute;
       string name, caption;
    };
    struct callback: public uv_callback
@@ -38,6 +40,7 @@ private:
    //Schon initialisiert?
    bool is_init;
 
+   uv_image image;
    uv_text text;
    std::string textspeicher;
    GLuint stranslation, etranslation, drawing1, drawing2;
@@ -53,6 +56,7 @@ public:
    void key_action(int key, int sym, int mod, int what);
    static attribute make_attribut(uv_group * parent,
                                   int x, int y, int width, int height,
+                                  uv_image::attribute image_attribute,
                                   string name, string caption);
 };
 //---------------------------------------------------------------------------

@@ -74,10 +74,10 @@ class uv_text:public uv_widget
       bool is_init;
 
       //Variabeln:
-      //font_data ft_font;
-      GLuint * textures; // Variable mit der Textur ID
+      GLuint * textures; // Array mit den Textur IDs
       GLuint list_base;  // Variable mit der ID der ersten "display list"
-      float h;           // Schrifthöhe
+      float font_height; // Schrifthöhe
+      long anzahl_faces; // Anzahl Faces, die das Font-File enthält
       float len;
 
 //      vector<std::string> lines;     //Enthält pro Element eine Zeile vom Text...

@@ -17,6 +17,7 @@ namespace uv_main
    uv_config konfig;
 
    uv_mainwindow mainwindow;
+   uv_container cont1;
    //Die Fenster
    uv_window window1, window2, aaa, bbb, ccc, ddd, eee, fff;
    //Die Buttons

@@ -20,8 +20,7 @@ bool uv_fpscounter::initialize(attribute init)
 
    init.text_attribute.parent = this;
    counter = init.text_attribute;
-   counter.set_pos(0, counter.get_height());
-
+   counter.set_pos(get_parent()->get_w()-90, counter.get_height());
    //Initialisierung erfolgt
    is_init = true;
 

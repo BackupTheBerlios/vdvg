@@ -236,15 +236,16 @@ void uv_mainwindow::run()
             //key_action(event.key.keysym.sym, event.key.keysym.mod, event.key.type);
 			last_was_key_down[event.key.keysym.sym] = false;
             break;
-			
+
         case SDL_MOUSEMOTION:
+
             set_mouse_x(event.motion.x);
             set_mouse_y(event.motion.y);
 			set_mouse_over_off();
 			mouse_action(event.motion.x, event.motion.y,0,SDL_MOUSEMOTION);
             mouse_move_rel(rel_mouse_x(event.motion.x), rel_mouse_y(event.motion.y));
             break;
-		
+
         case SDL_MOUSEBUTTONDOWN:
             if(last_was_mouse_down)
                 break;

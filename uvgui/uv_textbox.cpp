@@ -95,8 +95,8 @@ void uv_textbox::draw(vector<GLuint> * clist)
          glGetIntegerv(GL_VIEWPORT, viewport); //Bildschirmgrösse abholen
          int hight = viewport[3]; //Bildschirmhöhe
          // Definiere die  Scissor Region
-         glScissor(get_absolute_x()+5, hight-get_absolute_y()-get_h()+1,
-         get_w()-10, get_h()-2);//hight-get_h()+2);
+         glScissor(get_absolute_x()+3, hight-get_absolute_y()-get_h()+1,
+         get_w()-8, get_h()-2);//hight-get_h()+2);
          // aktiviere Scissor Testing
          glEnable(GL_SCISSOR_TEST);
       glEndList();

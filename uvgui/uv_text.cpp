@@ -72,21 +72,19 @@ uv_text::attribute uv_text::make_attribut(uv_group * parent,
 //---------------------------------------------------------------------------
 // Dieser Funktion wird ein FT_Face Objekt übergeben, welches von FreeType dazu
 // verwendet wird Informationen über einen Font zu speichern. Damit erstellt
-// sie eine Displayliste für das Zeichen ch, welches der Funktion ebenfalls
+// sie eine Displayliste für das Zeichen "ch", welches der Funktion ebenfalls
 // übergeben wird.
 void uv_text::make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuint * tex_base)
 {
    // Als erstes holen wir FreeType um unser Zeichen in ein
    // Bitmap zu rendern. Das benötigt ein paar FreeType Befehle:
 
-   //if(ch > 128) return;
-
    // Lade den Glyphen unseres Zeichens
    if(FT_Load_Glyph(face, FT_Get_Char_Index(face, ch), FT_LOAD_DEFAULT))
       cout << "FT_Load_Glyph failed";
 
-   // bewege die Frontseite des Glyphen in ein Glyph Objekt
-   FT_Glyph glyph;
+   // Nun extrahieren wir das Glyph-Image aus dem Face Objekt
+   FT_Glyph glyph; // Handle für das Glyph-Image
    if(FT_Get_Glyph(face->glyph, &glyph))
       cout << "FT_Get_Glyph failed";
 
@@ -118,16 +116,17 @@ void uv_text::make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuin
    {
       for(int i=0; i < width; i++)
       {
-         expanded_data[2*(i+j*width)] = expanded_data[2*(i+j*width)+1] =
-                                        (i>=bitmap.width || j>=bitmap.rows)
-                                        ? 0 : bitmap.buffer[i + bitmap.width*j];
+         expanded_data[2*(i+j*width)]   = 255;
+         expanded_data[2*(i+j*width)+1] = (i>=bitmap.width || j>=bitmap.rows) ?
+                                          0 : bitmap.buffer[i + bitmap.width*j];
+
       };
    };
 
    // Nun initialisieren wir einfach ein Paar Textur Parameter.
    glBindTexture( GL_TEXTURE_2D, tex_base[ch]);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    //Ist mir noch nicht ganz klar
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);    // "   "    "    "     "    "
 
    // Hier erzeugen wir die eigentlich Textur, beachten Sie,
    // dass wir GL_LUMINANCE_ALPHA verwenden, um zu indizieren, dass
@@ -147,17 +146,16 @@ void uv_text::make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuin
    glNewList(list_base+ch, GL_COMPILE);
 
    glBindTexture(GL_TEXTURE_2D,tex_base[ch]);
+   glPushMatrix();
 
-   // als erstes müssen wir uns etwas nach oben bewegen, so dass
-   // die Zeichen die richtige Menge Platz zwischen
-   // und vor den Zeichen haben.
+   // als erstes müssen wir uns etwas nach vorne bewegen, so dass die Zeichen
+   // die richtige Menge Platz zwischen und vor den Zeichen haben.
    glTranslatef(bitmap_glyph->left, 0, 0);
 
    // Nun bewegen wir uns etwas nach unten, für den Fall, dass
    // das Bitmap über die untere Linie geht
    // Das ist nur für Zeichen wir 'g' oder 'y' der Fall.
-   glPushMatrix();
-   glTranslatef(0,-1*(bitmap_glyph->top-bitmap.rows),0);
+   glTranslatef(0,-1*(bitmap_glyph->top-bitmap.rows),0);  //Warum * -1 ??
 
    // Nun müssen wir etwas korrigieren, da vieles unserer Textur
    // einfach nur leerer aufgefüllter Platz ist.
@@ -166,8 +164,8 @@ void uv_text::make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuin
    // Variablen x und y, dann zeichnen wir den Quad
    // Quad, wir werden nur die Teile der Textur referenzieren, welche
    // das eigentliche Zeichen enthält.
-   float x=(float)bitmap.width / (float)width,
-         y=(float)bitmap.rows  / (float)height;
+   double x=(double)bitmap.width / (double)width,
+          y=(double)bitmap.rows  / (double)height;
 
    // Hier zeichnen wir die texturierten Quads.
    // Das Bitmap welches wir von FreeType erhalten haben, ist nicht ganz
@@ -175,25 +173,14 @@ void uv_text::make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuin
    // aber wir linken die Textur auf den Quad
    // Auf diese Weise wird das Ergebniss korrekt ausgerichtet.
    glBegin(GL_QUADS);
-      glTexCoord2d(0,y); glVertex2f(0,0);
-      glTexCoord2d(0,0); glVertex2f(0,-bitmap.rows);
-      glTexCoord2d(x,0); glVertex2f(bitmap.width,-bitmap.rows);
-      glTexCoord2d(x,y); glVertex2f(bitmap.width,0);
+      glTexCoord2d(0, y); glVertex2f(0, 0);
+      glTexCoord2d(0, 0); glVertex2f(0, -bitmap.rows);
+      glTexCoord2d(x, 0); glVertex2f(bitmap.width, -bitmap.rows);
+      glTexCoord2d(x, y); glVertex2f(bitmap.width, 0);
    glEnd();
    glPopMatrix();
 
-   //Bei der distanzberechnung ist eine Korrektur für sehr nahe beieinander-
-   //liegende Glyphen eingebaut.
-   
-  // glTranslatef(face->glyph->advance.x >> 6,0,0);
-  // if(face->glyph->metrics.horiAdvance < (0.6)*face->glyph->metrics.width)
-   //{
-    // glTranslatef((face->glyph->metrics.width) >> 6, 0, 0);
-   //}
-   //else
-   //{
-     glTranslatef(face->glyph->metrics.horiAdvance >> 6, 0, 0);
-   //}
+   glTranslatef(face->glyph->metrics.horiAdvance >> 6, 0, 0);
 
    // Inkrementiere die Raster Position so, als ob wir ein Bitmap Font wären.
    // (wird nur benötigt, wenn Sie die Text Länge berechnen wollen)
@@ -209,7 +196,7 @@ bool uv_text::init(const char * fname, unsigned int h)
    int anzahl_zeichen = 256;
 
    //Prüfen, ob diese Schrift bereits geladen ist...
-   this->h=h;
+   this->font_height=h;
    font_set temp;
    temp.filename = fname;
    temp.size = h;
@@ -225,44 +212,52 @@ bool uv_text::init(const char * fname, unsigned int h)
    // Alloziere etwas Speicher um die Textur IDs zu speichern.
    textures = new GLuint[anzahl_zeichen];
 
+   FT_Library library; //Handle für die FreeType-Library
+   // Das Objekt in welchem FreeType die Informationen über den
+   // Font speichert, wird ein "face" (eine Seite/Gesicht...) genannt.
+   FT_Face face;       //Handle für das FreeType-Face_Objekt
+
    // erzeuge und initialisiere eine FreeType Font Library
-   FT_Library library;
    if(FT_Init_FreeType(&library))
    {
+      //Initialisierung fehlgeschlagen!
       cout << "FT_Init_FreeType failed";
       return 0;
    }
 
-   // Das Objekt in welchem FreeType die Informationen über den
-   // Font speichert, wird ein "face" (eine Seite/Gesicht...) genannt.
-   FT_Face face;
-
    // Hier laden wir die Font Informationen aus der Datei.
    // Von allen Möglichkeiten, wo der Code fehl schlagen könnte, ist die hier
    // die wahrscheinlichste, da FT_New_Face fehl schlagen wird, wenn die Font
-   // Datei nicht existiert oder irgendwie beschädigt ist.
+   // Datei nicht existiert oder irgendwie beschädigt ist (beziehungsweise das
+   // Font-Format nicht unterstützt wird).
+   // Der dritte Parameter von FT_New_Face, der "face_index", gibt an, welches
+   // face geladen werden soll, falls im Font-File mehrere Faces enthalten sind.
+   // Hier wird immer der Index 0 verwendet, welcher immer funktioniert.
    if(FT_New_Face(library, fname, 0, &face))
    {
+      //Laden der Font Informationen fehlgeschlagen!
       cout << "FT_New_Face failed (there is probably a problem with your font file)";
       return 0;
    }
 
-   // aus unerklärlichen Gründen ist die Masseinheit der Font Größe in Freetype in
-   // 1/64tel Pixeln angegeben. Deshalb müssen wir, wenn wir einen Font
-   // h Pixel hoch haben wollen, die Größe auf h*64 anpassen.
-   // (h << 6 ist lediglich ein hübscherer Weg h*64 zu schreiben)
-   //FT_Set_Char_Size(face, h << 6, h << 6, 96, 96);
-   //Höhe in Pixel
-   FT_Set_Pixel_Sizes(face, h, h);
+   // Nun ermitteln wir, wie viele Faces das Font-File enthält
+   // Vorerst verzichten wir darauf, eventuell weitere Faces zu laden
+   anzahl_faces = face->num_faces;
 
-   // hier fragen wir OpenGL an, Ressourcen für all die 
-   // Texturen und Display-Listen die wir
-   // erzeugen wollen, zu allozieren.
-   list_base=glGenLists(anzahl_zeichen);
+   // Aus unerklärlichen Gründen ist die Masseinheit der Font Größe in Freetype
+   // in 1/64tel Points angegeben (1 Point == 1/27 Inch). Deshalb müssen wir,
+   // wenn wir einen Font h Pixel hoch haben wollen, die Größe auf h*64 anpassen.
+   // (h << 6 ist lediglich ein hübscherer Weg h*64 zu schreiben)
+   // Achtung: Hier werden noch keine Fixed-Size Fonts berücksichtigt
+   FT_Set_Char_Size(face, h << 6, h << 6, 72, 72);
+
+   // Hier fragen wir OpenGL an, Ressourcen für all die Texturen und
+   // Display-Listen die wir erzeugen wollen, zu allozieren.
+   list_base = glGenLists(anzahl_zeichen);
    glGenTextures(anzahl_zeichen, textures);
 
    //Die charmap muss geändert werden um Umlaute zu benutzen...
-//   find_unicode_charmap(face); //Ist irgendwie nicht nötig???
+   // find_unicode_charmap(face); //Ist irgendwie nicht nötig???
 
    // Hier erzeugen wir die einzelnen Fonts Display-Listen.
    for(int i=0;i<anzahl_zeichen;i++)
@@ -313,15 +308,7 @@ void uv_text::pop_projection_matrix()
 //---------------------------------------------------------------------------
 void uv_text::print(int x, int y)
 {
-   //Es ist einfacher, ein anderes Koordinatensystem zu wählen,
-   //da sonst die Buchstaben nicht unten sondern oben bündig werden.
-   //y muss ins Koordinantensystem umgerechnet werden:
-   GLint viewport[4];
-   glGetIntegerv(GL_VIEWPORT, viewport); //Bildschirmgrösse abholen
-
-   GLuint font=list_base;
-   float h=this->h/.63f; // Wir machen die Höhe etwas größer. So wird es etwas
-                         // Abstand zwischen den Zeilen geben.
+   GLuint font = list_base;
 
    glDisable(GL_LIGHTING);
    glEnable(GL_TEXTURE_2D);
@@ -332,38 +319,31 @@ void uv_text::print(int x, int y)
 
    glListBase(font);
 
-   float modelview_matrix[16];
-   glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
-
-   //This is where the text display actually happens.
-   //For each line of text we reset the modelview matrix
-   //so that the line's text will start in the correct position.
-   //Notice that we need to reset the matrix, rather than just translating
-   //down by h. This is because when each character is
-   //draw it modifies the current matrix so that the next character
-   //will be drawn immediatly after it.
+   // This is where the text display actually happens.
+   // For each line of text we reset the modelview matrix
+   // so that the line's text will start in the correct position.
+   // Notice that we need to reset the matrix, rather than just translating
+   // down by h. This is because when each character is
+   // draw it modifies the current matrix so that the next character
+   // will be drawn immediatly after it.
 
    glColor3ub(red,green,blue); //passende Farbe laden
 
    int i=0;
    glPushMatrix();
-   glLoadIdentity();
-   glTranslatef(x,y-h*i,0);
-   glMultMatrixf(modelview_matrix);
-   //  The commented out raster position stuff can be useful if you need to
-   //  know the length of the text that you are creating.
-   //  If you decide to use it make sure to also uncomment the glBitmap command
-   //  in make_dlist().
-   glRasterPos2f(0,0);
+   glTranslatef(x, y, 0);
+   // The commented out raster position stuff can be useful if you need to
+   // know the length of the text that you are creating.
+   // If you decide to use it make sure to also uncomment the glBitmap command
+   // in make_dlist().
    glCallLists(line.length(), GL_UNSIGNED_BYTE, line.c_str());
-   int rpos[4];
-   glGetIntegerv(GL_CURRENT_RASTER_POSITION ,rpos);
-   //cout << rpos[0] << endl;
-   len=x-rpos[0];
+//   int rpos[4];
+//   glGetIntegerv(GL_CURRENT_RASTER_POSITION ,rpos);
+//   len=x-rpos[0];
    glPopMatrix();
 
    glBindTexture(GL_TEXTURE_2D, 0); //Texturen unbinden
-   glColor3ub(0xff,0xff,0xff); //Farbe auf neutral zurÃ¼cksetzen
+   glColor3ub(0xff,0xff,0xff); //Farbe auf neutral zurücksetzen
 };
 //---------------------------------------------------------------------------
 void uv_text::set_color(GLubyte red,GLubyte green,GLubyte blue)
@@ -376,20 +356,12 @@ void uv_text::set_color(GLubyte red,GLubyte green,GLubyte blue)
 void uv_text::pushtext(const string str)
 {
    line = str;
-   //lines.clear();
-   //lines.push_back(str);
 
-   //Text neu zeichnen.
    redraw = true;
 };
 //---------------------------------------------------------------------------
 void uv_text::splitup()
 {
-  /* lines.clear();
-   int pos=0;
-   int lastpos=0;
-
-   if(lines.empty()) lines.push_back("");     */
 };
 //---------------------------------------------------------------------------
 int uv_text::get_width()
@@ -406,7 +378,7 @@ int uv_text::get_width()
 int uv_text::get_height()
 {
 
-   return (int)h;//lines.size()*((int)h);
+   return (int)font_height;//lines.size()*((int)h);
 
 };
 //---------------------------------------------------------------------------
@@ -417,11 +389,16 @@ void uv_text::draw(vector<GLuint> * clist)
 
    if(redraw || last_abs_x != get_absolute_x() || last_abs_y != get_absolute_y())
    {
-      glTranslatef(get_absolute_x(), get_absolute_y(), 0);
       glNewList(drawing, GL_COMPILE);
-         print(0, 0);
+         print(get_x(), get_y());
+         //Cursor zeichnen
+       /*  glColor4ub(0, 0, 0, 255);
+         glLineWidth(2.0f);
+         glBegin (GL_LINES);
+            glVertex2f (get_x()+0, get_y()-font_height);
+            glVertex2f (get_x()+0, get_y());
+         glEnd();*/
       glEndList();
-      glTranslatef(-1*get_absolute_x(), -1*get_absolute_y(), 0);
 
       last_abs_x = get_absolute_x();
       last_abs_y = get_absolute_y();

@@ -26,6 +26,9 @@ bool uv_button::initialize(attribute init)
 
    uv_group::initialize(uv_group::make_attribut(init.parent, init.x, init.y, init.width, init.height, init.name, true));
 
+   init.image_attribute.parent = this;
+   image = init.image_attribute;
+
    uv_color text_color = {0xff, 0x88, 0x00};
    text = uv_text::make_attribut(this, 0, 0, 0, 0, 25, "Buttontext", init.caption, "Test.ttf", text_color);
    text.set_pos((get_w()-text.get_width())/2, (get_h()+text.get_height())/2);
@@ -41,12 +44,14 @@ bool uv_button::initialize(attribute init)
 //---------------------------------------------------------------------------
 uv_button::attribute uv_button::make_attribut(uv_group * parent,
                                               int x, int y, int width, int height,
+                                              uv_image::attribute image_attribute,
                                               string name, string caption)
 {
    attribute attr;
 
    attr.parent = parent;
    attr.x = x; attr.y = y; attr.width = width; attr.height = height;
+   attr.image_attribute = image_attribute;
    attr.name = name; attr.caption = caption;
 
    return attr;
