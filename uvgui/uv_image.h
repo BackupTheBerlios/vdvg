@@ -23,13 +23,19 @@ private:
     GLuint textur;
     bool loaded;
     GLfloat texMinX,texMinY,texMaxX,texMaxY;
+    bool initialised;
 public:
     bool LoadImageFile(string fname);
 
     uv_image(string filename);
     uv_image();
-	uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *label=0);
+    uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *label=0);
 
+
+    void set_texcoordinaten(float x, float y, float mx, float my)
+    {
+       texMinX = x; texMinY = y; texMaxX = mx; texMaxY = my;
+    };
     GLuint get_texture_index()
     {
         return textur;
@@ -46,15 +52,16 @@ public:
     {
         return loaded;
     };
-    void draw_size(int x, int y, int w, int h);
+    void draw_size(int x, int y, int w, int h,
+                   float picx=-1, float picy=-1, float picw=-1, float pich=-1);
     void draw_original_size(int x, int y)
     {
         draw_size(x, y, get_texture_w(), get_texture_h());
     };
-	void draw()
-	{
-		draw_original_size(get_x(),get_y());
-	};
+    void draw()
+    {
+       draw_size(get_absolute_x(),get_absolute_y(), get_w(), get_h());
+    };
 };
 //---------------------------------------------------------------------------
 #endif

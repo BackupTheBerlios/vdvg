@@ -18,6 +18,7 @@ int main (int argc, char *argv[])
     uv_main::mainwindow.set_callback(mainloop);
     uv_main::Button1.set_callback((voidcallback) calli);
     uv_main::Button2.set_callback((voidcallback) calli2);
+    uv_main::test.set_texcoordinaten(0.5, 0, 1, 1);
     uv_main::mainwindow.run();
     return 0;
 };

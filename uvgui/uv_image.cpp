@@ -13,7 +13,7 @@ uv_image::uv_image():uv_widget(0,0,0,0,0,0)
     w=0;
     h=0;
 };
-
+//---------------------------------------------------------------------------
 uv_image::uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *mlabel):uv_widget(mx,my,mw,mh,parent,0)
 {
     parent->add_child(this);
@@ -148,19 +148,34 @@ int uv_image::power_of_two(int input)
     return value;
 };
 //---------------------------------------------------------------------------
-void uv_image::draw_size(int x, int y, int w, int h)
+void uv_image::draw_size(int x, int y, int w, int h,
+                         GLfloat picx, GLfloat picy, GLfloat picw, GLfloat pich)
 {
     // x,y,w,h sind OK
     glBindTexture(GL_TEXTURE_2D, textur);
     glBegin(GL_TRIANGLE_STRIP);
-    //Links Oben
-    glTexCoord2f(texMinX, texMinY); glVertex2i( x, y);
-    //Rechts Oben
-    glTexCoord2f(texMaxX, texMinY); glVertex2i( x+w, y);
-    //Links Unten
-    glTexCoord2f(texMinX, texMaxY); glVertex2i( x, y+h);
-    //Rechts Unten
-    glTexCoord2f(texMaxX, texMaxY); glVertex2i( x+w, y+h);
+    if(picx!=-1)
+    {
+       //Links Oben
+       glTexCoord2f(picx, picy); glVertex2i( x, y);
+       //Rechts Oben
+       glTexCoord2f(picw, picy); glVertex2i( x+w, y);
+       //Links Unten
+       glTexCoord2f(picx, pich); glVertex2i( x, y+h);
+       //Rechts Unten
+       glTexCoord2f(picw, pich); glVertex2i( x+w, y+h);
+    }
+    else
+    {
+       //Links Oben
+       glTexCoord2f(texMinX, texMinY); glVertex2i( x, y);
+       //Rechts Oben
+       glTexCoord2f(texMaxX, texMinY); glVertex2i( x+w, y);
+       //Links Unten
+       glTexCoord2f(texMinX, texMaxY); glVertex2i( x, y+h);
+       //Rechts Unten
+       glTexCoord2f(texMaxX, texMaxY); glVertex2i( x+w, y+h);
+    }
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0); //Textur unbinden, für andere Zeichnungsop.
 };

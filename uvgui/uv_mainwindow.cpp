@@ -150,6 +150,8 @@ void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
     glShadeModel (GL_SMOOTH);
 
     glEnable (GL_TEXTURE_2D);	// Aktiviert Textur Mapping
+    glEnable(GL_BLEND);	// Turn Blending On
+    //  glDisable(GL_DEPTH_TEST);	// Turn Depth Testing Off
     glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Sehr gute
     // Perspektive
 
@@ -199,9 +201,9 @@ void uv_mainwindow::run()
             break;
         };
         draw();
-        SDL_GL_SwapBuffers();
         //Hauptschleifenfunktion aufrufen
         do_callback();
+        SDL_GL_SwapBuffers();
 
         //Auf run prüfen
         if(!is_run)
