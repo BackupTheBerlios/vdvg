@@ -23,24 +23,16 @@ namespace uv_main
    const int width = 1024, height = 768;
    uv_mainwindow mainwindow(width, height, false, "4D4G");
 
-   uv_image img;//(0,0,width,height,&mainwindow,"background.jpg");
-   uv_window window1;
-   uv_window aaa;
-   uv_window bbb;
-   uv_window ccc;
-   uv_window ddd;
-   uv_window eee;
-   uv_window fff;
-   uv_box tst(20, 110, 200, 100, &window1);
-   uv_image test;//(20, 110, 200, 100, &window1,"Testbild2.bmp");
-   uv_fpscounter fps(&mainwindow);
-   uv_window window2;
-   uv_image testa;//(20, 110, 64, 64, &window2,"test3.tga");
-   uv_button Button1(30,30,256,64,&window1,"Klick Mich !");
-   uv_button Button2(30,30,256,64,&window2,"Beenden");
-   uv_textbox test1(10, 30, 266, 20, &aaa, "");
-   uv_textbox test2(10, 60, 266, 20, &aaa, "");
-   uv_box box1(20, 150, 40, 80, &aaa);
+   //Die Fenster
+   uv_window window1, window2, aaa, bbb, ccc, ddd, eee, fff;
+   //Die Buttons
+   uv_button Button1, Button2;
+   //Die Bilder
+   uv_image img, test, testa;
+   //Die Boxen
+   uv_box tst, box1;
+   uv_fpscounter fps;
+   uv_textbox test1, test2;
 };
 //---------------------------------------------------------------------------
 #endif

@@ -24,6 +24,12 @@
 class uv_button: public uv_group
 {
 public:
+   struct attribute
+   {
+      uv_group * parent;
+      int x, y, width, height;
+      string name, caption;
+   };
    struct callback: public uv_callback
    {
       bool used;
@@ -34,10 +40,17 @@ private:
    GLuint stranslation, etranslation, drawing1, drawing2;
    bool redraw, retranslate;
 public:
-   uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel=0);
+   uv_button();
+
+   bool initialize(attribute init);
+   bool operator=(attribute init) {return initialize(init);};
+
    void draw(basic_string<GLuint> * clist);
    bool mouse_action(int x, int y, int button, int what);
    void key_action(int key, int sym, int mod, int what);
+   static attribute make_attribut(uv_group * parent,
+                                  int x, int y, int width, int height,
+                                  string name, string caption);
 };
 //---------------------------------------------------------------------------
 #endif

@@ -57,6 +57,18 @@ struct font_set
 //---------------------------------------------------------------------------
 class uv_text:public uv_widget
 {
+   public:
+      struct attribute
+      {
+         uv_group * parent;
+         int x, y, width, height, font_size;
+         string name, text, font;
+         uv_color font_color;
+      };
+      struct callback: public uv_callback
+      {
+
+      };
    private:
       //Variabeln:
       //font_data ft_font;
@@ -65,8 +77,9 @@ class uv_text:public uv_widget
       float h;           // Schrifthöhe
       float len;
 
-      vector<std::string> lines;     //Enthält pro Element eine Zeile vom Text...
+//      vector<std::string> lines;     //Enthält pro Element eine Zeile vom Text...
       string line;
+      uv_color font_color; //Textfarbe
       GLubyte red, green, blue; //Textfarbe
 
       int* bbreiten;
@@ -80,20 +93,29 @@ class uv_text:public uv_widget
          int rval=1; while(rval<a) rval<<=1; return rval;
       };
       void make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuint * tex_base);
-      void pushScreenCoordinateMatrix();
-      void find_unicode_charmap(FT_Face face);
+//      void find_unicode_charmap(FT_Face face);
 
       GLuint stranslation, etranslation, drawing;
       bool redraw, retranslate;
       int last_abs_x, last_abs_y; //Nötig, um zu prüfen ob verschoben wurde.
    public:
       //Konstruktor
-      uv_text(int x, int y, int width, int height, uv_group *parent, char *label);
+      uv_text();
       ~uv_text();
+
+      bool initialize(attribute init);
+      bool operator=(attribute init) {return initialize(init);};
+
+      static attribute make_attribut(uv_group * parent,
+                                     int x, int y, int width, int height,
+                                     int font_size,
+                                     string name, string text,
+                                     string font, uv_color font_color);
+
       bool init(const char * fname, unsigned int h);
       void set_color(GLubyte red,GLubyte green,GLubyte blue);
       void clean();
-      void pushtext(const string str);
+      void pushtext(string str);
       void print(int x, int y);
       int get_height();
       int get_width();

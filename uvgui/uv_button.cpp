@@ -6,19 +6,8 @@
 //---------------------------------------------------------------------------
 #include "uv_button.h"
 //---------------------------------------------------------------------------
-uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel)
-                     :uv_group(mx,my,mw,mh,parent,mlabel), text(0, 0, 0, 0, this, "")
+uv_button::uv_button():uv_group(0,0,0,0,0,"")
 {
-    text.init("Test.ttf",25);
-    text.set_color(0xff,0x88,0x00);
-
-    textspeicher = mlabel;
-
-    text.pushtext(textspeicher);
-
-    //Den Text auf dem Button zentrieren
-    text.set_pos((get_w()-text.get_width())/2, (get_h()+text.get_height())/2);
-
     //Display-Listen Zeugs:
     if(!(stranslation = glGenLists(4)))
        return; //Error !!
@@ -29,6 +18,34 @@ uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabe
     redraw = true;
     retranslate = true;
 }
+//---------------------------------------------------------------------------
+bool uv_button::initialize(attribute init)
+{
+   set_parent(init.parent);
+   set_size(init.x, init.y, init.width, init.height);
+
+   uv_color text_color = {0xff, 0x88, 0x00};
+   text = uv_text::make_attribut(this, 0, 0, 0, 0, 25, "Buttontext", init.caption, "Test.ttf", text_color);
+   text.set_pos((get_w()-text.get_width())/2, (get_h()+text.get_height())/2);
+
+   redraw = true;
+   retranslate = true;
+
+   return true;
+};
+//---------------------------------------------------------------------------
+uv_button::attribute uv_button::make_attribut(uv_group * parent,
+                                              int x, int y, int width, int height,
+                                              string name, string caption)
+{
+   attribute attr;
+
+   attr.parent = parent;
+   attr.x = x; attr.y = y; attr.width = width; attr.height = height;
+   attr.name = name; attr.caption = caption;
+
+   return attr;
+};
 //---------------------------------------------------------------------------
 void uv_button::draw(basic_string<GLuint> * clist)
 {
@@ -50,7 +67,6 @@ void uv_button::draw(basic_string<GLuint> * clist)
 
    if(redraw)
    {
-      text.pushtext(textspeicher);
       glNewList(drawing1, GL_COMPILE);
       glBindTexture(GL_TEXTURE_2D, 0);
       glBegin (GL_QUADS);

@@ -15,15 +15,30 @@
 //---------------------------------------------------------------------------
 class uv_box:public uv_widget
 {
+   public:
+      struct attribute
+      {
+         uv_group * parent;
+         int x, y, width, height;
+         uv_color color;
+         string name;
+      };
+      struct callback: public uv_callback
+      {
+
+      };
    private:
       GLubyte red, green, blue;
 
       GLuint stranslation, etranslation, drawing;
       bool redraw, retranslate;
    public:
-      void draw(basic_string<GLuint> * clist);
-      uv_box(int x, int y, int w, int h, uv_group *parent);
       uv_box();
+
+      bool initialize(attribute init);
+      bool operator=(attribute init) {return initialize(init);};
+
+      void draw(basic_string<GLuint> * clist);
       void set_color(GLubyte red,GLubyte green, GLubyte blue)
       {
 	 this->red=red;
@@ -31,6 +46,10 @@ class uv_box:public uv_widget
 	 this->blue=blue;
          redraw = true;
       }
+
+      static attribute make_attribut(uv_group * parent,
+                                     int x, int y, int width, int height,
+                                     uv_color color, string name);
 };
 //---------------------------------------------------------------------------
 #endif

@@ -13,6 +13,18 @@ uv_group::uv_group(int mx, int my, int mw, int mh,uv_group *parent,
     next_child = false;
 };
 //---------------------------------------------------------------------------
+uv_group::attribute uv_group::make_attribut(uv_group * parent,
+                                            int x, int y, int width, int height,
+                                            string label, bool can_focus_have)
+{
+   attribute attr;
+   attr.parent = parent;
+   attr.x = x; attr.y = y; attr.width = width; attr.height = height;
+   attr.label = label; attr.can_focus_have = can_focus_have;
+
+   return attr;
+};
+//---------------------------------------------------------------------------
 void uv_group::add_child(uv_widget *widget)
 {
     childs.pushb(widget);
@@ -183,6 +195,7 @@ bool uv_group::set_focus(uv_widget * widgetpointer)
          childs.pushb(widgetpointer);
       }
    };
+   return true;
 };
 //---------------------------------------------------------------------------
 bool uv_group::set_in_front(uv_widget * widgetpointer)
@@ -195,5 +208,6 @@ bool uv_group::set_in_front(uv_widget * widgetpointer)
          childs.pushf(widgetpointer);
       }
    };
+   return true;
 };
 //---------------------------------------------------------------------------

@@ -36,21 +36,21 @@ bool uv_window::initialize(attribute init)
    //setze label(name)
    caption = init.caption;
    icon    = init.icon;
-   design  = init.design;
+   design  = (init.design == "") ? static_cast<string>("windowdesign.tga") : init.design;
 
-   oben   = oben.make_attribut(this, 5, 0, get_w()-10, 20, "oben", "windowdesign.tga", 5.0/75.0, 0.0, 6.0/75.0, 20.0/26.0);
-   obenl  = oben.make_attribut(this, 0, 0, 5, 20, "oben", "windowdesign.tga", 0.0, 0.0, 5.0/75.0, 20.0/26.0);
-   obenr  = oben.make_attribut(this, get_w()-5, 0, 5, 20, "oben", "windowdesign.tga", 70.0/75.0, 0.0, 1.0, 20.0/26.0);
-   but1   = oben.make_attribut(this, get_w()-21, 0, 16, 20, "oben", "windowdesign.tga", 54.0/75.0, 0.0, 70.0/75.0, 20.0/26.0);
-   but2   = oben.make_attribut(this, get_w()-21, 0, 16, 20, "oben", "windowdesign.tga", 38.0/75.0, 0.0, 54.0/75.0, 20.0/26.0);
-   but3   = oben.make_attribut(this, get_w()-37, 0, 16, 20, "oben", "windowdesign.tga", 22.0/75.0, 0.0, 38.0/75.0, 20.0/26.0);
-   but4   = oben.make_attribut(this, get_w()-37, 0, 16, 20, "oben", "windowdesign.tga", 6.0/75.0, 0.0, 22.0/75.0, 20.0/26.0);
-   links  = oben.make_attribut(this, 0, 20, 5, get_h()-25, "oben", "windowdesign.tga", 0.0, 20.0/26.0, 5.0/75.0, 21.0/26.0);
-   rechts = oben.make_attribut(this, get_w()-5, 20, 5, get_h()-25, "oben", "windowdesign.tga", 70.0/75.0, 20.0/26.0, 1.0, 21.0/26.0);
-   unten  = oben.make_attribut(this, 5, get_h()-5, get_w()-10, 5, "oben", "windowdesign.tga", 5.0/75.0, 21.0/26.0, 6.0/75.0, 1.0);
-   untenl = oben.make_attribut(this, 0, get_h()-5, 5, 5, "oben", "windowdesign.tga", 0.0, 21.0/26.0, 5.0/75.0, 1.0);
-   untenr = oben.make_attribut(this, get_w()-5, get_h()-5, 5, 5, "oben", "windowdesign.tga", 70.0/75.0, 21.0/26.0, 1.0, 1.0);
-   mitte  = oben.make_attribut(this, 5, 20, get_w()-10, get_h()-25, "oben", "windowdesign.tga", 5.0/75.0, 20.0/26.0, 6.0/75.0, 21.0/26.0);
+   oben   = oben.make_attribut(this, 5, 0, get_w()-10, 20, "oben", design, 5.0/75.0, 0.0, 6.0/75.0, 20.0/26.0);
+   obenl  = oben.make_attribut(this, 0, 0, 5, 20, "oben", design, 0.0, 0.0, 5.0/75.0, 20.0/26.0);
+   obenr  = oben.make_attribut(this, get_w()-5, 0, 5, 20, "oben", design, 70.0/75.0, 0.0, 1.0, 20.0/26.0);
+   but1   = oben.make_attribut(this, get_w()-21, 0, 16, 20, "oben", design, 54.0/75.0, 0.0, 70.0/75.0, 20.0/26.0);
+   but2   = oben.make_attribut(this, get_w()-21, 0, 16, 20, "oben", design, 38.0/75.0, 0.0, 54.0/75.0, 20.0/26.0);
+   but3   = oben.make_attribut(this, get_w()-37, 0, 16, 20, "oben", design, 22.0/75.0, 0.0, 38.0/75.0, 20.0/26.0);
+   but4   = oben.make_attribut(this, get_w()-37, 0, 16, 20, "oben", design, 6.0/75.0, 0.0, 22.0/75.0, 20.0/26.0);
+   links  = oben.make_attribut(this, 0, 20, 5, get_h()-25, "oben", design, 0.0, 20.0/26.0, 5.0/75.0, 21.0/26.0);
+   rechts = oben.make_attribut(this, get_w()-5, 20, 5, get_h()-25, "oben", design, 70.0/75.0, 20.0/26.0, 1.0, 21.0/26.0);
+   unten  = oben.make_attribut(this, 5, get_h()-5, get_w()-10, 5, "oben", design, 5.0/75.0, 21.0/26.0, 6.0/75.0, 1.0);
+   untenl = oben.make_attribut(this, 0, get_h()-5, 5, 5, "oben", design, 0.0, 21.0/26.0, 5.0/75.0, 1.0);
+   untenr = oben.make_attribut(this, get_w()-5, get_h()-5, 5, 5, "oben", design, 70.0/75.0, 21.0/26.0, 1.0, 1.0);
+   mitte  = oben.make_attribut(this, 5, 20, get_w()-10, get_h()-25, "oben", design, 5.0/75.0, 20.0/26.0, 6.0/75.0, 21.0/26.0);
    set_in_front(&mitte);
 
    dragged = false;
@@ -96,22 +96,6 @@ void uv_window::draw(basic_string<GLuint> * clist)
     {
        //Eigenes Fenster zeichnen...
        glNewList(drawing, GL_COMPILE);
-
-       glBegin (GL_QUADS);
-       //glColor3ub (0, 0, 255);
-       glColor4ub(0, 0, 255, 100);
-       glVertex2i (0, 0);
-       glVertex2i (get_w (), 0);
-       glVertex2i (get_w (), get_h ());
-       glVertex2i (0, get_h ());
-
-       //glColor3ub (200, 200, 0);
-       glColor4ub(200, 200, 0, 100);
-       glVertex2i (2, 20);
-       glVertex2i (get_w()-2, 20);
-       glVertex2i (get_w()-2, get_h()-2);
-       glVertex2i (2, get_h()-2);
-       glEnd ();
 
        glEndList();
        redraw = false;
@@ -182,7 +166,7 @@ void uv_window::mouse_move_rel(int rel_x, int rel_y)
     mouse_move_rel_childs(rel_x, rel_y);
 };
 //---------------------------------------------------------------------------
-uv_window::attribute uv_window::make_attribut(uv_group * partent,
+uv_window::attribute uv_window::make_attribut(uv_group * parent,
                                               int x, int y, int width, int height,
                                               string name, string caption,
                                               string icon, string design,
@@ -191,7 +175,7 @@ uv_window::attribute uv_window::make_attribut(uv_group * partent,
 {
    attribute attri;
 
-   attri.parent = partent;
+   attri.parent = parent;
    attri.x = x; attri.y = y; attri.width = width; attri.height = height;
    attri.name = name; attri.caption = caption;
    attri.icon = icon; attri.design = design;

@@ -6,21 +6,8 @@
 //---------------------------------------------------------------------------
 #include "uv_textbox.h"
 //---------------------------------------------------------------------------
-uv_textbox::uv_textbox(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel)
-                       : uv_group(mx,my,mw,mh,parent,mlabel),
-                         text(0, 0, 0, 0, this, "Textbox")
+uv_textbox::uv_textbox():uv_group(0,0,0,0,0,"")
 {
-   text.init("Franklin-Italic.ttf",16);
-   text.set_color(0,0,0);
-   //text.text << mlabel;
-   text.pushtext(mlabel);
-   //Den Text in der Textbox positionieren
-   text.set_pos(5,((get_h()+text.get_height())/2)-2);
-   for(int i=0; i<256; i++) str[i]=0;
-   pos = 0;
-
-   this->parent=parent;
-
    //Display-Listen Zeugs:
    if(!(stranslation = glGenLists(5)))
       return; //Error !!
@@ -28,10 +15,37 @@ uv_textbox::uv_textbox(int mx, int my,int mw,int mh, uv_group *parent, char *mla
    etranslation = drawing+1;
    scissoran = etranslation+1;
    scissoraus = scissoran+1;
+};
+//---------------------------------------------------------------------------
+bool uv_textbox::initialize(attribute init)
+{
+   set_parent(init.parent);
+   set_size(init.x, init.y, init.width, init.height);
+
+   init.text_attribute.parent = this;
+   text = init.text_attribute;
+   text.set_pos(5,((get_h()+text.get_height())/2)-2);
 
    redraw = true;
    retranslate = true;
    last_abs_x = -1; last_abs_y = -1;
+
+   return true;
+};
+//---------------------------------------------------------------------------
+uv_textbox::attribute uv_textbox::make_attribut(uv_group * parent,
+                                     int x, int y, int width, int height,
+                                     uv_text::attribute text_attribute,
+                                     uv_color color, string name)
+{
+   attribute attr;
+
+   attr.parent = parent;
+   attr.x = x; attr.y = y; attr.width = width; attr.height = height;
+   attr.text_attribute = text_attribute;
+   attr.color = color; attr.name = name;
+
+   return attr;
 };
 //---------------------------------------------------------------------------
 void uv_textbox::draw(basic_string<GLuint> * clist)
@@ -173,7 +187,7 @@ bool uv_textbox::mouse_action(int x, int y,int button,int what)
 {
    if(what==SDL_MOUSEBUTTONDOWN && get_visible())
    {
-      parent->set_focus(this);
+      get_parent()->set_focus(this);
    }
    uv_widget::mouse_action(x,y,button,what);
    return true;

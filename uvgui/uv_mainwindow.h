@@ -31,7 +31,7 @@ private:
     //Sachen zur Applikationsverwaltung:
     bool is_run;
 public:
-    uv_mainwindow( int width, int height, bool fullscreen=1, char * titel=0);
+    uv_mainwindow(int width, int height, bool fullscreen=1, char * titel=0);
     void draw(basic_string<GLuint> * clist);
     void key_action(int key, int sym, int mod, int what);
     bool mouse_action(int x, int y, int key, int what);

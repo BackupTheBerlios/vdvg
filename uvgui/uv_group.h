@@ -27,28 +27,48 @@ using namespace std;
 //---------------------------------------------------------------------------
 class uv_group:public uv_widget
 {
-private:
-    dstack<uv_widget *> childs;
-    bool next_child;
-    bool last_child;
-public:
-    uv_group(int mx, int my, int mw, int mh,uv_group *parent=0, char *mlabel=0, bool CanHaveFocus=false);
-    uv_widget* get_next_child();
-    uv_widget* get_last_child();
-    void set_start_child(); 		//Iterator == 0
-    void set_end_child();
-    void mouse_move_rel(int rel_x, int rel_y);
-    void add_child(uv_widget*);
-    void remove_child(uv_widget* widget);
-    void add_child_in_front(uv_widget* );
-    void set_to_end();
-    bool draw_childs(basic_string<GLuint> * clist);
-    bool mouse_action_childs(int x, int y, int button, int what);
-    bool key_action_childs(int key, int sym, int mod, int what);
-    bool mouse_move_rel_childs(int rel_x, int rel_y);
-	void set_mouse_over_off();
-    bool set_focus(uv_widget * widgetpointer);
-    bool set_in_front(uv_widget * widgetpointer);
+   public:
+      struct attribute
+      {
+         uv_group * parent;
+         int x, y, width, height;
+         string label;
+         bool can_focus_have;
+      };
+      struct callback: public uv_callback
+      {
+
+      };
+   private:
+      dstack<uv_widget *> childs;
+      bool next_child;
+      bool last_child;
+   public:
+      uv_group(int mx, int my, int mw, int mh,uv_group *parent=0, char *mlabel=0, bool CanHaveFocus=false);
+
+      bool initialize(attribute init);
+      bool operator=(attribute init) {return initialize(init);};
+
+      uv_widget* get_next_child();
+      uv_widget* get_last_child();
+      void set_start_child(); 		//Iterator == 0
+      void set_end_child();
+      void mouse_move_rel(int rel_x, int rel_y);
+      void add_child(uv_widget*);
+      void remove_child(uv_widget* widget);
+      void add_child_in_front(uv_widget* );
+      void set_to_end();
+      bool draw_childs(basic_string<GLuint> * clist);
+      bool mouse_action_childs(int x, int y, int button, int what);
+      bool key_action_childs(int key, int sym, int mod, int what);
+      bool mouse_move_rel_childs(int rel_x, int rel_y);
+      void set_mouse_over_off();
+      bool set_focus(uv_widget * widgetpointer);
+      bool set_in_front(uv_widget * widgetpointer);
+
+      static attribute make_attribut(uv_group * parent,
+                                     int x, int y, int width, int height,
+                                     string label, bool can_focus_have);
 };
 //---------------------------------------------------------------------------
 #endif

@@ -7,15 +7,35 @@
 #include "uv_fpscounter.h"
 //---------------------------------------------------------------------------
 //Der Konstruktor
-uv_fpscounter::uv_fpscounter(uv_group *parent)
-                             : uv_group(parent->get_w()-100,0,50,20,parent,""),
-                               counter(0, 0, 0, 0, this, "Framecounter")
+uv_fpscounter::uv_fpscounter():uv_group(0,0,0,0,0,"")
 {
-   counter.set_color(0xff,0xff,0xff);
-   counter.init("Test.ttf",16);
-   counter.pushtext("Wait...");
-   counter.set_pos(0, counter.get_height());
+   //macht momentan nichts
 }
+//---------------------------------------------------------------------------
+bool uv_fpscounter::initialize(attribute init)
+{
+   set_parent(init.parent);
+   set_size(init.x, init.y, init.width, init.height);
+
+   init.text_attribute.parent = this;
+   counter = init.text_attribute;
+   counter.set_pos(0, counter.get_height());
+   return true;
+};
+//---------------------------------------------------------------------------
+uv_fpscounter::attribute uv_fpscounter::make_attribut(uv_group * parent,
+                                        int x, int y, int width, int height,
+                                        uv_text::attribute text_attribute,
+                                        string name)
+{
+   attribute attr;
+
+   attr.parent = parent;
+   attr.x = x; attr.y = y; attr.width = width; attr.height = height;
+   attr.text_attribute = text_attribute; attr.name = name;
+
+   return attr;
+};
 //---------------------------------------------------------------------------
 //Eine Hilfsfunktion, um ints in strings zu konvertieren
 std::string uv_fpscounter::IntToString(const int & value)

@@ -18,13 +18,34 @@ using namespace std;
 //---------------------------------------------------------------------------
 class uv_fpscounter:public uv_group
 {
+   public:
+      struct attribute
+      {
+         uv_group * parent;
+         int x, y, width, height;
+         uv_text::attribute text_attribute;
+         string name;
+      };
+      struct callback: public uv_callback
+      {
+
+      };
    private:
       uv_text counter;
       std::string IntToString(const int & value);
 
    public:
-      uv_fpscounter(uv_group *parent);
+      uv_fpscounter();
+
+      bool initialize(attribute init);
+      bool operator=(attribute init) {return initialize(init);};
+
       void draw(basic_string<GLuint> * clist);
+
+      static attribute make_attribut(uv_group * parent,
+                                     int x, int y, int width, int height,
+                                     uv_text::attribute text_attribute,
+                                     string name);
 };
 //---------------------------------------------------------------------------
 #endif // _UV_FPSCOUNTER_H_

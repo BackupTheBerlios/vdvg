@@ -59,7 +59,7 @@ public:
     bool initialize(attribute init);
     bool operator=(attribute init) {return initialize(init);};
 
-    attribute make_attribut(uv_group * parent,
+    static attribute make_attribut(uv_group * parent,
                             int x, int y, int width, int height,
                             string name, string image,
                             float picx=0.0, float picy=0.0, float picw=1.0, float pich=1.0);

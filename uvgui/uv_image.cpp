@@ -98,7 +98,7 @@ bool uv_image::LoadImageFile(string fname)
       return false;
    }
    textur = global_texture;
-   cout << global_texture;
+//   cout << global_texture;
 
    texMinX = texcoord[0];
    texMinY = texcoord[1];

@@ -6,10 +6,8 @@
 //---------------------------------------------------------------------------
 #include "uv_text.h"
 //---------------------------------------------------------------------------
-uv_text::uv_text(int x,int y,int width,int height,uv_group *parent,char *label)
-                 :uv_widget(x, y, width, height, parent, label)
+uv_text::uv_text():uv_widget(0, 0, 0, 0, 0, "")
 {
-   //parent->add_child(this);
    red=0xff;
    blue=0xff;
    green=0xff;
@@ -32,6 +30,38 @@ uv_text::~uv_text()
 {
    if(bbreiteninit == true)
       delete[] bbreiten;
+};
+//---------------------------------------------------------------------------
+bool uv_text::initialize(attribute init)
+{
+   set_parent(init.parent);
+   uv_widget::set_size(init.x, init.y, init.width, init.height);
+   set_color(init.font_color.red, init.font_color.green, init.font_color.blue);
+   uv_text::init(init.font.c_str(), init.font_size);
+   pushtext(init.text);
+
+   redraw = true;
+   retranslate = true;
+   last_abs_x = -1; last_abs_y = -1;
+
+   return true;
+};
+//---------------------------------------------------------------------------
+uv_text::attribute uv_text::make_attribut(uv_group * parent,
+                                          int x, int y, int width, int height,
+                                          int font_size,
+                                          string name, string text,
+                                          string font, uv_color font_color)
+{
+   attribute attr;
+
+   attr.parent = parent;
+   attr.x = x; attr.y = y; attr.width = width; attr.height = height;
+   attr.font_size = font_size;
+   attr.name = name; attr.text = text; attr.font = font;
+   attr.font_color = font_color;
+
+   return attr;
 };
 //---------------------------------------------------------------------------
 // Dieser Funktion wird ein FT_Face Objekt übergeben, welches von FreeType dazu
@@ -226,7 +256,7 @@ bool uv_text::init(const char * fname, unsigned int h)
    glGenTextures(anzahl_zeichen, textures);
 
    //Die charmap muss geändert werden um Umlaute zu benutzen...
-   find_unicode_charmap(face); //Ist irgendwie nicht nötig???
+//   find_unicode_charmap(face); //Ist irgendwie nicht nötig???
 
    // Hier erzeugen wir die einzelnen Fonts Display-Listen.
    for(int i=0;i<anzahl_zeichen;i++)
@@ -267,20 +297,6 @@ void uv_text::clean()
 
 }
 //---------------------------------------------------------------------------
-void uv_text::pushScreenCoordinateMatrix()
-{
-   glPushAttrib(GL_TRANSFORM_BIT);
-   GLint viewport[4];
-   glGetIntegerv(GL_VIEWPORT, viewport);
-   glMatrixMode(GL_PROJECTION);
-   glPushMatrix();
-   glLoadIdentity();
-   //void gluOrtho2D(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top)
-   //gluOrtho2D(0,1024,768,0);
-   gluOrtho2D(viewport[0],viewport[2],viewport[3], viewport[1]);
-   glPopAttrib();
-};
-//---------------------------------------------------------------------------
 void uv_text::pop_projection_matrix()
 {
     glPushAttrib(GL_TRANSFORM_BIT);
@@ -291,24 +307,16 @@ void uv_text::pop_projection_matrix()
 //---------------------------------------------------------------------------
 void uv_text::print(int x, int y)
 {
-   // Wir wollen ein Koordinaten-System, wo die Entfernung in Fenster-Pixeln gemessen wird.
-//   pushScreenCoordinateMatrix();
-
    //Es ist einfacher, ein anderes Koordinatensystem zu wählen,
    //da sonst die Buchstaben nicht unten sondern oben bündig werden.
    //y muss ins Koordinantensystem umgerechnet werden:
    GLint viewport[4];
    glGetIntegerv(GL_VIEWPORT, viewport); //Bildschirmgrösse abholen
-   //y = viewport[3]-y-(int)h; //Bildschirmhöhe - schrifthöhe - y
-   //y = y-viewport[3];
-   //y=view(int)h-y;
 
    GLuint font=list_base;
    float h=this->h/.63f; // Wir machen die Höhe etwas größer. So wird es etwas
                          // Abstand zwischen den Zeilen geben.
 
-//   glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
-//   glMatrixMode(GL_MODELVIEW);
    glDisable(GL_LIGHTING);
    glEnable(GL_TEXTURE_2D);
    glDisable(GL_DEPTH_TEST);
@@ -329,53 +337,41 @@ void uv_text::print(int x, int y)
    //draw it modifies the current matrix so that the next character
    //will be drawn immediatly after it.
 
-//   splitup();
    glColor3ub(red,green,blue); //passende Farbe laden
 
-   for(unsigned int i=0;i<1;i++)//lines.size();i++)
-   {
-      glPushMatrix();
-      glLoadIdentity();
-      glTranslatef(x,y-h*i,0);
-      glMultMatrixf(modelview_matrix);
-      //  The commented out raster position stuff can be useful if you need to
-      //  know the length of the text that you are creating.
-      //  If you decide to use it make sure to also uncomment the glBitmap command
-      //  in make_dlist().
-      glRasterPos2f(0,0);
-//      const char* test = lines[i].c_str();
-//      const char tst = lines[i].operator [](0);
-//      int r = lines[i].length();
-//      if(!(lines[i].operator [](0) == 0 && lines[i].length() > 0))
-//      {
-      glCallLists(lines[i].length(), GL_UNSIGNED_BYTE, lines[i].c_str());
-//      }
-      int rpos[4];
-      glGetIntegerv(GL_CURRENT_RASTER_POSITION ,rpos);
-      //cout << rpos[0] << endl;
-      len=x-rpos[0];
-      glPopMatrix();
-   };
+   int i=0;
+   glPushMatrix();
+   glLoadIdentity();
+   glTranslatef(x,y-h*i,0);
+   glMultMatrixf(modelview_matrix);
+   //  The commented out raster position stuff can be useful if you need to
+   //  know the length of the text that you are creating.
+   //  If you decide to use it make sure to also uncomment the glBitmap command
+   //  in make_dlist().
+   glRasterPos2f(0,0);
+   glCallLists(line.length(), GL_UNSIGNED_BYTE, line.c_str());
+   int rpos[4];
+   glGetIntegerv(GL_CURRENT_RASTER_POSITION ,rpos);
+   //cout << rpos[0] << endl;
+   len=x-rpos[0];
+   glPopMatrix();
 
-//   glPopAttrib();
-
-//   pop_projection_matrix();
    glBindTexture(GL_TEXTURE_2D, 0); //Texturen unbinden
    glColor3ub(0xff,0xff,0xff); //Farbe auf neutral zurÃ¼cksetzen
 };
 //---------------------------------------------------------------------------
 void uv_text::set_color(GLubyte red,GLubyte green,GLubyte blue)
 {
-	this->red=red;
-	this->blue=blue;
-	this->green=green;
+   this->red=red;
+   this->blue=blue;
+   this->green=green;
 }
 //---------------------------------------------------------------------------
 void uv_text::pushtext(const string str)
 {
    line = str;
-   lines.clear();
-   lines.push_back(str);
+   //lines.clear();
+   //lines.push_back(str);
 
    //Text neu zeichnen.
    redraw = true;
@@ -383,26 +379,17 @@ void uv_text::pushtext(const string str)
 //---------------------------------------------------------------------------
 void uv_text::splitup()
 {
-   lines.clear();
+  /* lines.clear();
    int pos=0;
    int lastpos=0;
 
-   //while (text.str().find('\n',pos) != string::npos)
-   //{
-   //lines.push_back(text.str());
-//   lines.push_back(text3.str().substr(pos, text3.str().find('\n',pos)-pos));
-//   lines.push_back("");
-   //pos = this->text.str().find('\n',pos)+1;
-   //}
-//   if (lines.empty()) lines.push_back(this->text3.str());
-
-   if(lines.empty()) lines.push_back("");
+   if(lines.empty()) lines.push_back("");     */
 };
 //---------------------------------------------------------------------------
 int uv_text::get_width()
 {
    int breite = 0;
-   const char * mem = lines.front().c_str();
+   const char * mem = line.c_str();//lines.front().c_str();
    for(int i=0; mem[i]!=0; i++)
    {
       breite += bbreiten[mem[i]];
@@ -413,7 +400,7 @@ int uv_text::get_width()
 int uv_text::get_height()
 {
 
-   return lines.size()*((int)h);
+   return (int)h;//lines.size()*((int)h);
 
 };
 //---------------------------------------------------------------------------
@@ -450,7 +437,7 @@ void uv_text::draw(basic_string<GLuint> * clist)
 //    This function is called from open_face() (just below), and also
 //    from FT_Select_Charmap( , FT_ENCODING_UNICODE).
 //
-void uv_text::find_unicode_charmap(FT_Face face)
+/*void uv_text::find_unicode_charmap(FT_Face face)
 {
    /*FT_CharMap*  first;
    FT_CharMap*  cur;
@@ -524,7 +511,7 @@ void uv_text::find_unicode_charmap(FT_Face face)
 
    // Chou blanc!
    return; //return FT_Err_Invalid_CharMap_Handle;*/
-
+/*
 
     FT_CharMap found = 0;
     FT_CharMap charmap;
@@ -553,4 +540,4 @@ void uv_text::find_unicode_charmap(FT_Face face)
 //    if(error)
 //    { ... }
 };
-//---------------------------------------------------------------------------
+//--------------------------------------------------------------------------- */

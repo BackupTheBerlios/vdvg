@@ -12,8 +12,20 @@
 //---------------------------------------------------------------------------
 class uv_textbox: public uv_group
 {
+   public:
+      struct attribute
+      {
+         uv_group * parent;
+         int x, y, width, height;
+         uv_text::attribute text_attribute;
+         uv_color color;
+         string name;
+      };
+      struct callback: public uv_callback
+      {
+
+      };
    private:
-      uv_group* parent;
       uv_text text;
       char str2[256];
       std::string str;
@@ -24,11 +36,18 @@ class uv_textbox: public uv_group
       GLuint stranslation, etranslation, drawing, scissoran, scissoraus;
       bool redraw, retranslate;
    public:
-      uv_textbox(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel=0);
+      uv_textbox();
+
+      bool initialize(attribute init);
+      bool operator=(attribute init) {return initialize(init);};
+
       void draw(basic_string<GLuint> * clist);
-      //bool mouse_action(int x, int y, int button, int what);
       void key_action(int key, int sym, int mod, int what);
       bool mouse_action(int x, int y, int button, int what);
+      static attribute make_attribut(uv_group * parent,
+                                     int x, int y, int width, int height,
+                                     uv_text::attribute text_attribute,
+                                     uv_color color, string name);
 };
 //---------------------------------------------------------------------------
 #endif

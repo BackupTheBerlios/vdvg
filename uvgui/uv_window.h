@@ -62,12 +62,12 @@ public:
    void key_action(int key, int sym, int mod, int what);
    bool mouse_action(int x, int y, int key, int what);
    void mouse_move_rel(int rel_x, int rel_y);
-   attribute make_attribut(uv_group * partent,
-                           int x, int y, int width, int height,
-                           string name, string caption,
-                           string icon, string design,
-                           bool closebutton, bool otherbutton,
-                           bool draggable, bool sizeable);
+   static attribute make_attribut(uv_group * parent,
+                                  int x, int y, int width, int height,
+                                  string name, string caption,
+                                  string icon, string design,
+                                  bool closebutton, bool otherbutton,
+                                  bool draggable, bool sizeable);
 };
 //---------------------------------------------------------------------------
 #endif

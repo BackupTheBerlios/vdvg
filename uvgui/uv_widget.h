@@ -23,6 +23,21 @@ struct uv_callback
    int ID;
 };
 //---------------------------------------------------------------------------
+struct uv_color
+{
+   GLubyte red, green, blue;
+   static uv_color make_color(GLubyte red, GLubyte green, GLubyte blue)
+   {
+      uv_color color;
+
+      color.red   = red;
+      color.green = green;
+      color.blue  = blue;
+
+      return color;
+   };
+};
+//---------------------------------------------------------------------------
 typedef void (*voidcallback)(uv_callback * cb);
 //-------------------------------------------------------------------------//
 //  @class uv_widget                                                       //

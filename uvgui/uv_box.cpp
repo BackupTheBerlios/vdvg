@@ -6,25 +6,42 @@
 //---------------------------------------------------------------------------
 #include "uv_box.h"
 //---------------------------------------------------------------------------
-uv_box::uv_box(int mx, int my, int mw, int mh, uv_group *parent):uv_widget(mx, my, mw,mh,parent,0)
+uv_box::uv_box():uv_widget(0,0,0,0,0,0)
 {
-   //parent->add_child(this);
-   uv_box();
-
    //Display-Listen Zeugs:
    if(!(stranslation = glGenLists(3)))
       return; //Error !!
    drawing = stranslation+1;
    etranslation = drawing+1;
 
-   redraw = true;
-   retranslate = true;
-}
-//---------------------------------------------------------------------------
-uv_box::uv_box():uv_widget(0,0,0,0,0,0)
-{
    red=0xff; green=0xff; blue=0xff;
 }
+//---------------------------------------------------------------------------
+bool uv_box::initialize(attribute init)
+{
+   set_parent(init.parent);
+   set_size(init.x, init.y, init.width, init.height);
+
+   red = init.color.red; green = init.color.green; blue = init.color.blue;
+
+   redraw = true;
+   retranslate = true;
+
+   return true;
+};
+//---------------------------------------------------------------------------
+uv_box::attribute uv_box::make_attribut(uv_group * parent,
+                                        int x, int y, int width, int height,
+                                        uv_color color, string name)
+{
+   attribute attr;
+
+   attr.parent = parent;
+   attr.x = x; attr.y = y; attr.width = width; attr.height = height;
+   attr.color = color; attr.name = name;
+
+   return attr;
+};
 //---------------------------------------------------------------------------
 void uv_box::draw(basic_string<GLuint> * clist)
 {
