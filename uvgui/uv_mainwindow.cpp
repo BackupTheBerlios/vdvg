@@ -300,6 +300,8 @@ void uv_mainwindow::run()
 //---------------------------------------------------------------------------
 bool uv_mainwindow::key_action (int key, int sym, int mod, int what)
 {
+	//kein sichtbares widget darf on top sein
+	if(on_top_widget) if(!on_top_widget->get_visible())	set_on_top_widget(0);
    if(on_top_widget) 
 	{
 		if(on_top_widget->key_action(key,sym,mod,what)){}
@@ -317,6 +319,8 @@ bool uv_mainwindow::key_action (int key, int sym, int mod, int what)
 //---------------------------------------------------------------------------
 bool uv_mainwindow::mouse_action (int x, int y, int button, int what)
 {
+	//kein sichtbares widget darf on top sein
+	if(on_top_widget) if(!on_top_widget->get_visible())	set_on_top_widget(0);
    if(on_top_widget) 
    {
       if(on_top_widget->mouse_action(x-on_top_widget->get_absolute_x(),y-on_top_widget->get_absolute_y(),button,what))

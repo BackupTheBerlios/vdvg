@@ -1,13 +1,13 @@
 CC = gcc -Wall -ansi -O2 
-FILES = main.cpp uv_mainwindow.cpp uv_group.cpp uv_gui.cpp uv_button.cpp uv_widget.cpp uv_window.cpp uv_image.cpp uv_text.cpp uv_array.cpp uv_fpscounter.cpp uv_box.cpp uv_textbox.cpp uv_config.cpp uv_gamebutton.o
+FILES = main.cpp uv_mainwindow.cpp uv_group.cpp uv_gui.cpp uv_button.cpp uv_widget.cpp uv_window.cpp uv_image.cpp uv_text.cpp uv_array.cpp uv_fpscounter.cpp uv_box.cpp uv_textbox.cpp uv_config.cpp uv_gamebutton.cpp uv_dropdown.cpp uv_list.cpp
 LIBS = -lGL -lGLU -lfreetype -lSDL_image `sdl-config --libs` 
 INCLUDES = -I/usr/include/freetype2 `sdl-config --cflags`
-OBJECTS = main.o uv_array.o uv_box.o uv_button.o uv_fpscounter.o uv_group.o uv_gui.o uv_image.o uv_mainwindow.o uv_text.o uv_textbox.o uv_widget.o uv_window.o uv_config.o uv_container.o uv_checkbox.o uv_gamebutton.o uv_kithread.o ki.o
+OBJECTS = main.o uv_array.o uv_box.o uv_button.o uv_fpscounter.o uv_group.o uv_gui.o uv_image.o uv_mainwindow.o uv_text.o uv_textbox.o uv_widget.o uv_window.o uv_config.o uv_container.o uv_checkbox.o uv_gamebutton.o uv_kithread.o ki.o uv_dropdown.o uv_list.o
 LINKER = g++
 
 all: uvgui
 
-debug: clean
+debug: 
 	make "CC=$(CC) -g"
 
 uvgui: $(OBJECTS) 
@@ -69,6 +69,12 @@ uv_kithread.o: uv_kithread.cpp uv_kithread.h
 
 ki.o: ki.cpp ki.h
 	$(CC) $(INCLUDES) -c ki.cpp
+
+uv_dropdown.o: uv_dropdown.cpp uv_dropdown.h
+	$(CC) $(INCLUDES) -c uv_dropdown.cpp
+
+uv_list.o: uv_list.cpp uv_list.h
+	$(CC) $(INCLUDES) -c uv_list.cpp
 
 clean: 
 	@echo Cleaning Up...

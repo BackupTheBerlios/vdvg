@@ -5,6 +5,7 @@
 // Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #include "main.h"
+#include "uv_dropdown.h"
 //---------------------------------------------------------------------------
 void mainloop(uv_callback * cb);   //Hauptschleife
 void menueinit();
@@ -48,6 +49,15 @@ int main (int argc, char *argv[])
    
 //	uv_main::options.set_visible(1);
 //	uv_main::mainwindow.set_on_top_widget(&uv_main::options);
+//TEST
+	uv_dropdown drop;
+	vector<string> lolo;
+	lolo.push_back("hellou");
+	lolo.push_back("hellaau");
+	lolo.push_back("hilleu");
+	lolo.push_back("hollau");
+	drop = uv_dropdown::make_attribut(&uv_main::menu,&uv_main::mainwindow,60,60,200,40,"", lolo, "");
+///TEST
    uv_main::mainwindow.run();
    uv_main::konfig.save_file("config.txt");
    ki_thread::kill_thread();
