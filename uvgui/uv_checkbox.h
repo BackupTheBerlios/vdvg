@@ -37,7 +37,7 @@ public:
 
    void draw(vector<GLuint> * clist);
    bool mouse_action(int x, int y, int button, int what);
-   void key_action(int key, int sym, int mod, int what);
+   bool key_action(int key, int sym, int mod, int what);
    static attribute make_attribut(uv_group * parent, int x, int y,
                                   int width, int height, uv_image::attribute image_unchecked, uv_image::attribute image_checked,
                                   uv_text::attribute text_attribute, string name);

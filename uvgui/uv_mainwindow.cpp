@@ -10,11 +10,14 @@ uv_mainwindow::uv_mainwindow()
 {
    //Noch nicht initialisiert
    is_init = false;
+  
 }
 //---------------------------------------------------------------------------
 bool uv_mainwindow::initialize(attribute init)
 {
    static bool already_exist = false;
+	on_top_widget = 0;
+	
    if(already_exist) return false;
    already_exist = true;
    is_run = true;
@@ -48,6 +51,12 @@ uv_mainwindow::attribute uv_mainwindow::make_attribut(int width, int height,
     init_SDL(mw, mh, fullscreen, 32, 24, 24, 1, 0, mlabel);
 };*/
 //---------------------------------------------------------------------------
+
+void uv_mainwindow::set_on_top_widget(uv_widget *wg)
+{
+on_top_widget = wg;
+
+}
 void uv_mainwindow::draw(vector<GLuint> * clist)
 {
    //Auf Initialisierung prüfen:
@@ -289,14 +298,38 @@ void uv_mainwindow::run()
     };
 };
 //---------------------------------------------------------------------------
-void uv_mainwindow::key_action (int key, int sym, int mod, int what)
+bool uv_mainwindow::key_action (int key, int sym, int mod, int what)
 {
-    key_action_childs(key, sym, mod, what);
+   if(on_top_widget) 
+	{
+		if(on_top_widget->key_action(key,sym,mod,what)){}
+		else
+		{
+			key_action_childs(key, sym, mod, what);
+		}
+	}
+	else
+	{
+			key_action_childs(key, sym, mod, what);
+	}
+	return 0;
 };
 //---------------------------------------------------------------------------
 bool uv_mainwindow::mouse_action (int x, int y, int button, int what)
 {
-    return mouse_action_childs(x, y, button, what);
+   if(on_top_widget) 
+	{
+		if(on_top_widget->mouse_action(x,y,button,what)){}
+		else
+		{
+			mouse_action_childs(x, y, button, what);
+		}
+	}
+	else
+	{
+			mouse_action_childs(x, y, button, what);
+	}
+	return 0;
 };
 //---------------------------------------------------------------------------
 void uv_mainwindow::mouse_move_rel(int rel_x, int rel_y)

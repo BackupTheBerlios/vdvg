@@ -122,7 +122,7 @@ class uv_widget
 	  void set_userpointer(void *ptr); //Setzen fuer userbedingte Callback zeiger
 
       //key=Taste, mod=Modifiers, what=UP,Down
-      virtual void key_action(int key, int sym, int mod, int what);
+      virtual bool key_action(int key, int sym, int mod, int what);
       virtual bool mouse_action(int x, int y,int button,int what);
       virtual void mouse_move_rel(int rel_x, int rel_y);
       virtual void set_mouse_over_off();

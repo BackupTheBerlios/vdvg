@@ -124,19 +124,19 @@ void uv_textbox::draw(vector<GLuint> * clist)
    clist->push_back(etranslation);
 };
 //---------------------------------------------------------------------------
-void uv_textbox::key_action(int key, int sym, int mod, int what)
+bool uv_textbox::key_action(int key, int sym, int mod, int what)
 {
    if(SDL_KEYDOWN == what)
    {
-      if(key == SDLK_RSHIFT)     return;
-      if(key == SDLK_LSHIFT)     return;
-      if(key == SDLK_CAPSLOCK)   return;
-      if(key == SDLK_NUMLOCK)    return;
-      if(key == SDLK_SCROLLOCK)  return;
-      if(key == SDLK_LCTRL)      return;
-      if(key == SDLK_RCTRL)      return;
-      if(key == SDLK_RALT)       return;
-      if(key == SDLK_LALT)       return;
+      if(key == SDLK_RSHIFT)     return 0;
+      if(key == SDLK_LSHIFT)     return 0;
+      if(key == SDLK_CAPSLOCK)   return 0;
+      if(key == SDLK_NUMLOCK)    return 0;
+      if(key == SDLK_SCROLLOCK)  return 0;
+      if(key == SDLK_LCTRL)      return 0;
+      if(key == SDLK_RCTRL)      return 0;
+      if(key == SDLK_RALT)       return 0;
+      if(key == SDLK_LALT)       return 0;
 
       switch(sym)
       {

@@ -19,7 +19,7 @@ bool uv_container::initialize(attribute atr)
  return 1;
 };
 
-void uv_container::key_action(int key, int sym, int mod, int what)
+bool uv_container::key_action(int key, int sym, int mod, int what)
 {
    if(get_visible()) key_action_childs(key, sym, mod, what);
 }

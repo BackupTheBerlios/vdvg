@@ -59,7 +59,7 @@ public:
    bool operator=(attribute init) {return initialize(init);};
    bool is_initialized();
    void draw(vector<GLuint> * clist);
-   void key_action(int key, int sym, int mod, int what);
+   bool key_action(int key, int sym, int mod, int what);
    bool mouse_action(int x, int y, int key, int what);
    void mouse_move_rel(int rel_x, int rel_y);
    static attribute make_attribut(uv_group * parent,

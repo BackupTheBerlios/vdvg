@@ -33,6 +33,7 @@ public:
 private:
    //Schon initialisiert?
    bool is_init;
+   uv_widget *on_top_widget;
 
    void init_SDL(int breite = 1024, int hoehe = 768, bool fullscreen=true,
                  int bit = 32, int depth_size = 24, int stencil_size = 24,
@@ -44,9 +45,10 @@ public:
    uv_mainwindow();
 
    bool initialize(attribute init);
+	void set_on_top_widget(uv_widget *);
    bool operator=(attribute init) {return initialize(init);};
    void draw(vector<GLuint> * clist);
-   void key_action(int key, int sym, int mod, int what);
+   bool key_action(int key, int sym, int mod, int what);
    bool mouse_action(int x, int y, int key, int what);
    void mouse_move_rel(int rel_x, int rel_y);
    void run();

@@ -120,7 +120,7 @@ bool uv_checkbox::mouse_action(int x, int y,int button,int what)
     return true;
 }
 
-void uv_checkbox::key_action(int key, int sym, int mod, int what)
+bool uv_checkbox::key_action(int key, int sym, int mod, int what)
 {
    if(sym == SDLK_RETURN && what== SDL_KEYDOWN)//key == SDLK_RETURN)
    {

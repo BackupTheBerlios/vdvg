@@ -179,7 +179,7 @@ void uv_widget::set_when(int bitset)
    whenbits = bitset; //Bitmasken werden ueber Defines gesetzt.
 };
 //---------------------------------------------------------------------------
-void uv_widget::key_action(int key, int sym, int mod, int what)
+bool uv_widget::key_action(int key, int sym, int mod, int what)
 {
 
 };
