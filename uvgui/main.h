@@ -15,6 +15,7 @@
 #include "uv_textbox.h"
 #include "uv_config.h"
 #include "uv_kithread.h"
+#include "uv_dropdown.h"
 //---------------------------------------------------------------------------
 
 namespace uv_main
@@ -33,6 +34,10 @@ namespace uv_main
    uv_window options;
    uv_button ook,ocancel;
    uv_checkbox ofullscreen;
+   uv_dropdown oresolution;
+	vector<string> vec_resolutions;
+	uv_text orestext, oinfotext, oinfotextb;
+	int oresnumtemp;
 
    //About:
    uv_window about;

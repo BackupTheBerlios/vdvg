@@ -25,7 +25,7 @@ bool uv_dropdown::initialize(attribute init)
    
    redraw = true;
    retranslate = true;
-
+	act_ele = -1;
 
 	mainwindow = init.mainwindow;
 
@@ -55,7 +55,7 @@ bool uv_dropdown::initialize(attribute init)
    //image = init.image_attribute;
 
    uv_color text_color = {0xff, 0x88, 0x00};
-   text = uv_text::make_attribut(this, 0, 0, 0, 0, 25, "Buttontext", init.elements[0], "Test.ttf", text_color);
+   text = uv_text::make_attribut(this, 0, 0, 0, 0, 16, "Buttontext", init.elements[0], "Test.ttf", text_color);
    text.set_pos((get_w()-text.get_width())/2, (get_h()+text.get_height())/2);
 
    redraw = true;
@@ -159,7 +159,8 @@ void uv_dropdown::internalcallback(uv_callback * cb)
 	{
 		uv_list::callback * tmp;
         tmp = static_cast<uv_list::callback*>(cb);
-		text.pushtext(droplist.elements[tmp->num]);
+		act_ele = tmp->num;
+		text.pushtext(droplist.elements[act_ele]);
    		text.set_pos((get_w()-text.get_width())/2, (get_h()+text.get_height())/2);
 		callback tep;
 		tep.ID=22;
@@ -176,4 +177,9 @@ static void sta_internalcallback(uv_callback * cb)
 	tmp->internalcallback(cb);
 }
 
+void uv_dropdown::set_act_ele(int a)
+{
+		act_ele = a;
+		text.pushtext(droplist.elements[act_ele]);
+}
 

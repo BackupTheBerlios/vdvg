@@ -51,8 +51,11 @@ private:
    bool redraw, retranslate; 
    std::string design;
 	uv_mainwindow *mainwindow;
+	int act_ele;
 public:
    uv_dropdown();
+	int get_act_ele() { return act_ele;};  
+	void set_act_ele(int a); 
 
    void internalcallback(uv_callback * cb);
    bool initialize(attribute init);

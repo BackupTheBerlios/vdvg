@@ -5,7 +5,6 @@
 // Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #include "main.h"
-#include "uv_dropdown.h"
 //---------------------------------------------------------------------------
 void mainloop(uv_callback * cb);   //Hauptschleife
 void menueinit();
@@ -20,6 +19,7 @@ void ok2callback(uv_callback * cb);
 void exitcallback();
 void ocancelcb();
 void ookcb();
+void oresolutioncallback(uv_callback *cb);
 void optionscb();
 void gookcb(uv_callback * cb);
 void goleichtercb(uv_callback * cb);
@@ -50,13 +50,13 @@ int main (int argc, char *argv[])
 //	uv_main::options.set_visible(1);
 //	uv_main::mainwindow.set_on_top_widget(&uv_main::options);
 //TEST
-	uv_dropdown drop;
+/*	uv_dropdown drop;
 	vector<string> lolo;
 	lolo.push_back("hellou");
 	lolo.push_back("hellaau");
 	lolo.push_back("hilleu");
 	lolo.push_back("hollau");
-	drop = uv_dropdown::make_attribut(&uv_main::menu,&uv_main::mainwindow,60,60,200,40,"", lolo, "");
+	drop = uv_dropdown::make_attribut(&uv_main::menu,&uv_main::mainwindow,60,60,200,40,"", lolo, "");*/
 ///TEST
    uv_main::mainwindow.run();
    uv_main::konfig.save_file("config.txt");
@@ -352,6 +352,16 @@ void optionsinit()
    uv_main::options.set_visible(0);
    uv_main::moptions.set_callback((voidcallback) optionscb);
    uv_main::ofullscreen.set_checked(uv_main::konfig.get_config().fullscreen);
+	uv_main::orestext = uv_text::make_attribut(&uv_main::options,30,110,200,16,16,"","Auflösung:","Test.ttf",uv_color::make_color(255,255,255));
+	uv_main::oinfotext = uv_text::make_attribut(&uv_main::options,30,176,200,16,16,"","Auflösung ändern erfordert","Test.ttf",uv_color::make_color(255,255,255));
+	uv_main::oinfotextb = uv_text::make_attribut(&uv_main::options,30,200,200,16,16,"","Neustart","Test.ttf",uv_color::make_color(255,255,255));
+	uv_main::vec_resolutions.push_back("800x600");
+	uv_main::vec_resolutions.push_back("1024x768");
+	uv_main::vec_resolutions.push_back("1280x1024");
+	uv_main::vec_resolutions.push_back("1600x1200");
+	uv_main::oresolution = uv_dropdown::make_attribut(&uv_main::options,&uv_main::mainwindow,30,120,200,30,"", uv_main::vec_resolutions, "");
+//	uv_main::oresolution.set_callback(oresolutioncallback);
+	uv_main::oresolution.set_act_ele((uv_main::konfig.get_config().width/200)-4);
 }
 //---------------------------------------------------------------------------
 void ocancelcb()
@@ -370,8 +380,28 @@ void ookcb()
    //ON TOP entfernen
    uv_main::mainwindow.set_on_top_widget(0);
    uv_main::konfig.set_fullscreen(uv_main::ofullscreen.get_checked());
-
    if(temp != uv_main::ofullscreen.get_checked()) SDL_WM_ToggleFullScreen(sf);
+	config tmp = uv_main::konfig.get_config();
+	switch( uv_main::oresolution.get_act_ele() )
+		{
+			case 0:
+				tmp.width = 800;
+				tmp.height = 600;
+				break;
+			case 1:
+				tmp.width = 1024;
+				tmp.height = 768;
+				break;
+			case 2:
+				tmp.width = 1280;
+				tmp.height = 1024;
+				break;
+			case 4:
+				tmp.width = 1600;
+				tmp.height = 1200;
+				break;
+		}
+	uv_main::konfig.set_config(tmp);
 }
 //---------------------------------------------------------------------------
 void optionscb()
@@ -497,6 +527,38 @@ void goselect4cb(uv_callback * cb)
    uv_main::gomenschmensch.set_checked(false);
    uv_main::gocompcomp.set_checked(true);
 }
+
+void oresolutioncallback(uv_callback * cb)
+{
+	if(cb->ID == 22)
+	{
+//		config tmp = uv_main::konfig.get_config();
+		uv_dropdown::callback * drcb;
+   	drcb = static_cast<uv_dropdown::callback*>(cb);
+		uv_main::oresnumtemp = drcb->num;
+/*		switch( drcb->num )
+		{
+			case 0:
+				tmp.width = 800;
+				tmp.height = 600;
+				break;
+			case 1:
+				tmp.width = 1024;
+				tmp.height = 768;
+				break;
+			case 2:
+				tmp.width = 1280;
+				tmp.height = 1024;
+				break;
+			case 4:
+				tmp.width = 1600;
+				tmp.height = 1200;
+				break;
+		}*/
+//		uv_main::konfig.set_config(tmp);
+	}
+}
+
 //---------------------------------------------------------------------------
 //Eine Hilfsfunktion, um ints in strings zu konvertieren
 std::string uv_main::IntToString(const int & value)
