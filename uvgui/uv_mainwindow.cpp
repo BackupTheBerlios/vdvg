@@ -276,6 +276,8 @@ void uv_mainwindow::run()
 				test[pi++] = *iter;
 			}
 	        glCallLists(clist.size(), GL_UNSIGNED_INT, test);
+
+                delete[] test;
 	        //Hauptschleifenfunktion aufrufen
 	        uv_callback var = {1};
 	        do_callback(&var);
