@@ -261,22 +261,26 @@ void uv_mainwindow::run()
                          event.button.button, event.button.type);
             break;
         };
-        vector<GLuint> clist;
-        draw(&clist);
-        glListBase(0);
-		GLuint *test = new GLuint[clist.size()];
-		vector<GLuint>::const_iterator iter;
-		int pi=0;
-		for(iter=clist.begin(); iter != clist.end(); iter++)
+		static int zeit=0;
+		if(zeit + 15 < SDL_GetTicks())
 		{
-			test[pi++] = *iter;
-		}
-        glCallLists(clist.size(), GL_UNSIGNED_INT, test);
-        //Hauptschleifenfunktion aufrufen
-        uv_callback var = {0};
-        do_callback(&var);
-        SDL_GL_SwapBuffers();
-
+			zeit = SDL_GetTicks();
+	        vector<GLuint> clist;	
+	        draw(&clist);
+	        glListBase(0);
+			GLuint *test = new GLuint[clist.size()];
+			vector<GLuint>::const_iterator iter;
+			int pi=0;
+			for(iter=clist.begin(); iter != clist.end(); iter++)
+			{
+				test[pi++] = *iter;
+			}
+	        glCallLists(clist.size(), GL_UNSIGNED_INT, test);
+	        //Hauptschleifenfunktion aufrufen
+	        uv_callback var = {0};
+	        do_callback(&var);
+	        SDL_GL_SwapBuffers();
+		}		
         //Auf run prüfen
         if(!is_run)
             return;
