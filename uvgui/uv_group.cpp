@@ -17,6 +17,7 @@ bool uv_group::initialize(attribute init)
    next_child = false;
 
    is_init = true;
+	return 1;
 };
 //---------------------------------------------------------------------------
 uv_group::attribute uv_group::make_attribut(uv_group * parent,

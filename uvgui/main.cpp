@@ -6,38 +6,35 @@
 //---------------------------------------------------------------------------
 #include "main.h"
 //---------------------------------------------------------------------------
-void calli(uv_callback * cb);      //Button1 Action
-void calli2(uv_callback * cb);     //Button2 Action
 void mainloop(uv_callback * cb);   //Hauptschleife
-void fensterinit();
+void menueinit();
+void optionsinit();
+void aboutinit();
+void gameinit();
+void menucallback();
+void gamestartcallback();
+void exitcallback();
 //---------------------------------------------------------------------------
 //Hauptprogramm
 int main (int argc, char *argv[])
 {
    uv_main::konfig.load_file("config.txt");
-//   uv_main::mainwindow = uv_mainwindow::make_attribut(1024, 768, false, "4D4G");
    uv_main::mainwindow = uv_main::konfig.get_mainwindow_attribute();
    uv_main::mainwindow.set_callback(mainloop);
-   uv_main::img = uv_image::make_attribut(&uv_main::mainwindow, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", "background.jpg");
-   uv_main::test = uv_image::make_attribut(&uv_main::window1, 20, 110, 200, 100, "test", "Testbild2.bmp", 0.5, 0.0, 1.0, 1.0);
-   uv_main::testa = uv_image::make_attribut(&uv_main::window2, 20, 110, 64, 64, "testa","test3.tga");
-   fensterinit();
-   uv_main::Button1 = uv_button::make_attribut(&uv_main::window1, 30, 30, 256, 64, "Button1", "Klick Mich !","");
-   uv_main::Button2 = uv_button::make_attribut(&uv_main::window2, 30, 30, 256, 64, "Button2", "Beenden","");
-   uv_main::tst = uv_box::make_attribut(&uv_main::window1, 20, 110, 200, 100, uv_color::make_color(0, 0, 0), "tst box");
-   uv_main::box1 = uv_box::make_attribut(&uv_main::aaa, 20, 150, 40, 80, uv_color::make_color(0, 0, 0), "box1");
-   uv_main::test1 = uv_textbox::make_attribut(&uv_main::aaa, 10, 30, 266, 20, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Text", "", "Franklin-Italic.ttf", uv_color::make_color(0, 0, 0)), uv_color::make_color(255, 255, 255), "Textbox1");
-   uv_main::test2 = uv_textbox::make_attribut(&uv_main::aaa, 10, 60, 266, 20, uv_text::make_attribut(0, 0, 0, 0, 0, 12, "Text", "", "Test.ttf", uv_color::make_color(255, 128, 0)), uv_color::make_color(255, 255, 255), "Textbox1");
-   uv_main::Button1.set_callback((voidcallback) calli);
-   uv_main::Button2.set_callback((voidcallback) calli2);
-   uv_main::fps = uv_fpscounter::make_attribut(&uv_main::mainwindow, uv_main::mainwindow.get_w()-100, 0, 0, 0, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Frames", "Wait...", "Test.ttf", uv_color::make_color(255, 255, 255)),"FPS Counter");
-   uv_color text_color = {0x00, 0x00, 0x00};
-   uv_main::cbox1 = uv_checkbox::make_attribut(&uv_main::bbb, 30, 30, 185, 16, uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "unchecked.tga"), uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "checked.tga"), uv_text::make_attribut(0, 20, 16, 0, 0, 16, "Buttontext", "Checkbox Test #1!", "Test.ttf", text_color), "cbox1");
-   uv_main::cbox2 = uv_checkbox::make_attribut(&uv_main::bbb, 30, 50, 185, 16, uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "unchecked.tga"), uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "checked.tga"), uv_text::make_attribut(0, 20, 16, 0, 0, 16, "Buttontext", "Checkbox Test #2!", "Test.ttf", text_color), "cbox2");
-   uv_main::cbox3 = uv_checkbox::make_attribut(&uv_main::bbb, 30, 70, 185, 16, uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "unchecked.tga"), uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "checked.tga"), uv_text::make_attribut(0, 20, 16, 0, 0, 16, "Buttontext", "Checkbox Test #3!", "Test.ttf", text_color), "cbox3");
-   uv_main::gb = uv_gamebutton::make_attribut(&uv_main::mainwindow, 50, 50, 40, 40,"aha",""); 
-   uv_main::mainwindow.run();
 
+   uv_main::img = uv_image::make_attribut(&uv_main::mainwindow, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", "background.jpg");
+
+   uv_main::fps = uv_fpscounter::make_attribut(&uv_main::mainwindow, uv_main::mainwindow.get_w()-100, 0, 0, 0, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Frames", "Wait...", "Test.ttf", uv_color::make_color(255, 255, 255)),"FPS Counter");
+
+	uv_main::menu = uv_container::make_attribut(&uv_main::mainwindow);
+   uv_main::game = uv_container::make_attribut(&uv_main::mainwindow);
+   uv_main::game.set_visible(0);
+	uv_main::menu.set_visible(1);
+   
+   menueinit();
+   gameinit();	
+
+   uv_main::mainwindow.run();
    uv_main::konfig.save_file("config.txt");
    return 0;
 };
@@ -47,34 +44,73 @@ void mainloop(uv_callback * cb)
     //momentan noch leer
 };
 //---------------------------------------------------------------------------
-void calli(uv_callback * cb)
-{
-    uv_main::Button2.set_visible(!uv_main::Button2.get_visible());
-};
-//---------------------------------------------------------------------------
-void calli2(uv_callback * cb)
-{
-    if(cb->ID != 11)
-       return;
-    uv_button::callback * butpointer = static_cast<uv_button::callback *>(cb);
-    int i = butpointer->ID;
-    bool b = butpointer->used;
-    uv_main::mainwindow.set_run(false);
-};
-//---------------------------------------------------------------------------
-void fensterinit()
-{
-   uv_main::window1 = uv_window::make_attribut(&uv_main::mainwindow, 50, 50, 600, 300, "window1", "window1", "", "", true, true, true, false);
-   uv_main::window2 = uv_window::make_attribut(&uv_main::mainwindow, 400, 450, 300, 200, "window2", "window2", "", "", true, true, true, false);
-   uv_main::aaa = uv_window::make_attribut(&uv_main::mainwindow, 20, 20, 300, 500, "window2", "window2", "", "", true, true, true, false);
-   uv_main::bbb = uv_window::make_attribut(&uv_main::mainwindow, 45, 45, 300, 500, "window2", "window2", "", "", true, true, true, false);
-   uv_main::ccc = uv_window::make_attribut(&uv_main::mainwindow, 70, 70, 300, 500, "window2", "window2", "", "", true, true, true, false);
-   uv_main::ddd = uv_window::make_attribut(&uv_main::mainwindow, 95, 95, 300, 500, "window2", "window2", "", "", true, true, true, false);
-   uv_main::eee = uv_window::make_attribut(&uv_main::mainwindow, 120, 120, 300, 500, "window2", "window2", "", "", true, true, true, false);
-   uv_main::fff = uv_window::make_attribut(&uv_main::mainwindow, 145, 145, 300, 500, "window2", "window2", "", "", true, true, true, false);
-};
-//---------------------------------------------------------------------------
 
+void menueinit()
+{
+  int width, height, buttonheight, buttonwidth;
+  buttonwidth = 200;
+  buttonheight = 50;
+  width = uv_main::mainwindow.get_w();
+  height = uv_main::mainwindow.get_h();
 
+//(height-7*buttonheight)/2+x*buttonheight
 
+  uv_main::mnewgame = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+0*buttonheight*2,buttonwidth,buttonheight,"newgame","Neues Spiel","");
+  uv_main::moptions = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+1*buttonheight*2,buttonwidth,buttonheight,"newgame","Optionen","");
+  uv_main::mabout = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+2*buttonheight*2,buttonwidth,buttonheight,"newgame","About","");
+  uv_main::mexit  = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+3*buttonheight*2,buttonwidth,buttonheight,"newgame","Beenden","");
+
+  uv_main::mnewgame.set_callback((voidcallback) gamestartcallback);
+  uv_main::mexit.set_callback((voidcallback) exitcallback);
+}
+
+void gameinit()
+{
+ //agh abstandhalter grosshorizontal, ak abstandhalter klein, bu gamebuttonbreite
+ //agv abstandhalter vertikal
+ 	int width, height, ak, agh, agv, bu;
+	width = uv_main::mainwindow.get_w();
+  	height = uv_main::mainwindow.get_h();
+	
+   agh=92;
+   agv=75;
+	ak=46;
+   bu=30;
+   
+
+	for(int x=0; x<4; x++)
+	{
+		for(int y=0; y<4; y++)
+		{
+			for (int z=0; z<4; z++)
+			{
+				for(int w=0; w<4; w++)
+				{
+					uv_main::gbuttons[x+y*4+z*16+w*64] = uv_gamebutton::make_attribut(&uv_main::game,agh+x*bu+w*(ak+4*bu), agv+y*bu+z*(ak+4*bu),bu,bu,"","");
+				}
+			}
+		}
+	}
+
+  uv_main::gexit = uv_button::make_attribut(&uv_main::game,2*agh+3*ak+16*bu, agv,120,50,"a","Menü","");
+  uv_main::gexit.set_callback((voidcallback) menucallback);
+}
+
+void gamestartcallback()
+{
+   uv_main::game.set_visible(1);
+	uv_main::menu.set_visible(0);
+
+}
+
+void menucallback()
+{
+   uv_main::game.set_visible(0);
+	uv_main::menu.set_visible(1);
+}
+
+void exitcallback()
+{
+ uv_main::mainwindow.set_run(false);
+}
 

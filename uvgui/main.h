@@ -14,22 +14,27 @@
 
 namespace uv_main
 {
-   uv_config konfig;
-
+   //Allgemein:
    uv_mainwindow mainwindow;
-   uv_container cont1;
-   //Die Fenster
-   uv_window window1, window2, aaa, bbb, ccc, ddd, eee, fff;
-   //Die Buttons
-   uv_button Button1, Button2;
-   //Die Bilder
-   uv_image img, test, testa;
-   //Die Boxen
-   uv_box tst, box1;
+   uv_config konfig;
+   uv_image img;
    uv_fpscounter fps;
-   uv_textbox test1, test2;
-   uv_checkbox cbox1, cbox2, cbox3;
-   uv_gamebutton gb;
+	
+   //Menue:
+   uv_container menu;
+   uv_button mnewgame,moptions, mabout, mexit;
+   
+   //Optionen:
+   uv_window options;
+
+   //About:
+   uv_window about;
+
+   //Game:
+   uv_container	  game;
+   uv_gamebutton  gbuttons[256];
+   uv_button	  gexit;
+
 };
 
 //---------------------------------------------------------------------------
