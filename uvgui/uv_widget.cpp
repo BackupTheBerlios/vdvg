@@ -10,6 +10,7 @@ uv_widget::uv_widget(int mx, int my, int mw, int mh,uv_group *parent,
    //Das Child beim Parent eintragen (wenn parent != 0)
    if(parent!=0)
       myparent->add_child(this);
+   mouseover = 0;
 };
 //---------------------------------------------------------------------------
 int uv_widget::get_absolute_x()

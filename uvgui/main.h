@@ -19,6 +19,7 @@ uv_mainwindow mainwindow(1024, 768, 1, "4D4G");
 
 uv_image img(0,0,1024,768,&mainwindow,"background.jpg");
 uv_window window1(50,50,600,300,&mainwindow,"auh");
+uv_window aaa(20,20,300,500,&mainwindow,"gjh");
 uv_image test(20, 110, 64, 64, &window1,"test3.tga");
 uv_fpscounter fps(&mainwindow);
 uv_window window2(400,450,300,200,&mainwindow,"jkh");

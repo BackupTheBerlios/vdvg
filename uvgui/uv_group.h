@@ -41,8 +41,8 @@ public:
     bool mouse_action_childs(int x, int y, int button, int what);
     bool key_action_childs(int key, int mod, int what);
     bool mouse_move_rel_childs(int rel_x, int rel_y);
+	void set_mouse_over_off();
 };
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------
-

@@ -9,6 +9,9 @@
 class uv_group;
 //---------------------------------------------------------------------------
 #include "uv_gui.h"
+#include <SDL.h>
+#include <SDL_main.h>
+#include <SDL_opengl.h>
 #include <iostream>
 //---------------------------------------------------------------------------
 using namespace std;
@@ -33,6 +36,7 @@ private:
     bool visible;
     uv_group *myparent;
     bool can_focus_have;  //Kann das Widget den Focus bekommen?
+	bool mouseover;
 public:
     //setzt Variabeln,Konstruktor, sollte irgendwie protected sein...
     uv_widget(int mx, int my, int mw, int mh,uv_group *parent=0,
@@ -112,10 +116,7 @@ public:
     };
     bool mouse_over()
     {
-        return ((get_absolute_x()           < get_mouse_x()) &&
-                ((get_absolute_x()+get_w()) > get_mouse_x()) &&
-                (get_absolute_y()           < get_mouse_y()) &&
-                ((get_absolute_y()+get_h()) > get_mouse_y()) );
+        return mouseover;
     };
     //key=Taste, mod=Modifiers, what=UP,Down
     virtual void key_action(int key,int mod, int what)
@@ -124,12 +125,17 @@ public:
     };
     virtual bool mouse_action(int x, int y,int button,int what)
     {
-        return true;
+        if( what==SDL_MOUSEMOTION ) mouseover = 1;
+		return true;
     };
     virtual void mouse_move_rel(int rel_x, int rel_y)
     {
 
     };
+	virtual void set_mouse_over_off()
+	{
+		mouseover = 0;
+	}
 };
 //---------------------------------------------------------------------------
 #endif	//_UVWIDGET_H_

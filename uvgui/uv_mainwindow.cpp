@@ -192,10 +192,11 @@ void uv_mainwindow::run()
         case SDL_MOUSEMOTION:
             set_mouse_x(event.motion.x);
             set_mouse_y(event.motion.y);
-
-            //mouse_move_rel(event.motion.x,event.motion.y); //wird noch in rel. Bewegung umgerechnet
+			set_mouse_over_off();
+			mouse_action(event.motion.x, event.motion.y,0,SDL_MOUSEMOTION);
             mouse_move_rel(rel_mouse_x(event.motion.x), rel_mouse_y(event.motion.y));
             break;
+		
         case SDL_MOUSEBUTTONDOWN:
             if(last_was_mouse_down)
                 break;

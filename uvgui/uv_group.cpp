@@ -125,7 +125,7 @@ bool uv_group::mouse_action_childs(int x, int y, int button, int what)
         {
             bool focus = child->mouse_action(x-(child->get_x()),
                                              y-(child->get_y()), button, what);
-            if(focus&&child->kann_focus_haben())
+            if(focus&&child->kann_focus_haben()&&what==SDL_MOUSEBUTTONDOWN)
             {
                 set_to_end();
             }
@@ -135,6 +135,7 @@ bool uv_group::mouse_action_childs(int x, int y, int button, int what)
         if(what==SDL_MOUSEBUTTONUP) //Damit nur bei ursprünglichem Widget up
             break;
     };
+	uv_widget::mouse_action(x,y,button,what);
     return true;
 };
 //---------------------------------------------------------------------------
@@ -156,3 +157,14 @@ bool uv_group::key_action_childs(int key, int mod, int what)
 	return 1;
 };
 //---------------------------------------------------------------------------
+
+void uv_group::set_mouse_over_off()
+{
+	uv_widget *child;
+    set_end_child();
+    while((child=get_last_child()) != NULL)
+    {
+        child->set_mouse_over_off();
+    };
+	uv_widget::set_mouse_over_off();
+}

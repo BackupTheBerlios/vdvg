@@ -46,6 +46,7 @@ bool uv_button::mouse_action(int x, int y,int button,int what)
     {
         do_callback();
     }
+	uv_widget::mouse_action(x,y,button,what);
     return true;
 }
 
