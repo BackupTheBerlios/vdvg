@@ -30,7 +30,8 @@ private:
    uv_image uncheckimage, checkimage;
 public:
    uv_checkbox();
-
+   bool get_checked() {return checked;};
+   void set_checked(bool c) {checked=c;};
    bool initialize(attribute init);
    bool operator=(attribute init) {return initialize(init);};
 

@@ -27,6 +27,8 @@ namespace uv_main
    
    //Optionen:
    uv_window options;
+   uv_button ook,ocancel;
+   uv_checkbox ofullscreen;
 
    //About:
    uv_window about;

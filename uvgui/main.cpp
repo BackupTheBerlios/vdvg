@@ -17,6 +17,9 @@ void artificial_intelligence(uv_callback * cb);
 void ok1callback(uv_callback * cb);
 void ok2callback(uv_callback * cb);
 void exitcallback();
+void ocancelcb();
+void ookcb();
+void optionscb();
 //---------------------------------------------------------------------------
 //Hauptprogramm
 int main (int argc, char *argv[])
@@ -36,6 +39,7 @@ int main (int argc, char *argv[])
 
    menueinit();
    gameinit();
+   optionsinit();
 
    uv_main::mainwindow.run();
    uv_main::konfig.save_file("config.txt");
@@ -201,6 +205,34 @@ void exitcallback()
    uv_main::mainwindow.set_run(false);
 }
 //---------------------------------------------------------------------------
+void optionsinit()
+{
+	uv_color text_color = {0x00, 0x00, 0x00};
+	uv_main::options=uv_window::make_attribut(&uv_main::mainwindow,20,20,300,300,"","","","",0,0,1,0);
+	uv_main::ofullscreen=uv_checkbox::make_attribut(&uv_main::options,30,40,115,16,uv_image::make_attribut(0,0,0,16,16,"Checkbox","unchecked.tga"),uv_image::make_attribut(0,0,0,16,16,"Checkbox","checked.tga"),uv_text::make_attribut(0,20,16,0,0,16,"Buttontext","Fullscreen","Test.ttf",text_color),"fullscreen");
+	uv_main::ook=uv_button::make_attribut(&uv_main::options,10,250,105,40,"a","OK","");
+	uv_main::ocancel=uv_button::make_attribut(&uv_main::options,125,250,165,40,"a","Abbrechen","");
 
+	uv_main::ocancel.set_callback((voidcallback) ocancelcb);
+	uv_main::ook.set_callback((voidcallback) ookcb);
+	uv_main::options.set_visible(0);
+	uv_main::moptions.set_callback((voidcallback) optionscb);
+	uv_main::ofullscreen.set_checked(uv_main::konfig.get_config().fullscreen);
+}
 
+void ocancelcb()
+{
+	uv_main::options.set_visible(0);
+}
+
+void ookcb()
+{
+	uv_main::options.set_visible(0);
+	uv_main::konfig.set_fullscreen(uv_main::ofullscreen.get_checked());
+}
+
+void optionscb()
+{
+	uv_main::options.set_visible(1);
+}
 

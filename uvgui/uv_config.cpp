@@ -117,4 +117,9 @@ uv_mainwindow::attribute uv_config::get_mainwindow_attribute()
    return uv_mainwindow::make_attribut(akt_config.width, akt_config.height, akt_config.fullscreen, const_cast<char *>(akt_config.caption.c_str()));//"4D4G");
 }
 
+bool uv_config::set_fullscreen(bool fs)
+{
+		akt_config.fullscreen = fs;
+		return 1; //muss überprüfen, ob conf file geladen
 
+}

@@ -38,6 +38,7 @@ class uv_config
       bool save_standard_file();
       config get_config();
       bool set_config(config configuration);
+	  bool set_fullscreen(bool fs);
       uv_mainwindow::attribute get_mainwindow_attribute();
 };
 
