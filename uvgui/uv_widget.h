@@ -71,8 +71,8 @@ public:
     {
         return ((get_absolute_x()<get_mouse_x()) && ((get_absolute_x()+get_w())>get_mouse_x()) && (get_absolute_y()<get_mouse_y()) && ((get_absolute_y()+get_h())>get_mouse_y()));}
     //key=Taste, mod=Modifiers, what=UP,Down
-    virtual void key_action(int key,int mod, int what)=0;
-    virtual void mouse_action(int x, int y,int button,int what)=0;
+    virtual void key_action(int key,int mod, int what){};
+    virtual void mouse_action(int x, int y,int button,int what){};
     virtual void mouse_move_rel(int rel_x, int rel_y)
     {};
 };

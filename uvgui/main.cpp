@@ -2,6 +2,7 @@
 #include "uv_mainwindow.h"
 #include "uv_button.h"
 #include "uv_window.h"
+#include "uv_imagebox.h"
 
 using namespace std;
 
@@ -12,6 +13,7 @@ uv_button *rpr;
 int main (int argc, char *argv[])
 {
     uv_mainwindow fenster(1024,768,1,"test");
+    uv_imagebox img(0,0,1024,768,&fenster,"background.jpg");
     uv_window fens2(50,50,200,200,&fenster,"auh");
     uv_button knopf(10,10,50,50,&fens2 );
     uv_button knopf2(70,70,50,50,&fens2 );
