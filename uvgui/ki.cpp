@@ -21,7 +21,7 @@ ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
 {
    //Die Suchtiefe wird momentan mit einem Fixen Wert angegeben.
    schwierigkeitsgrad = Feld.schwierigkeitsgrad;
-   if(schwierigkeitsgrad > 5)
+   if(schwierigkeitsgrad > 2) //> 5)
       suchtiefe = 2;
    else
       suchtiefe = 1;
@@ -35,6 +35,10 @@ ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
       //handen ist.
       return Feld;
    }
+
+   // Wenn Mensch gegen Mensch
+   if(Feld.schwierigkeitsgrad == 10)
+      return Feld;
 
    //Bewertungsbaum starten
    suchebene_starten(Feld);
@@ -524,10 +528,20 @@ ki::dreiint ki::punkt_pruefen(ki::point startpunkt, int &gewonnen, bool updaten)
                if(loop)
                {
                   //Reihe auswerten und Punkte vergeben
-                  if(i1 == 0 && i2 >  0)
-                     zahl = (i2 == 1) ?  2 : ((i2 == 2) ?  200 :  5000);
-                  if(i1 >  0 && i2 == 0)
-                     zahl = (i1 == 1) ? -2 : ((i1 == 2) ? -200 : -5000);
+                  if(schwierigkeitsgrad > 4)
+                  {
+                     if(i1 == 0 && i2 >  0)
+                        zahl = (i2 == 1) ?  2 : ((i2 == 2) ?  200 :  5000);
+                     if(i1 >  0 && i2 == 0)
+                        zahl = (i1 == 1) ? -2 : ((i1 == 2) ? -200 : -5000);
+                  }
+                  else
+                  {
+                     if(i1 == 0 && i2 >  0)
+                        zahl = (i2 == 1) ?  0 : ((i2 == 2) ?  200 :  5000);
+                     if(i1 >  0 && i2 == 0)
+                        zahl = (i1 == 1) ?  0 : ((i1 == 2) ? -200 : -5000);
+                  }
                   if(zahl > 0 && (schwierigkeitsgrad == 9 || schwierigkeitsgrad == 8))
                   {
                      //verhindert eine doppelte Dreiergruppe
@@ -548,14 +562,14 @@ ki::dreiint ki::punkt_pruefen(ki::point startpunkt, int &gewonnen, bool updaten)
                      if(punkt.typ == 1)
                         wertefeld[startpunkt.x][startpunkt.y]
                                  [startpunkt.z][startpunkt.w][0]
-                                 = (schwierigkeitsgrad > 4) ? -30000 : -10000;
+                                 = (schwierigkeitsgrad > 5) ? -30000 : -10000;
                   }
                   if(updaten && i2 == 3)
                   {
                      if(punkt.typ == 2)
                         wertefeld[startpunkt.x][startpunkt.y]
                                  [startpunkt.z][startpunkt.w][0]
-                                 = (schwierigkeitsgrad > 4) ?  40000 :  10000;
+                                 = (schwierigkeitsgrad > 5) ?  40000 :  10000;
                   }
                }
             };
@@ -657,18 +671,38 @@ bool ki::update(ki::point punkt, ki::point startpunkt, bool down)
       // Reihe auswerten und Punkte vergeben (Sp. 1 negativ, Sp. 2 positiv)
       int vorher = 0, zahl = 0; // Diese Variabeln nehmen Bewertungen auf
       // Zuerst den jetztigen Punkt bewerten.
-      if(i1 == 0 && i2 >  0)
-         zahl = (i2 == 1) ?  2 : ((i2 == 2) ?  200 :  5000);
-      if(i1 >  0 && i2 == 0)
-         zahl = (i1 == 1) ? -2 : ((i1 == 2) ? -200 : -5000);
+      if(schwierigkeitsgrad > 4)
+      {
+         if(i1 == 0 && i2 >  0)
+            zahl = (i2 == 1) ?  2 : ((i2 == 2) ?  200 :  5000);
+         if(i1 >  0 && i2 == 0)
+            zahl = (i1 == 1) ? -2 : ((i1 == 2) ? -200 : -5000);
+      }
+      else
+      {
+         if(i1 == 0 && i2 >  0)
+            zahl = (i2 == 1) ?  0 : ((i2 == 2) ?  200 :  5000);
+         if(i1 >  0 && i2 == 0)
+            zahl = (i1 == 1) ?  0 : ((i1 == 2) ? -200 : -5000);
+      }
       // Danach den neu gesetzten Punkt von der Bewertung abziehen ...
       i1 -= i1a;
       i2 -= i2a;
       // ... und den vorherigen Wert des Punktes berechnen
-      if(i1 == 0 && i2 >  0)
-         vorher = (i2 == 1) ?  2 : ((i2 == 2) ?  200 :  5000);
-      if(i1 >  0 && i2 == 0)
-         vorher = (i1 == 1) ? -2 : ((i1 == 2) ? -200 : -5000);
+      if(schwierigkeitsgrad > 4)
+      {
+         if(i1 == 0 && i2 >  0)
+            vorher = (i2 == 1) ?  2 : ((i2 == 2) ?  200 :  5000);
+         if(i1 >  0 && i2 == 0)
+            vorher = (i1 == 1) ? -2 : ((i1 == 2) ? -200 : -5000);
+      }
+      else
+      {
+         if(i1 == 0 && i2 >  0)
+            zahl = (i2 == 1) ?  0 : ((i2 == 2) ?  200 :  5000);
+         if(i1 >  0 && i2 == 0)
+            zahl = (i1 == 1) ?  0 : ((i1 == 2) ? -200 : -5000);
+      }
       // Berechnen, um wie viel sich der Wert geändert hat und diese differenz
       // in der Variablen "zahl" speichern.
       zahl -= vorher;

@@ -71,7 +71,7 @@ void mainloop(uv_callback * cb)
    {
       ki_thread::s_feld = ki_thread::hole_ergebnis();
       //Bei "Computer gegen Computer" prüfen, ob gekehrt werden muss
-      if(!uv_main::compcomp)
+      if(!uv_main::compcomp && uv_main::spielmodus == 3)
       {
          for(int x=0; x<4; x++)
          {
@@ -317,7 +317,14 @@ void artificial_intelligence(uv_callback * cb)
    }
    if(uv_main::spielmodus == 2)
    {
-
+      if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
+      {
+         uv_main::compcomp = !uv_main::compcomp;
+         uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_blink(2.0);
+         uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_status((uv_main::compcomp) ? 1 : 2);
+         ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] = (uv_main::compcomp) ? 1 : 2;
+         ki_thread::start_calculations(ki_thread::s_feld);
+      }
    }
 }
 //---------------------------------------------------------------------------
@@ -421,7 +428,10 @@ void gookcb(uv_callback * cb)
    if(uv_main::spielmodus == 1 || uv_main::spielmodus == 3)
       ki_thread::start_calculations(ki_thread::s_feld);
 
-   uv_main::compcomp = true;
+   if(uv_main::spielmodus == 2)
+      ki_thread::s_feld.schwierigkeitsgrad = 10;
+
+   uv_main::compcomp = (uv_main::spielmodus == 2) ? false : true;
 }
 //---------------------------------------------------------------------------
 void goleichtercb(uv_callback * cb)
