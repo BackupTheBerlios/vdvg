@@ -3,7 +3,9 @@
 
 uv_text::uv_text()
 {
-
+	red=0xff;
+	blue=0xff;
+	green=0xff;
 }
 
 
@@ -72,7 +74,7 @@ void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex
     glNewList(list_base+ch,GL_COMPILE);
 
     glBindTexture(GL_TEXTURE_2D,tex_base[ch]);
-    cout << ch << endl; //DEBUG
+   
     //first we need to move over a little so that
     //the character has the right amount of space
     //between it and the one before it.
@@ -100,10 +102,10 @@ void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex
     //so we need to link the texture to the quad
     //so that the result will be properly aligned.
     glBegin(GL_QUADS);
-    glTexCoord2d(0,0); glVertex2f(0,bitmap.rows);
-    glTexCoord2d(0,y); glVertex2f(0,0);
-    glTexCoord2d(x,y); glVertex2f(bitmap.width,0);
-    glTexCoord2d(x,0); glVertex2f(bitmap.width,bitmap.rows);
+    	glTexCoord2d(0,0); glVertex2f(0,bitmap.rows);
+    	glTexCoord2d(0,y); glVertex2f(0,0);
+    	glTexCoord2d(x,y); glVertex2f(bitmap.width,0);
+    	glTexCoord2d(x,0); glVertex2f(bitmap.width,bitmap.rows);
     glEnd();
     glPopMatrix();
     glTranslatef(face->glyph->advance.x >> 6 ,0,0);
@@ -188,7 +190,9 @@ void uv_text::pushScreenCoordinateMatrix()
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    gluOrtho2D(viewport[0],viewport[2],viewport[1],viewport[3]);
+	//void gluOrtho2D(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top)
+	//gluOrtho2D(0,1024,768,0);
+	gluOrtho2D(viewport[0],viewport[2],viewport[1],viewport[3]);
     glPopAttrib();
 
 
@@ -209,9 +213,15 @@ void uv_text::print( float x, float y, const char *fmt, ...)
 {
     // We want a coordinate system where things coresponding to window pixels.
     pushScreenCoordinateMatrix();
-
+	//y muss ins Koordinantensystem umgerechnet werden:
+	GLint	viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport); //Bildschirmgrösse abholen
+	y = viewport[3]-y-h; //Bildschirmhöhe - schrifthöhe - y
+	//fertig
+	
     GLuint font=list_base;
     float h=this->h/.63f;						//We make the height about 1.5* that of
+	
 
     char		text[256];								// Holds Our String
     va_list		ap;										// Pointer To List Of Arguments
@@ -274,6 +284,8 @@ void uv_text::print( float x, float y, const char *fmt, ...)
     //down by h. This is because when each character is
     //draw it modifies the current matrix so that the next character
     //will be drawn immediatly after it.
+	glColor3ub(red,green,blue); //passende Farbe laden
+	
     for(unsigned int i=0;i<lines.size();i++) {
 
 
@@ -299,5 +311,14 @@ void uv_text::print( float x, float y, const char *fmt, ...)
     glPopAttrib();
 
     pop_projection_matrix();
+	glBindTexture(GL_TEXTURE_2D, 0); //Texturen unbinden
+	glColor3ub(0xff,0xff,0xff); //Farbe auf neutral zurücksetzen
 
+}
+
+void uv_text::set_color(GLubyte red,GLubyte green,GLubyte blue)
+{
+	this->red=red;
+	this->blue=blue;
+	this->green=green;
 }

@@ -4,6 +4,7 @@ uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabe
 {
     parent->add_child(this);
     text.init("Test.ttf",16);
+	text.set_color(0xff,0x00,0x00);
 
 }
 
@@ -29,12 +30,7 @@ void uv_button::draw()
         glVertex2i (get_absolute_x (), get_absolute_y() + get_h ());
         glEnd ();
 
-        
-        glColor3ub(0xff,0,0); //kommt noch in die Text Klasse
-        //glRasterPos2f(50.0f, 50.0f);
-        text.print(get_absolute_x(),750-get_absolute_y(),get_label()); //sehr, sehr, sehr unschön...
-        glColor3ub(0xff,0xff,0xff); //kommt noch in die Text Klasse
-        glBindTexture(GL_TEXTURE_2D, 0); //kommt noch in die Text Klasse
+        text.print(get_absolute_x(),get_absolute_y(),get_label()); //sehr, sehr, sehr unschön...
 
     }
 }
@@ -45,6 +41,7 @@ bool uv_button::mouse_action(int x, int y,int button,int what)
     {
         do_callback();
     }
+	return 1;
 }
 
 void uv_button::key_action(int key, int mod, int what)

@@ -29,6 +29,8 @@ private:
     GLuint list_base;	///< Holds the first display list id
     float h;			///< Holds the height of the font.
 
+	GLubyte red, green, blue; //Textfarbe
+
     void pop_projection_matrix();
     inline int next_p2 ( int a )	{int rval=1;while(rval<a) rval<<=1;	return rval;};
     void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base );
@@ -37,6 +39,7 @@ private:
 public:
     uv_text(); //does currently nothing
     bool init(const char * fname, unsigned int h);
+	void set_color(GLubyte red,GLubyte green,GLubyte blue);
     void clean();
     void print(float x, float y, const char *fmt, ...);
 };

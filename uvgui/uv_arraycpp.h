@@ -218,8 +218,8 @@ template<class temp> temp dstack<temp>::outpos(long long pos)
 {
     if(pos+1>Enthaltene_Elemente||pos<0)
     {
-        temp newtemp;
-        return newtemp;//0;
+        temp newtemp;	
+        return newtemp;//0; hmm, hmm, hmm....
     }
     Element<temp> *Ausgabeelement=m_pStart;
     for(long long l=0;l<pos;++l)
@@ -267,4 +267,3 @@ template<class temp> bool dstack<temp>::move(long long from, long long to)
     return true;
 };
 //---------------------------------------------------------------------------
-
