@@ -29,26 +29,21 @@ void uv_button::draw()
         glVertex2i (get_absolute_x (), get_absolute_y() + get_h ());
         glEnd ();
 
-        //kommt noch in die Text Klasse
-        glColor3ub(0xff,0,0);
+        
+        glColor3ub(0xff,0,0); //kommt noch in die Text Klasse
         //glRasterPos2f(50.0f, 50.0f);
-        text.print(get_absolute_x(),750-get_absolute_y(),get_label());
-        //sehr, sehr, sehr unschˆn...
-        glColor3ub(0xff,0xff,0xff);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        text.print(get_absolute_x(),750-get_absolute_y(),get_label()); //sehr, sehr, sehr unschˆn...
+        glColor3ub(0xff,0xff,0xff); //kommt noch in die Text Klasse
+        glBindTexture(GL_TEXTURE_2D, 0); //kommt noch in die Text Klasse
 
     }
 }
 
 bool uv_button::mouse_action(int x, int y,int button,int what)
 {
-    if( what==SDL_MOUSEBUTTONDOWN)
+    if( what==SDL_MOUSEBUTTONDOWN && get_visible())  //Nur reagieren, wenn der Button sichtbar ist...
     {
-        //static int ms_last_called=0;
-        //if(SDL_GetTicks()-ms_last_called > 250)	//Das sollte eigentlich irgendwie sch√∂ner gehen..
-        //{
         do_callback();
-        //ms_last_called=SDL_GetTicks();
     }
 }
 
