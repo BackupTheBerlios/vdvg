@@ -185,9 +185,10 @@ void artificial_intelligence(uv_callback * cb)
    if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
       uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_status(1);
    if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
+   {
       ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] = 1;
-
-   ki_thread::start_calculations(ki_thread::s_feld);
+      ki_thread::start_calculations(ki_thread::s_feld);
+   }
 }
 //---------------------------------------------------------------------------
 void ok1callback(uv_callback * cb)
@@ -222,17 +223,17 @@ void optionsinit()
 
 void ocancelcb()
 {
-	uv_main::options.set_visible(0);
+   uv_main::options.set_visible(0);
 }
 
 void ookcb()
 {
-	uv_main::options.set_visible(0);
-	uv_main::konfig.set_fullscreen(uv_main::ofullscreen.get_checked());
+   uv_main::options.set_visible(0);
+   uv_main::konfig.set_fullscreen(uv_main::ofullscreen.get_checked());
 }
 
 void optionscb()
 {
-	uv_main::options.set_visible(1);
+   uv_main::options.set_visible(true, true);
 }
 
