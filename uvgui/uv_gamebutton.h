@@ -7,13 +7,16 @@
 #ifndef _UV_GAMEBUTTON_
 #define _UV_GAMEBUTTON_
 //---------------------------------------------------------------------------
+//#include "uv_widget.h"
+//#include "uv_group.h"
+//#include "uv_text.h"
 #include "uv_include.h"
 #include "uv_image.h"
 #include <SDL.h>
 #include <SDL_opengl.h>
 //---------------------------------------------------------------------------
 /*! @class uv_gamebutton
- *  @brief Button fuer das Spielfeld
+ *  @brief Erstellt ein anklickbaren Button
  *  @author Lukas H
  *  @version 1.0
  *
@@ -26,19 +29,25 @@ public:
    {
       uv_group * parent;
       int x, y, width, height;
-      string name;
+  //    uv_image::attribute image_attribute;
+      string name, design;
    };
    struct callback: public uv_callback
    {
-		int status;
+      bool used;
    };
 private:
    //Schon initialisiert?
    bool is_init;
+   uv_image backa, backb;
+   uv_image obenrechts, oben, obenlinks, links, untenlinks, unten, untenrechts, rechts;
+   uv_image statusx, statuso;
+   //uv_text text; 
+   std::string textspeicher;
+   GLuint stranslation, etranslation, drawing1, drawing2;
+   bool redraw, retranslate; 
+   std::string design;
    int status;
-   //std::string textspeicher;
-   GLuint stranslation, etranslation, drroh, drx, dro;
-   bool redraw, retranslate;
 public:
    uv_gamebutton();
 
@@ -49,7 +58,9 @@ public:
    bool mouse_action(int x, int y, int button, int what);
    void key_action(int key, int sym, int mod, int what);
    static attribute make_attribut(uv_group * parent,
-                                  int x, int y, int width, int height, string name);
+                                  int x, int y, int width, int height,
+                                  //uv_image::attribute image_attribute,
+                                  string name, string design);
 };
 //---------------------------------------------------------------------------
 #endif

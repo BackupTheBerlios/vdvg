@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 // File:       uv_gamebutton.cpp
-// Created by: Lukas Humbel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
+// Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
 // Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
@@ -15,22 +15,49 @@ uv_gamebutton::uv_gamebutton()
 bool uv_gamebutton::initialize(attribute init)
 {
    //Display-Listen Zeugs:
-   if(!(stranslation = glGenLists(5)))
+   if(!(stranslation = glGenLists(4)))
       return false; //Error !!
-   drroh = stranslation+1;
-   drx   = drroh +1;
-   dro   = drx+1;
-   etranslation = dro+1;
-
+   drawing1 = stranslation+1;
+   drawing2 = drawing1+1;
+   etranslation = drawing2+1;
+   
    redraw = true;
    retranslate = true;
 
    uv_group::initialize(uv_group::make_attribut(init.parent, init.x, init.y, init.width, init.height, init.name, true));
 
+  design  = (init.design == "") ? static_cast<string>("buttondesign.tga") : init.design;
+
+  obenlinks  = oben.make_attribut(this, 0,  0, 5, 5, "oben", design, 0, 0,         1.0/3.0, 1/3.0);
+  links      = oben.make_attribut(this, 0, 5, 5, get_h()-10, "oben", design, 0, 1.0/3.0,     1.0/3.0, 2.0/3.0);
+  untenlinks = untenlinks.make_attribut(this, 0, get_h()-5, 5, 5, "oben", design, 0, 2.0/3.0,     1.0/3.0, 1);
+	
+  unten      = oben.make_attribut(this, 5, get_h()-5, get_w()-10, 5, "oben", design, 1.0/3.0, 2.0/3.0, 2.0/3.0, 3.0/3.0);
+  untenrechts= oben.make_attribut(this, get_w()-5, get_h()-5, 5, 5, "oben", design, 2.0/3.0, 2/3.0, 3/3.0, 3/3.0);
+  rechts     = oben.make_attribut(this, get_w()-5, 5, 5, get_h()-10, "oben", design, 2.0/3.0, 1/3.0, 3/3.0, 2/3.0); 
+  obenrechts = oben.make_attribut(this, get_w()-5, 0, 5, 5, "oben", design, 2/3.0, 0,       3/3.0, 1/3.0);
+  oben       = oben.make_attribut(this, 5, 0, get_w()-10, 5, "oben", design, 1/3.0, 0, 2/3.0, 1/3.0);
+
+  backa      = oben.make_attribut(this, 5, 5, get_w()-10, get_h()-10, "oben", design, 5/15.0, 5/15.0, 6/15.0, 6/15.0);
+  backb      = oben.make_attribut(this, 5, 5, get_w()-10, get_h()-10, "oben", design, 6/15.0, 5/15.0, 7/15.0, 6/15.0);
+  
+  statusx    = oben.make_attribut(this, 5, 5, get_w()-10, get_h()-10, "oben", "x.tga");
+  statuso    = oben.make_attribut(this, 5, 5, get_w()-10, get_h()-10, "oben", "o.tga");
+  statusx.set_visible(0);
+  statuso.set_visible(0); 
+  status = 0;
+
+
+   //init.image_attribute.parent = this;
+   //image = init.image_attribute;
+
+   //uv_color text_color = {0xff, 0x88, 0x00};
+   //text = uv_text::make_attribut(this, 0, 0, 0, 0, 25, "Buttontext", init.caption, "Test.ttf", text_color);
+   //text.set_pos((get_w()-text.get_width())/2, (get_h()+text.get_height())/2);
+
    redraw = true;
    retranslate = true;
-	
-   status = 0;
+
    //Initialisierung erfolgt
    is_init = true;
 
@@ -39,14 +66,15 @@ bool uv_gamebutton::initialize(attribute init)
 //---------------------------------------------------------------------------
 uv_gamebutton::attribute uv_gamebutton::make_attribut(uv_group * parent,
                                               int x, int y, int width, int height,
-                                              string name)
+                                              //uv_image::attribute image_attribute,
+                                              string name, string design)
 {
    attribute attr;
 
    attr.parent = parent;
    attr.x = x; attr.y = y; attr.width = width; attr.height = height;
-   attr.name = name;
-
+   //attr.image_attribute = image_attribute;
+   attr.name = name; 
    return attr;
 };
 //---------------------------------------------------------------------------
@@ -70,52 +98,26 @@ void uv_gamebutton::draw(vector<GLuint> * clist)
 
    if(redraw)
    {
-      glNewList(drroh, GL_COMPILE);
-      glBindTexture(GL_TEXTURE_2D, 0);
-      glBegin (GL_QUADS);
-         glColor3ub (100, 100, 100);
-         glVertex2i (0, 0);             // Links Oben
-         glVertex2i (get_w(), 0);       // Rechts Oben
-         glColor3ub (255, 255, 255);
-         glVertex2i (get_w(), get_h()); // Rechts Unten
-         glVertex2i (0, get_h());       // Links Unten
-      glEnd ();
-      glEndList();
-
-      glNewList(drx, GL_COMPILE);
-      glBindTexture(GL_TEXTURE_2D, 0);
-      glBegin (GL_QUADS);
-         glColor3ub (150, 150, 150);
-         glVertex2i (0, 0);             // Links Oben
-         glVertex2i (get_w(), 0);       // Rechts Oben
-         glColor3ub (255, 255, 255);
-         glVertex2i (get_w(), get_h()); // Rechts Unten
-         glVertex2i (0, get_h());       // Links Unten
-      glEnd ();
-      glEndList();
-
-      glNewList(dro, GL_COMPILE);
-      glBindTexture(GL_TEXTURE_2D, 0);
-      glBegin (GL_QUADS);
-         glColor3ub (200,200, 200);
-         glVertex2i (0, 0);             // Links Oben
-         glVertex2i (get_w(), 0);       // Rechts Oben
-         glColor3ub (255, 255, 255);
-         glVertex2i (get_w(), get_h()); // Rechts Unten
-         glVertex2i (0, get_h());       // Links Unten
-      glEnd ();
-      glEndList();
-
-
+    
       redraw = false;
    }
 
-   clist->push_back(stranslation);
-   clist->push_back(drroh);
-   if(status == 1) clist->push_back(drx);
-   if(status == 2) clist->push_back(dro);
-   draw_childs(clist);
+//   clist->push_back(stranslation);
+   if(!mouse_over())
+	{
+     backa.set_visible(1);
+     backb.set_visible(0); 
+	}
+   else
+	{
+     backa.set_visible(0);
+     backb.set_visible(1);
+	}
+   if(status == 1) {statusx.set_visible(1); statuso.set_visible(0);};
+   if(status == 2) {statuso.set_visible(1); statusx.set_visible(0);};
 
+   clist->push_back(stranslation);
+   draw_childs(clist);
    clist->push_back(etranslation);
 }
 //---------------------------------------------------------------------------
@@ -124,11 +126,13 @@ bool uv_gamebutton::mouse_action(int x, int y,int button,int what)
     if( what==SDL_MOUSEBUTTONDOWN && get_visible())  //Nur reagieren, wenn der Button sichtbar ist...
     {
         callback var;
-        var.ID = 13;
-		var.status = status;
+        var.ID = 11;
         do_callback(&var);
+		if(status < 2) status++;
+	    else status=0;
+
     }
-    uv_widget::mouse_action(x,y,button,what);
+        uv_widget::mouse_action(x,y,button,what);
     return true;
 }
 //---------------------------------------------------------------------------
@@ -137,8 +141,7 @@ void uv_gamebutton::key_action(int key, int sym, int mod, int what)
    if(sym == SDLK_RETURN && what== SDL_KEYDOWN)//key == SDLK_RETURN)
    {
       callback var;
-      var.ID = 12;
-      var.status = status;
+      var.ID = 11;
       do_callback(&var);
    }
 }
