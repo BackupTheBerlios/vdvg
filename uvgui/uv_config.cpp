@@ -86,7 +86,7 @@ int uv_config::get_int(string a)
 
 bool uv_config::get_bool(string a)
 {
-if( a == "1" or a == "true" or a=="wahr" ) return 1;
+if(a == "1" || a == "true" || a=="wahr") return 1;
 return 0;
 }
 
@@ -94,6 +94,6 @@ void uv_config::make_string_lowercase(string &a)
 {
 	for(unsigned int i=0; i<a.length();i++)
 	{
-		if( 64 < a[i] and 91 > a[i]) a[i] = a[i]+32;
+		if( 64 < a[i] && 91 > a[i]) a[i] = a[i]+32;
 	}
 }
