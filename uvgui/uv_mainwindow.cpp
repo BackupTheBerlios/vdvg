@@ -262,7 +262,7 @@ void uv_mainwindow::run()
             break;
         };
 		static int zeit=0;
-		if(zeit + 15 < SDL_GetTicks())
+		if(zeit + 25 < SDL_GetTicks())
 		{
 			zeit = SDL_GetTicks();
 	        vector<GLuint> clist;	

@@ -228,8 +228,13 @@ void ocancelcb()
 
 void ookcb()
 {
+   bool temp = uv_main::konfig.get_config().fullscreen;
+   SDL_Surface *sf = SDL_GetVideoSurface();
+
    uv_main::options.set_visible(0);
    uv_main::konfig.set_fullscreen(uv_main::ofullscreen.get_checked());
+
+   if(temp != uv_main::ofullscreen.get_checked()) SDL_WM_ToggleFullScreen(sf);
 }
 
 void optionscb()
