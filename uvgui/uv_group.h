@@ -48,6 +48,7 @@ public:
     bool mouse_move_rel_childs(int rel_x, int rel_y);
 	void set_mouse_over_off();
     bool set_focus(uv_widget * widgetpointer);
+    bool set_in_front(uv_widget * widgetpointer);
 };
 //---------------------------------------------------------------------------
 #endif

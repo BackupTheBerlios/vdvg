@@ -17,8 +17,13 @@ class uv_group;  //forward-Deklaration von uv_group
 #include <string>
 //---------------------------------------------------------------------------
 using namespace std;
-
-typedef void (*voidcallback)();
+//---------------------------------------------------------------------------
+struct uv_callback
+{
+   int ID;
+};
+//---------------------------------------------------------------------------
+typedef void (*voidcallback)(uv_callback * cb);
 //-------------------------------------------------------------------------//
 //  @class uv_widget                                                       //
 //  @brief Verwaltet gemeinsame Optionen eines Widgets                     //
@@ -70,7 +75,7 @@ class uv_widget
       void set_callback(voidcallback callback);
       //Callback Adresse zurückgeben
       voidcallback get_callback();
-      void do_callback();
+      void do_callback(uv_callback * cb);
       void set_when(int bitset); //Wann wird der Callback ausgelöst?
 
       char* get_label();      //Label zurueckgeben

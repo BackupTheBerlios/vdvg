@@ -21,6 +21,18 @@ using namespace std;
 //---------------------------------------------------------------------------
 class uv_image:public uv_widget
 {
+public:
+   struct attribute
+   {
+      uv_group * parent;
+      int x, y, width, height;
+      string name, image;
+      float picx, picy, picw, pich;
+   };
+   struct callback: public uv_callback
+   {
+
+   };
 private:
     //Variabeln:
     int w, h;
@@ -41,7 +53,16 @@ private:
                    float picx=-1, float picy=-1, float picw=-1, float pich=-1);
 
 public:
-    uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *label=0);
+//    uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *label=0);
+    uv_image();
+
+    bool initialize(attribute init);
+    bool operator=(attribute init) {return initialize(init);};
+
+    attribute make_attribut(uv_group * parent,
+                            int x, int y, int width, int height,
+                            string name, string image,
+                            float picx=0.0, float picy=0.0, float picw=1.0, float pich=1.0);
 
     bool LoadImageFile(string fname);
 

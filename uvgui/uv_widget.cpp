@@ -143,9 +143,9 @@ voidcallback uv_widget::get_callback()
 };
 //---------------------------------------------------------------------------
 //Löse den Callback aus
-void uv_widget::do_callback()
+void uv_widget::do_callback(uv_callback * cb)
 {
-   if(callback) (*callback)();
+   if(callback)(*callback)(cb);
 };
 //---------------------------------------------------------------------------
 //Setze den Wert, wann der Callback ausgelöst werden soll

@@ -93,7 +93,9 @@ bool uv_button::mouse_action(int x, int y,int button,int what)
 {
     if( what==SDL_MOUSEBUTTONDOWN && get_visible())  //Nur reagieren, wenn der Button sichtbar ist...
     {
-        do_callback();
+        callback var;
+        var.ID = 11;
+        do_callback(&var);
     }
     uv_widget::mouse_action(x,y,button,what);
     return true;
@@ -102,6 +104,10 @@ bool uv_button::mouse_action(int x, int y,int button,int what)
 void uv_button::key_action(int key, int sym, int mod, int what)
 {
    if(sym == SDLK_RETURN && what== SDL_KEYDOWN)//key == SDLK_RETURN)
-      do_callback();
+   {
+      callback var;
+      var.ID = 11;
+      do_callback(&var);
+   }
 }
 //---------------------------------------------------------------------------

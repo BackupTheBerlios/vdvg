@@ -226,7 +226,8 @@ void uv_mainwindow::run()
         glListBase(0);
         glCallLists(clist.length(), GL_UNSIGNED_INT, clist.c_str());
         //Hauptschleifenfunktion aufrufen
-        do_callback();
+        uv_callback var = {0};
+        do_callback(&var);
         SDL_GL_SwapBuffers();
 
         //Auf run prüfen

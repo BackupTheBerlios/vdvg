@@ -6,25 +6,54 @@
 //---------------------------------------------------------------------------
 #include "uv_image.h"
 //---------------------------------------------------------------------------
-uv_image::uv_image(int mx, int my, int mw, int mh,
-                   uv_group *parent, char *mlabel)
-                   : uv_widget(mx,my,mw,mh,parent,0)
+uv_image::uv_image()//int mx, int my, int mw, int mh,
+                   //uv_group *parent, char *mlabel)
+                   //: uv_widget(mx,my,mw,mh,parent,0)
+                   : uv_widget(0, 0, 0, 0, 0, 0)
 {
    loaded=false;
    w=0;
    h=0;
-   LoadImageFile(mlabel);
 
    //Display-Listen Zeugs:
    if(!(stranslation = glGenLists(3)))
       return; //Error !!
    drawing = stranslation+1;
    etranslation = drawing+1;
+};
+//---------------------------------------------------------------------------
+bool uv_image::initialize(attribute init)
+{
+   //Den Parent setzen
+   set_parent(init.parent);
 
-   picx = -1; picy = -1; picw = -1; pich = -1;
+   //Position und Grösse des Bildes setzen
+   set_size(init.x, init.y, init.width, init.height,
+            init.picx, init.picy, init.picw, init.pich);
+
+   LoadImageFile(init.image.c_str());
+
+//   picx = -1; picy = -1; picw = -1; pich = -1;
 
    redraw = true;
    retranslate = true;
+
+   return true;
+};
+//---------------------------------------------------------------------------
+uv_image::attribute uv_image::make_attribut(uv_group * parent,
+                                            int x, int y, int width, int height,
+                                            string name, string image,
+                                            float picx, float picy, float picw, float pich)
+{
+   attribute attr;
+
+   attr.parent = parent;
+   attr.x = x; attr.y = y; attr.width = width; attr.height = height;
+   attr.name = name; attr.image = image;
+   attr.picx = picx; attr.picy = picy; attr.picw = picw; attr.pich = pich;
+
+   return attr;
 };
 //---------------------------------------------------------------------------
 bool uv_image::LoadImageFile(string fname)
@@ -202,6 +231,9 @@ void uv_image::draw_size(int x, int y, int w, int h,
 //---------------------------------------------------------------------------
 void uv_image::draw(basic_string<GLuint> * clist)
 {
+   if(!get_visible())
+      return;
+
    if(retranslate)
    {
       glNewList(stranslation, GL_COMPILE);

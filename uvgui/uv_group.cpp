@@ -185,3 +185,15 @@ bool uv_group::set_focus(uv_widget * widgetpointer)
    };
 };
 //---------------------------------------------------------------------------
+bool uv_group::set_in_front(uv_widget * widgetpointer)
+{
+   for(int i=0;i<childs.Elemente();i++)
+   {
+      if(widgetpointer == childs.outpos(i))
+      {
+         childs.poppos(i);
+         childs.pushf(widgetpointer);
+      }
+   };
+};
+//---------------------------------------------------------------------------

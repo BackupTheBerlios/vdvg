@@ -23,16 +23,21 @@
 //---------------------------------------------------------------------------
 class uv_button: public uv_group
 {
-private:
-    uv_text text;
-    std::string textspeicher;
-    GLuint stranslation, etranslation, drawing1, drawing2;
-    bool redraw, retranslate;
 public:
-    uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel=0);
-    void draw(basic_string<GLuint> * clist);
-    bool mouse_action(int x, int y, int button, int what);
-    void key_action(int key, int sym, int mod, int what);
+   struct callback: public uv_callback
+   {
+      bool used;
+   };
+private:
+   uv_text text;
+   std::string textspeicher;
+   GLuint stranslation, etranslation, drawing1, drawing2;
+   bool redraw, retranslate;
+public:
+   uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel=0);
+   void draw(basic_string<GLuint> * clist);
+   bool mouse_action(int x, int y, int button, int what);
+   void key_action(int key, int sym, int mod, int what);
 };
 //---------------------------------------------------------------------------
 #endif
