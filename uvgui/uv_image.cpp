@@ -25,7 +25,18 @@ uv_image::uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *mlabe
 //---------------------------------------------------------------------------
 bool uv_image::LoadImageFile(string fname)
 {
- 
+ 	static map<string,uv_image*> texturindex;
+	map<string,uv_image*>::iterator ite;
+	ite = texturindex.find(fname); 
+	if ( ite != texturindex.end()) //Dieses font_set wird bereits verwendet...
+	{ 
+		//sozusagen this=ite->second....
+		w = ite->second->get_texture_w(); //Laden
+		h = ite->second->get_texture_w(); //Laden
+		textur = ite->second->get_texture_index();
+		return 1;
+	}
+	
 	GLuint global_texture = 0;
     SDL_Surface *image;
     GLfloat texcoord[4];
@@ -57,7 +68,8 @@ bool uv_image::LoadImageFile(string fname)
     texMinY = texcoord[1];
     texMaxX = texcoord[2];
     texMaxY = texcoord[3];
-
+	
+	texturindex.insert(pair<string,uv_image*>(fname,this));
     return true;
 };
 //---------------------------------------------------------------------------

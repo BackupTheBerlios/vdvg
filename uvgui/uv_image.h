@@ -7,8 +7,7 @@
 #include "SDL_image.h"  //Reihenfolge vertauschen
 #include "uv_widget.h"
 #include "uv_group.h"
-
-
+#include <map>
 #include <iostream>
 #include <string>
 //---------------------------------------------------------------------------
