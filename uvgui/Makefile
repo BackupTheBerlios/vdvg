@@ -2,7 +2,7 @@ CC = gcc -Wall -ansi -O2
 FILES = main.cpp uv_mainwindow.cpp uv_group.cpp uv_gui.cpp uv_button.cpp uv_widget.cpp uv_window.cpp uv_image.cpp uv_text.cpp uv_array.cpp uv_fpscounter.cpp uv_box.cpp uv_textbox.cpp uv_config.cpp
 LIBS = -lGL -lGLU -lfreetype -lSDL_image `sdl-config --libs` 
 INCLUDES = -I/usr/include/freetype2 `sdl-config --cflags`
-OBJECTS = main.o uv_array.o uv_box.o uv_button.o uv_fpscounter.o uv_group.o uv_gui.o uv_image.o uv_mainwindow.o uv_text.o uv_textbox.o uv_widget.o uv_window.o uv_config.o uv_container.o
+OBJECTS = main.o uv_array.o uv_box.o uv_button.o uv_fpscounter.o uv_group.o uv_gui.o uv_image.o uv_mainwindow.o uv_text.o uv_textbox.o uv_widget.o uv_window.o uv_config.o uv_container.o uv_checkbox.o
 LINKER = g++
 
 all: uvgui
@@ -57,6 +57,9 @@ uv_config.o: uv_config.cpp uv_config.h
 
 uv_container.o: uv_container.cpp uv_container.h
 	$(CC) $(INCLUDES) -c uv_container.cpp
+
+uv_checkbox.o: uv_checkbox.cpp uv_checkbox.h
+	$(CC) $(INCLUDES) -c uv_checkbox.cpp
 
 clean: 
 	@echo Cleaning Up...

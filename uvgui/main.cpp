@@ -31,7 +31,9 @@ int main (int argc, char *argv[])
    uv_main::Button1.set_callback((voidcallback) calli);
    uv_main::Button2.set_callback((voidcallback) calli2);
    uv_main::fps = uv_fpscounter::make_attribut(&uv_main::mainwindow, uv_main::mainwindow.get_w()-100, 0, 0, 0, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Frames", "Wait...", "Test.ttf", uv_color::make_color(255, 255, 255)),"FPS Counter");
+   uv_main::cbox = uv_checkbox::make_attribut(&uv_main::bbb, 30,30, 300,64, "cbox","cgalkj");
    uv_main::mainwindow.run();
+  
    uv_main::konfig.save_file("config.txt");
    return 0;
 };
