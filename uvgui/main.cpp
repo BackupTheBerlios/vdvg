@@ -19,7 +19,7 @@ int main (int argc, char *argv[])
 //   uv_main::mainwindow = uv_mainwindow::make_attribut(1024, 768, false, "4D4G");
    uv_main::mainwindow = uv_main::konfig.get_mainwindow_attribute(); 
    uv_main::mainwindow.set_callback(mainloop);
-   uv_main::img = uv_image::make_attribut(&uv_main::mainwindow, 0, 0, uv_main::width, uv_main::height, "Hintergrund", "background.jpg");
+   uv_main::img = uv_image::make_attribut(&uv_main::mainwindow, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", "background.jpg");
    uv_main::test = uv_image::make_attribut(&uv_main::window1, 20, 110, 200, 100, "test", "Testbild2.bmp", 0.5, 0.0, 1.0, 1.0);
    uv_main::testa = uv_image::make_attribut(&uv_main::window2, 20, 110, 64, 64, "testa","test3.tga");
    fensterinit();

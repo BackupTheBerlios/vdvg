@@ -23,10 +23,8 @@
 namespace uv_main
 {
 	uv_config konfig;
-   // konfig.load_file("config.conf");
 
-   const int width = 1024, height = 768;
-   uv_mainwindow mainwindow;//(width, height, false, "4D4G");
+   uv_mainwindow mainwindow;
    //Die Fenster
    uv_window window1, window2, aaa, bbb, ccc, ddd, eee, fff;
    //Die Buttons
