@@ -2,7 +2,7 @@
 // File:       uv_textbox.h
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sun Sep-12-2004 21:20:06 by Benny>
 //---------------------------------------------------------------------------
 #ifndef uv_textboxH
 #define uv_textboxH
@@ -15,8 +15,7 @@ class uv_textbox: public uv_group
    private:
       uv_text text;
       char str2[256];
-      string str;
-      string::iterator iter;
+      std::string str;
       int pos;
    public:
       uv_textbox(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel=0);

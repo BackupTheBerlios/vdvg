@@ -2,7 +2,7 @@
 // File:       uv_textbox.cpp
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sun Sep-12-2004 21:19:43 by Benny>
 //---------------------------------------------------------------------------
 #include "uv_textbox.h"
 //---------------------------------------------------------------------------
@@ -17,7 +17,6 @@ uv_textbox::uv_textbox(int mx, int my,int mw,int mh, uv_group *parent, char *mla
     //Den Text auf dem Button zentrieren
     text.set_pos(5,((get_h()-text.get_height())/2)-2);
     for(int i=0; i<256; i++) str[i]=0;
-    iter = str.end();
     pos = 0;
 };
 //---------------------------------------------------------------------------
@@ -40,7 +39,7 @@ void uv_textbox::draw()
       
       draw_childs();
    }
-}
+};
 //---------------------------------------------------------------------------
 void uv_textbox::key_action(int key, int sym, int mod, int what)
 {
@@ -59,9 +58,7 @@ void uv_textbox::key_action(int key, int sym, int mod, int what)
       //Ist es ein Buchstaben ?
       if(key >= 97 && key <= 122)
       {
-         str.insert(iter, key);
-         iter = &str[++pos];
-         //str += key;
+         str.insert(pos++, 1, key);
       }
       //sonst ein anderes Zeichen:
       else
@@ -71,41 +68,36 @@ void uv_textbox::key_action(int key, int sym, int mod, int what)
             case SDLK_DELETE:
                if(pos >= str.length())
                   break;
-               str.erase(iter);
-               iter = &str[pos];
+               str.erase(pos, 1);
                break;
             case SDLK_LEFT:
                if(pos==0)
                   break;
-               iter = &str[--pos];
+               --pos;
                break;
             case SDLK_RIGHT:
                if(pos >= str.length())
                   break;
-               iter = &str[++pos];
+               ++pos;
                break;
             case SDLK_HOME:
-               iter = &str[(pos=0)];
+               pos=0;
                break;
             case SDLK_END:
-               iter = &str[(pos=str.length())];
+               pos=str.length();
                break;
             default:
                switch(key)
                {
                   case SDLK_BACKSPACE:
-                     //str.pop_back();
                      if(pos==0)
                         break;
-                     iter = &str[--pos];
-                     str.erase(iter);
+                     str.erase(--pos, 1);
                      break;
                   default:
                      if(key == 0)
                         break;
-                     str.insert(iter, key);
-                     iter = &str[++pos];
-                     //str += key;
+                     str.insert(pos++, 1, key);
                      break;
                }; //switch(key)
          };//switch(sym)
