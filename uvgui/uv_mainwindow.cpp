@@ -212,7 +212,7 @@ void uv_mainwindow::run()
 
     SDL_Event event;
     bool last_was_mouse_down = false;
-    bool last_was_key_down[256];
+    bool last_was_key_down[500];//256];
     for(int i=0; i<256; i++) last_was_key_down[i] = false;
     while (SDL_PollEvent(&event) >= 0)
     {
@@ -234,7 +234,7 @@ void uv_mainwindow::run()
 			 if(!last_was_key_down)
                 break;
             //key_action(event.key.keysym.sym, event.key.keysym.mod, event.key.type);
-			last_was_key_down[event.key.keysym.sym] = false;
+			last_was_key_down[event.key.keysym.sym] = false;  //Achtung: Bufferoverflow-Gefahr
             break;
 
         case SDL_MOUSEMOTION:

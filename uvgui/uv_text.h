@@ -73,19 +73,26 @@ class uv_text:public uv_widget
       //Schon initialisiert?
       bool is_init;
 
+      //Free-Type Variabeln:
+      FT_Library library; //Handle für die FreeType-Library
+      FT_Face face; //Handle für das FreeType-Face_Objekt
+
       //Variabeln:
       GLuint * textures; // Array mit den Textur IDs
       GLuint list_base;  // Variable mit der ID der ersten "display list"
       float font_height; // Schrifthöhe
       long anzahl_faces; // Anzahl Faces, die das Font-File enthält
       float len;
+      bool kerning_support; //wird kerning unterstützt?
 
-//      vector<std::string> lines;     //Enthält pro Element eine Zeile vom Text...
+      bool draw_cursor; //Soll ein Cursor gezeichnet werden
+      int cursor_position; //Wo befindet sich der Cursor?
+
       string line;
       uv_color font_color; //Textfarbe
       GLubyte red, green, blue; //Textfarbe
 
-      int* bbreiten;
+      long* bbreiten;
       bool bbreiteninit;
 
       //Funktionen:
@@ -117,6 +124,7 @@ class uv_text:public uv_widget
 
       bool init(const char * fname, unsigned int h);
       void set_color(GLubyte red,GLubyte green,GLubyte blue);
+      bool set_cursor(bool draw_cursor, int position);
       void clean();
       void pushtext(string str);
       void print(int x, int y);

@@ -16,6 +16,12 @@ uv_text::~uv_text()
 {
    if(bbreiteninit == true)
       delete[] bbreiten;
+   // Nun, wo die Display Liste erzeugt wurde, benötigen wir die Face Informationen
+   // nicht mehr, weshalb wir die damit verbundenen Ressourcen wieder freigeben.
+   FT_Done_Face(face);
+
+   // Ditto für die Font Library
+   FT_Done_FreeType(library);
 };
 //---------------------------------------------------------------------------
 bool uv_text::initialize(attribute init)
@@ -42,6 +48,8 @@ bool uv_text::initialize(attribute init)
    set_color(init.font_color.red, init.font_color.green, init.font_color.blue);
    uv_text::init(init.font.c_str(), init.font_size);
    pushtext(init.text);
+
+   draw_cursor = false;
 
    redraw = true;
    retranslate = true;
@@ -179,15 +187,12 @@ void uv_text::make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuin
       glTexCoord2d(x, y); glVertex2f(bitmap.width, 0);
    glEnd();
    glPopMatrix();
-
    glTranslatef(face->glyph->metrics.horiAdvance >> 6, 0, 0);
-
-   // Inkrementiere die Raster Position so, als ob wir ein Bitmap Font wären.
-   // (wird nur benötigt, wenn Sie die Text Länge berechnen wollen)
-   glBitmap(0,0,0,0,face->glyph->advance.x >> 6,0,NULL);
 
    // Beende die Displayliste
    glEndList();
+
+   bbreiten[ch] = (face->glyph->metrics.horiAdvance >> 6);
 }
 //---------------------------------------------------------------------------
 bool uv_text::init(const char * fname, unsigned int h)
@@ -211,11 +216,6 @@ bool uv_text::init(const char * fname, unsigned int h)
 
    // Alloziere etwas Speicher um die Textur IDs zu speichern.
    textures = new GLuint[anzahl_zeichen];
-
-   FT_Library library; //Handle für die FreeType-Library
-   // Das Objekt in welchem FreeType die Informationen über den
-   // Font speichert, wird ein "face" (eine Seite/Gesicht...) genannt.
-   FT_Face face;       //Handle für das FreeType-Face_Objekt
 
    // erzeuge und initialisiere eine FreeType Font Library
    if(FT_Init_FreeType(&library))
@@ -253,11 +253,18 @@ bool uv_text::init(const char * fname, unsigned int h)
 
    // Hier fragen wir OpenGL an, Ressourcen für all die Texturen und
    // Display-Listen die wir erzeugen wollen, zu allozieren.
-   list_base = glGenLists(anzahl_zeichen);
+   list_base = glGenLists(anzahl_zeichen+12); //Die letzten 12 werden für Translations benutzt
    glGenTextures(anzahl_zeichen, textures);
 
    //Die charmap muss geändert werden um Umlaute zu benutzen...
    // find_unicode_charmap(face); //Ist irgendwie nicht nötig???
+
+   //Hier überprüfen wir, ob unsere Font kerning unterstützt.
+   kerning_support = FT_HAS_KERNING(face);
+
+   //Die Breiten der Glyphen abspeichern:
+   bbreiten = new long[anzahl_zeichen];
+   bbreiteninit = true;
 
    // Hier erzeugen wir die einzelnen Fonts Display-Listen.
    for(int i=0;i<anzahl_zeichen;i++)
@@ -265,21 +272,54 @@ bool uv_text::init(const char * fname, unsigned int h)
       make_dlist(face, i, list_base, textures);
    };
 
-   //Die Breiten der Glyphen abspeichern:
-   bbreiten = new int[anzahl_zeichen];
-   bbreiteninit = true;
-   for(int i=0;i<anzahl_zeichen;i++)
+   // Hier erzeugen wir die Display-Listen für die Translationen.
+   for(int i=0;i<12;i++)
    {
-      FT_Load_Glyph(face, FT_Get_Char_Index(face, i), FT_LOAD_DEFAULT);
-      bbreiten[i] = (face->glyph->advance.x >> 6);
+      //Das ganze eventuell noch in eine eigene Funktion auslagern...
+      glNewList(list_base+anzahl_zeichen+i, GL_COMPILE);
+         int x_motion;
+         switch(i)
+         {
+            case 0:
+               x_motion = 1;
+               break;
+            case 1:
+               x_motion = 5;
+               break;
+            case 2:
+               x_motion = 10;
+               break;
+            case 3:
+               x_motion = 50;
+               break;
+            case 4:
+               x_motion = 100;
+               break;
+            case 5:
+               x_motion = 500;
+               break;
+            case 6:
+               x_motion = -1;
+               break;
+            case 7:
+               x_motion = -5;
+               break;
+            case 8:
+               x_motion = -10;
+               break;
+            case 9:
+               x_motion = -50;
+               break;
+            case 10:
+               x_motion = -100;
+               break;
+            case 11:
+               x_motion = -500;
+               break;
+         };
+         glTranslatef(x_motion, 0, 0);
+      glEndList();
    };
-
-   // Nun, wo die Display Liste erzeugt wurde, benötigen wir die Face Informationen
-   // nicht mehr, weshalb wir die damit verbundenen Ressourcen wieder freigeben.
-   FT_Done_Face(face);
-
-   // Ditto für die Font Library
-   FT_Done_FreeType(library);
 
    //Das neue Font wurde geladen
    fontindex.insert(pair<font_set,GLuint>(temp,list_base));
@@ -292,7 +332,7 @@ void uv_text::clean()
     //
     int anzahl_zeichen = 256;
 
-    glDeleteLists(list_base, anzahl_zeichen);
+    glDeleteLists(list_base, anzahl_zeichen+12);
     glDeleteTextures(anzahl_zeichen ,textures);
     delete [] textures;
 
@@ -308,7 +348,101 @@ void uv_text::pop_projection_matrix()
 //---------------------------------------------------------------------------
 void uv_text::print(int x, int y)
 {
-   GLuint font = list_base;
+   //Den String zur Ausgabe vorbereiten:
+   FT_UInt previous = 0; //Den vorherigen Glyph auf 0 setzen.
+   FT_UInt glyph_index;  //Der momentane Glyph.
+   vector<GLuint> textlist;
+   for(int i=0;i<line.length();i++)
+   {
+      //Den jetztigen Glyph laden
+      glyph_index = FT_Get_Char_Index(face, line[i]);
+
+      //Prüfen ob Kerning durchgeführt wird.
+      if(kerning_support && previous && glyph_index)
+      {
+         FT_Vector delta;
+         FT_Get_Kerning(face, previous, glyph_index,
+                        FT_KERNING_DEFAULT, &delta);
+         int xmotion = delta.x >> 6;
+
+         if(xmotion != 0)
+            int a = 3;
+
+         //Die entsprechenden Display-Listen einfügen:
+         for(int z=0; z<(xmotion/500); z++)
+         {
+            textlist.push_back(256+5);
+         };
+         xmotion %= 500;
+         for(int z=0; z<(xmotion/100); z++)
+         {
+            textlist.push_back(256+4);
+         };
+         xmotion %= 100;
+         for(int z=0; z<(xmotion/50); z++)
+         {
+            textlist.push_back(256+3);
+         };
+         xmotion %= 50;
+         for(int z=0; z<(xmotion/10); z++)
+         {
+            textlist.push_back(256+2);
+         };
+         xmotion %= 10;
+         for(int z=0; z<(xmotion/5); z++)
+         {
+            textlist.push_back(256+1);
+         };
+         xmotion %= 5;
+         for(int z=0; z<(xmotion); z++)
+         {
+            textlist.push_back(256+0);
+         };
+         if(xmotion < 0) xmotion *= -1;
+         for(int z=0; z<(xmotion/500); z++)
+         {
+            textlist.push_back(256+11);
+         };
+         xmotion %= 500;
+         for(int z=0; z<(xmotion/100); z++)
+         {
+            textlist.push_back(256+10);
+         };
+         xmotion %= 100;
+         for(int z=0; z<(xmotion/50); z++)
+         {
+            textlist.push_back(256+9);
+         };
+         xmotion %= 50;
+         for(int z=0; z<(xmotion/10); z++)
+         {
+            textlist.push_back(256+8);
+         };
+         xmotion %= 10;
+         for(int z=0; z<(xmotion/5); z++)
+         {
+            textlist.push_back(256+7);
+         };
+         xmotion %= 5;
+         for(int z=0; z<(xmotion); z++)
+         {
+            textlist.push_back(256+6);
+         };
+      };
+
+      //Den Buchstaben einfügen
+      textlist.push_back((unsigned char)line[i]);
+
+      previous = glyph_index;
+   };
+   //Den Inhalt des Vectors in ein Array schreiben:
+   GLuint *listarray = new GLuint[textlist.size()];
+   vector<GLuint>::const_iterator iter;
+   int pi=0;
+   for(iter=textlist.begin(); iter != textlist.end(); iter++)
+   {
+      listarray[pi++] = *iter;
+   };
 
    glDisable(GL_LIGHTING);
    glEnable(GL_TEXTURE_2D);
@@ -317,7 +451,7 @@ void uv_text::print(int x, int y)
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-   glListBase(font);
+   glListBase(list_base);
 
    // This is where the text display actually happens.
    // For each line of text we reset the modelview matrix
@@ -336,10 +470,8 @@ void uv_text::print(int x, int y)
    // know the length of the text that you are creating.
    // If you decide to use it make sure to also uncomment the glBitmap command
    // in make_dlist().
-   glCallLists(line.length(), GL_UNSIGNED_BYTE, line.c_str());
-//   int rpos[4];
-//   glGetIntegerv(GL_CURRENT_RASTER_POSITION ,rpos);
-//   len=x-rpos[0];
+   glCallLists(textlist.size(), GL_UNSIGNED_INT, listarray);
+
    glPopMatrix();
 
    glBindTexture(GL_TEXTURE_2D, 0); //Texturen unbinden
@@ -367,18 +499,18 @@ void uv_text::splitup()
 int uv_text::get_width()
 {
    int breite = 0;
-   const char * mem = line.c_str();//lines.front().c_str();
-   for(int i=0; mem[i]!=0; i++)
+   for(int i=0; i<line.length(); i++)
    {
-      breite += bbreiten[mem[i]];
-   };
-   return breite+15; //+15, Korrektur für das Font System, das irgendetwas falsch macht.
+      breite += bbreiten[(unsigned char)line[i]];
+   }
+
+   return breite; //+15, Korrektur für das Font System, das irgendetwas falsch macht.
 };
 //---------------------------------------------------------------------------
 int uv_text::get_height()
 {
 
-   return (int)font_height;//lines.size()*((int)h);
+   return (int)font_height;
 
 };
 //---------------------------------------------------------------------------
@@ -390,14 +522,43 @@ void uv_text::draw(vector<GLuint> * clist)
    if(redraw || last_abs_x != get_absolute_x() || last_abs_y != get_absolute_y())
    {
       glNewList(drawing, GL_COMPILE);
+         //Markierung Zeichnen:
+         if(false)
+         {
+            int startpos=0, endpos=0;
+            for(int i=0; i<line.length() && i<0; i++)
+            {
+               startpos += bbreiten[(unsigned char)line[i]];
+            };
+            for(int i=0; i<line.length() && i<cursor_position; i++)
+            {
+               endpos += bbreiten[(unsigned char)line[i]];
+            };
+            glColor4ub(0, 255, 0, 255);
+            glBegin(GL_QUADS);
+               glVertex2f(get_x()+startpos, get_y()-font_height);
+               glVertex2f(get_x()+startpos, get_y()+4);
+               glVertex2f(get_x()+endpos,   get_y()+4);
+               glVertex2f(get_x()+endpos,   get_y()-font_height);
+            glEnd();
+         }
          print(get_x(), get_y());
          //Cursor zeichnen
-       /*  glColor4ub(0, 0, 0, 255);
-         glLineWidth(2.0f);
-         glBegin (GL_LINES);
-            glVertex2f (get_x()+0, get_y()-font_height);
-            glVertex2f (get_x()+0, get_y());
-         glEnd();*/
+         if(bbreiteninit && draw_cursor)
+         {
+            int xcursorpos = 0;
+            //Position des Cursors berechnen:
+            for(int i=0; i<line.length() && i<cursor_position; i++)
+            {
+               xcursorpos += bbreiten[(unsigned char)line[i]];
+            };
+            glColor4ub(0, 0, 0, 255);
+            glLineWidth(2.0f);
+            glBegin (GL_LINES);
+               glVertex2f (get_x()+xcursorpos, get_y()-font_height);
+               glVertex2f (get_x()+xcursorpos, get_y());
+            glEnd();
+         }
       glEndList();
 
       last_abs_x = get_absolute_x();
@@ -406,6 +567,12 @@ void uv_text::draw(vector<GLuint> * clist)
    }
 
    clist->push_back(drawing);
+};
+//---------------------------------------------------------------------------
+bool uv_text::set_cursor(bool draw_cursor, int position)
+{
+   this->draw_cursor = draw_cursor;
+   cursor_position = position;
 };
 //---------------------------------------------------------------------------
 // <Function>

@@ -137,55 +137,47 @@ void uv_textbox::key_action(int key, int sym, int mod, int what)
       if(key == SDLK_RALT)       return;
       if(key == SDLK_LALT)       return;
 
-      //Ist es ein Buchstaben ?
-      if(key >= 97 && key <= 122)
+      switch(sym)
       {
-         str.insert(pos++, 1, key);
-      }
-      //sonst ein anderes Zeichen:
-      else
-      {
-         switch(sym)
-         {
-            case SDLK_DELETE:
-               if(pos >= str.length())
-                  break;
-               str.erase(pos, 1);
+         case SDLK_DELETE:
+            if(pos >= str.length())
                break;
-            case SDLK_LEFT:
-               if(pos==0)
-                  break;
-               --pos;
+            str.erase(pos, 1);
+            break;
+         case SDLK_LEFT:
+            if(pos==0)
                break;
-            case SDLK_RIGHT:
-               if(pos >= str.length())
-                  break;
-               ++pos;
+            --pos;
+            break;
+         case SDLK_RIGHT:
+            if(pos >= str.length())
                break;
-            case SDLK_HOME:
-               pos=0;
-               break;
-            case SDLK_END:
-               pos=str.length();
-               break;
-            default:
-               switch(key)
-               {
-                  case SDLK_BACKSPACE:
-                     if(pos==0)
-                        break;
-                     str.erase(--pos, 1);
+            ++pos;
+            break;
+         case SDLK_HOME:
+            pos=0;
+            break;
+         case SDLK_END:
+            pos=str.length();
+            break;
+         default:
+            switch(key)
+            {
+               case SDLK_BACKSPACE:
+                  if(pos==0)
                      break;
-                  default:
-                     if(key == 0)
-                        break;
-                     str.insert(pos++, 1, key);
+                  str.erase(--pos, 1);
+                  break;
+               default:
+                  if(key == 0)
                      break;
-               }; //switch(key)
-         };//switch(sym)
-      };
+                  str.insert(pos++, 1, key);
+                  break;
+            }; //switch(key)
+      };//switch(sym)
    }
    text.pushtext(str);
+   text.set_cursor(true, pos);
 };
 //---------------------------------------------------------------------------
 bool uv_textbox::mouse_action(int x, int y,int button,int what)
