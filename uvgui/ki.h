@@ -2,7 +2,8 @@
 #ifndef kiH
 #define kiH
 //---------------------------------------------------------------------------
-//#include "uv_kithread.h"
+#include <stdlib>
+#include <time>
 //---------------------------------------------------------------------------
 namespace ki
 {
@@ -57,20 +58,25 @@ namespace ki
    };
 
    //Die echte KI-Funktion, die den Computerzug berechnet:
-   spielfeld calculate_computer_move(spielfeld feld);
+   spielfeld calculate_computer_move(spielfeld Feld);
    //Die KI-Hilfsfunktionen:
    extern int feld[4][4][4][4];    //x,y,z,w 0=leer, 1=X, 2=O
    extern int sieg;                //Hat jemand 4Gewinnt
    extern int suchtiefe;
+   extern int schwierigkeitsgrad;
+   extern int seed;
    extern int dimensionen;
 
    char typ_gegenteil(char typ);
    resultat suchebene(int sx,int sy,int sz,int sw,int st,char typ,
-                      int pos_neg, alpha_beta_cutoff abc);
+                      alpha_beta_cutoff abc);
+                      // pos_neg gibt an, ob es die oberste Suchebene ist, oder nicht
+   bool suchebene_starten(spielfeld & Feld);
    dreiint punkt_pruefen(point startpunkt, int &gewonnen, bool updaten); //updaten: 0=nein 1=ja_down 2=ja_up
    //Bewertungsfunktionen:
    bool update(point punkt, point startpunkt, bool down);
-   bool bewerte_init();
+   bool bewerte_init(spielfeld & Feld);
+   bool bewerte_exit(spielfeld & Feld);
    bool bewerte_update_down(point p);
    bool bewerte_update_up(point p);
    int bewerte();//int x,int y, int z, int w);

@@ -4,6 +4,8 @@
 int ki::feld[4][4][4][4];    //x,y,z,w 0=leer, 1=X, 2=O
 int ki::sieg;                //Hat jemand 4Gewinnt
 int ki::suchtiefe;
+int ki::schwierigkeitsgrad;
+int ki::seed;
 int ki::dimensionen;
 
 int ki::wertefeld[4][4][4][4][3];
@@ -13,9 +15,190 @@ int ki::tiefe;
 //---------------------------------------------------------------------------
 //  Die echten KI-Funktionen:
 //---------------------------------------------------------------------------
+// Diese Funktion verwaltet alle KI funktionen und führt die berechnung des
+// Computer-Zuges durch.
 ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
 {
+   //Die Suchtiefe wird momentan mit einem Fixen Wert angegeben.
    suchtiefe = 2;
+   schwierigkeitsgrad = 0;
+   seed = (unsigned)time(NULL);
+   //Die Spielfeldbewertung initialisieren und prüfen, ob der Bewertungs-
+   //baum gestartet werden kann.
+   if(!bewerte_init(Feld))
+   {
+      //Der Bewertungsbaum kann nicht gestartet werden, entweder weil
+      //bereits jemand gewonnen hat, oder im Spielfeld ein Fehler vor-
+      //handen ist.
+      return Feld;
+   }
+
+   //Bewertungsbaum starten
+   suchebene_starten(Feld);
+
+   //Die Spielfeldbewertung abschliessen, und das Spielfeld zurückgeben
+   bewerte_exit(Feld);
+
+   return Feld;
+}
+//---------------------------------------------------------------------------
+bool ki::set(ki::point startpunkt)
+{
+   //Prüfe, ob die Koordinaten existieren, sonst return false (noch nicht n-D)
+   if(!(startpunkt.x<4 && startpunkt.x>=0 && startpunkt.y<4 && startpunkt.y>=0
+      && startpunkt.z<4 && startpunkt.z>=0 && startpunkt.w<4 && startpunkt.w>=0))
+      return false;
+
+   //Prüfen, ob das Feld noch frei ist, sonst return false (noch nicht n-D)
+   if(feld[startpunkt.x][startpunkt.y]
+          [startpunkt.z][startpunkt.w] != 0)
+      return false;
+
+   //Den Punkt setzen:
+   feld[startpunkt.x][startpunkt.y]
+       [startpunkt.z][startpunkt.w] = startpunkt.typ;
+
+   //Auf Sieg überprüfen (noch nicht n-D)
+   int i;
+   punkt_pruefen(startpunkt, i, false);
+   sieg = i;
+   //Überprüfung fertig und Sieg gesetzt
+   return true;
+};
+//---------------------------------------------------------------------------
+bool ki::suchebene_starten(ki::spielfeld & Feld)
+{
+   point    res1;
+   resultat res2;
+   srand(seed);
+   //Alpha-Beta Cutoff
+   alpha_beta_cutoff cut;
+   //Alpha will einen tiefen Wert, Beta einen hohen erreichen. Darum erhält
+   //Alpha einen hohen und Beta einen tiefen Startwert.
+   cut.alpha=10000000; cut.beta=-10000000; cut.gueltig=true;
+
+   //Bewertungsbaum starten:
+   res2 = suchebene(0, 0, 0, 0, suchtiefe, 2, cut); //Typ == 2, da ???
+
+   //Auswertung übergeben
+   res1.x = res2.x;
+   res1.y = res2.y;
+   res1.z = res2.z;
+   res1.w = res2.w;
+   res1.typ = 2;
+   res1.gueltig = res2.gueltig;
+   if(res2.bewertung==0)
+      int a;
+
+   Feld.feld[res1.x][res1.y][res1.z][res1.w] = res1.typ;
+   Feld.fehler = !res1.gueltig;
+
+   return true;
+};
+//---------------------------------------------------------------------------
+ki::resultat ki::suchebene(int sx, int sy, int sz, int sw, int st, char typ,
+                           ki::alpha_beta_cutoff cut)
+{
+   resultat wertmax, temp;
+   wertmax.gueltig=false;
+   wertmax.x=0; wertmax.y=0; wertmax.z=0; wertmax.w=0;
+   //wertmax.bewertung initialisieren
+   if(typ==1)
+      wertmax.bewertung = +100000000;  // Will tiefen Wert erreichen
+   if(typ==2)
+      wertmax.bewertung = -100000000;  // Will hohen Wert erreichen
+   //Bewertung updaten
+   feld[sx][sy][sz][sw]=typ_gegenteil(typ);
+   {
+      point p={sx, sy, sz, sw, typ_gegenteil(typ), true};
+      bewerte_update_down(p);
+   }
+   //Prüfen, ob max. Suchtiefe schon erreicht
+   if(st<=0)
+   {
+      wertmax.bewertung = bewerte();
+      wertmax.gueltig = true;
+      wertmax.x=0; wertmax.y=0; wertmax.z=0; wertmax.w=0;
+      point p={sx, sy, sz, sw, typ_gegenteil(typ), true};
+      bewerte_update_up(p);
+      feld[sx][sy][sz][sw]=0; //Ist an dieser Stelle nötig, aber wieso?
+      return wertmax;
+   }
+   int a, b, c, d, x, y, z, w, x1,y1,z1,w1;
+   a = rand()%2; b = rand()%2; c = rand()%2; d = rand()%2;
+   //Jeden Punkt überprüfen
+   for(x1=0;x1<4;x1++)
+   {
+      for(y1=0;y1<4;y1++)
+      {
+         for(z1=0;z1<4;z1++)
+         {
+            for(w1=0;w1<4;w1++)
+            {
+               if(a) x = x1; else x = 3-x1;
+               if(b) y = y1; else y = 3-y1;
+               if(c) z = z1; else z = 3-z1;
+               if(d) w = w1; else w = 3-w1;
+
+               if(feld[x][y][z][w]==0) //Punkt frei?
+               {
+                  //Punkt bewerten
+                  temp=suchebene(x, y, z, w, st-1, typ_gegenteil(typ), cut);
+                  //eventuell die neuen Alpha und Beta Werte zuweisen.
+                  if(typ==1&&temp.bewertung<cut.alpha)
+                     cut.alpha=temp.bewertung;
+                  if(typ==2&&temp.bewertung>cut.beta)
+                     cut.beta=temp.bewertung;
+                  //wenn Bewertung besser als bisherige Maximalbewertung
+                  if((temp.bewertung>wertmax.bewertung&&typ==2) ||
+                     (temp.bewertung<wertmax.bewertung&&typ==1))
+                  {
+                     wertmax.bewertung=temp.bewertung;
+                     wertmax.x=x;
+                     wertmax.y=y;
+                     wertmax.z=z;
+                     wertmax.w=w;
+                     wertmax.gueltig=true;
+                  }
+                  if(cut.alpha<=cut.beta)
+                     goto endloop;
+               }
+            };
+         };
+      };
+   };
+   endloop:
+   //Wenn kein Punkt gesetzt werden konnte, weil Feld voll
+   if (wertmax.gueltig == false)
+   {
+      //sieg=4;
+   }
+   //Bewertung updaten
+   {
+      point p={sx, sy, sz, sw, typ_gegenteil(typ), true};
+      bewerte_update_up(p);
+   }
+   feld[sx][sy][sz][sw]=0;
+   //Resultat zurückgeben
+   return wertmax;
+};
+//---------------------------------------------------------------------------
+//Wandelt einen char typ in sein Gegenteil um
+char ki::typ_gegenteil(char typ)
+{
+   if((int)typ==1) return 2;
+   if((int)typ==2) return 1;
+   return typ;
+};
+//---------------------------------------------------------------------------
+//Bewertet das Spielfeld, muss wahrscheinlich neu geschrieben werden
+int ki::bewerte()//int oldx, int oldy, int oldz, int oldw)
+{
+   return bewertung;
+}
+//---------------------------------------------------------------------------
+bool ki::bewerte_init(ki::spielfeld & Feld)
+{
    sieg = 0;
    dimensionen = 4;
 
@@ -48,7 +231,7 @@ ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
                if(!set(pt))
                {
                   Feld.fehler = true;
-                  return Feld;
+                  return false;
                }
                if(sieg != 0)
                {
@@ -60,7 +243,7 @@ ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
                   else
                   {
                      Feld.fehler = true;
-                     return Feld;
+                     return false;
                   }
                }
                // ....
@@ -71,30 +254,48 @@ ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
    }
    if(a)
    {
-      return Feld;
+      return false;//Feld;
    }
 
-   point    res1;
-   resultat res2;
-   //Alpha-Beta Cutoff
-   alpha_beta_cutoff cut;
-   cut.alpha=10000000; cut.beta=-10000000; cut.gueltig=true;
-
-   //Bewertungsbaum starten:
-   res2 = suchebene(0, 0, 0, 0, suchtiefe, 2, 1,cut);
-   //Auswertung übergeben
-   res1.x = res2.x;
-   res1.y = res2.y;
-   res1.z = res2.z;
-   res1.w = res2.w;
-   res1.typ = 2;
-   res1.gueltig = res2.gueltig;
-   if(res2.bewertung==0)
-      int a;
-
-   Feld.feld[res1.x][res1.y][res1.z][res1.w] = res1.typ;
-   Feld.fehler = !res1.gueltig;
-
+   //Gehe jeden freien Punkt durch und bewerte ihn, anschliessen die Punkte
+   //zusammenzählen und abspeichern:
+   bewertung=0;
+   for(int x=0; x<4; x++)
+   {
+      for(int y=0; y<4; y++)
+      {
+         for(int z=0; z<4; z++)
+         {
+            for(int w=0; w<4; w++)
+            {
+               // Prüfen, ob das Feld noch frei ist:
+               if(feld[x][y][z][w]!=0) // Wenn Besetzt, dann Wertung 0 vergeben
+               {
+                  wertefeld[x][y][z][w][0]=0;
+                  wertefeld[x][y][z][w][1]=0;
+                  wertefeld[x][y][z][w][2]=0;
+               }
+               else
+               {
+                  //Diesen Punkt  bewerten
+                  point p={x,y,z,w,1,true};
+                  int gewonnen;
+                  dreiint di = punkt_pruefen(p, gewonnen, false);
+                  wertefeld[x][y][z][w][0]=di.a;
+                  wertefeld[x][y][z][w][1]=di.b;
+                  wertefeld[x][y][z][w][2]=di.c;
+               }
+               bewertung += wertefeld[x][y][z][w][0];
+            };
+         };
+      };
+   };
+   tiefe=0;
+   return true;
+};
+//---------------------------------------------------------------------------
+bool ki::bewerte_exit(ki::spielfeld & Feld)
+{
    for(int x=0; x<4; x++)
    {
       for(int y=0; y<4; y++)
@@ -124,7 +325,7 @@ ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
                if(!set(pt))
                {
                   Feld.fehler = true;
-                  return Feld;
+                  return false;
                }
                if(sieg != 0)
                {
@@ -136,7 +337,7 @@ ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
                   else
                   {
                      Feld.fehler = true;
-                     return Feld;
+                     return false;
                   }
                }
                // ....
@@ -145,178 +346,6 @@ ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
          }
       }
    }
-
-   if(sieg != 0)
-   {
-      int i = sieg;
-      int a = 3;
-   }
-   return Feld;
-}
-//---------------------------------------------------------------------------
-bool ki::set(ki::point startpunkt)
-{
-   //Prüfe, ob die Koordinaten existieren, sonst return false (noch nicht n-D)
-   if(!(startpunkt.x<4 && startpunkt.x>=0 && startpunkt.y<4 && startpunkt.y>=0
-      && startpunkt.z<4 && startpunkt.z>=0 && startpunkt.w<4 && startpunkt.w>=0))
-      return false;
-
-   //Prüfen, ob das Feld noch frei ist, sonst return false (noch nicht n-D)
-   if(feld[startpunkt.x][startpunkt.y]
-          [startpunkt.z][startpunkt.w] != 0)
-      return false;
-
-   //Den Punkt setzen:
-   feld[startpunkt.x][startpunkt.y]
-       [startpunkt.z][startpunkt.w] = startpunkt.typ;
-
-   //Auf Sieg überprüfen (noch nicht n-D)
-   int i;
-   punkt_pruefen(startpunkt, i, false);
-   sieg = i;
-   //Überprüfung fertig und Sieg gesetzt
-   return true;
-};
-//---------------------------------------------------------------------------
-ki::resultat ki::suchebene(int sx,int sy,int sz,int sw,int st,char typ,int pos_neg, ki::alpha_beta_cutoff cut)
-{
-   int x=0,y=0,z=0,w=0;
-   int bew2=0, bew3=0;
-   resultat wertmax, temp;
-   int zufall;
-   wertmax.gueltig=false;
-   wertmax.x=0; wertmax.y=0; wertmax.z=0; wertmax.w=0;
-   //wertmax.bewertung initialisieren
-   if(typ==1)
-      wertmax.bewertung = +100000000;
-   if(typ==2)
-      wertmax.bewertung = -100000000;
-   //Bewertung updaten
-   if(pos_neg==1)
-   {
-      bewerte_init();
-      bew2=bewertung;
-   }
-   if(pos_neg==0)
-   {
-      feld[sx][sy][sz][sw]=typ_gegenteil(typ);
-      point p={sx, sy, sz, sw, typ_gegenteil(typ), true};
-      bew3 = bewerte();
-      bewerte_update_down(p);
-   }
-   //Prüfen, ob max. Suchtiefe schon erreicht
-   if(st<=0)
-   {
-      wertmax.bewertung = bewerte();
-      wertmax.gueltig = true;
-      wertmax.x=0; wertmax.y=0; wertmax.z=0; wertmax.w=0;
-   }
-   else
-   {
-      //Jeden Punkt überprüfen
-      for(x=0;x<4;x++)
-      {
-         for(y=0;y<4;y++)
-         {
-            for(z=0;z<4;z++)
-            {
-               for(w=0;w<4;w++)
-               {
-                  if(feld[x][y][z][w]==0) //Punkt frei?
-                  {
-                     //Punkt bewerten
-                     temp=suchebene(x, y, z, w, st-1, typ_gegenteil(typ), 0, cut);
-                     if(typ==1&&temp.bewertung<cut.alpha)
-                        cut.alpha=temp.bewertung;
-                     if(typ==2&&temp.bewertung>cut.beta)
-                        cut.beta=temp.bewertung;
-                     //wenn Bewertung besser als bisherige Maximalbewertung
-                     if((temp.bewertung>wertmax.bewertung&&typ==2) ||
-                        (temp.bewertung<wertmax.bewertung&&typ==1))
-                     {
-                        wertmax.bewertung=temp.bewertung;
-                        wertmax.x=x;
-                        wertmax.y=y;
-                        wertmax.z=z;
-                        wertmax.w=w;
-                        wertmax.gueltig=true;
-                     }
-                     if(cut.alpha<=cut.beta)
-                        goto endloop;
-                  }
-               };
-            };
-         };
-      };
-   }
-   endloop:
-   //Wenn kein Punkt gesetzt werden konnte, weil Feld voll
-   if (wertmax.gueltig == false)
-   {
-      //sieg=4;
-   }
-   //Bewertung updaten
-   if(pos_neg==0)
-   {
-      point p={sx, sy, sz, sw, typ_gegenteil(typ), true};
-      bewerte_update_up(p);
-      feld[sx][sy][sz][sw]=0;
-   }
-   //Resultat zurückgeben
-   return wertmax;
-};
-//---------------------------------------------------------------------------
-//Wandelt einen char typ in sein Gegenteil um
-char ki::typ_gegenteil(char typ)
-{
-   if((int)typ==1) return 2;
-   if((int)typ==2) return 1;
-   return typ;
-};
-//---------------------------------------------------------------------------
-//Bewertet das Spielfeld, muss wahrscheinlich neu geschrieben werden
-int ki::bewerte()//int oldx, int oldy, int oldz, int oldw)
-{
-   return bewertung;
-}
-//---------------------------------------------------------------------------
-bool ki::bewerte_init()
-{
-   //Gehe jeden freien Punkt durch und bewerte ihn, anschliessen die Punkte
-   //zusammenzählen und abspeichern:
-   bewertung=0;
-   for(int x=0; x<4; x++)
-   {
-      for(int y=0; y<4; y++)
-      {
-         for(int z=0; z<4; z++)
-         {
-            for(int w=0; w<4; w++)
-            {
-               //Prüfen ob Feld noch frei ist:
-               if(feld[x][y][z][w]!=0)
-               {
-                  wertefeld[x][y][z][w][0]=0;
-                  wertefeld[x][y][z][w][1]=0;
-                  wertefeld[x][y][z][w][2]=0;
-               }
-               else
-               {
-                  //Diesen Punkt  bewerten
-                  point p={x,y,z,w,1,true};
-                  int gewonnen;
-                  dreiint di = punkt_pruefen(p, gewonnen, false);
-                  wertefeld[x][y][z][w][0]=di.a;
-                  wertefeld[x][y][z][w][1]=di.b;
-                  wertefeld[x][y][z][w][2]=di.c;
-               }
-               bewertung += wertefeld[x][y][z][w][0];
-            };
-         };
-      };
-   };
-   tiefe=0;
-   return true;
 };
 //---------------------------------------------------------------------------
 bool ki::bewerte_update_down(ki::point p)
@@ -348,7 +377,7 @@ bool ki::bewerte_update_up(ki::point p)
 {
    bewertung=0;
    tiefe--;
-   //Momentaner stand sichern:
+   //Momentaner stand zurückspielen:
    for(int x=0; x<4; x++)
    {
       for(int y=0; y<4; y++)

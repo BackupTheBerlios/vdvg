@@ -81,10 +81,46 @@ uv_gamebutton::attribute uv_gamebutton::make_attribut(uv_group * parent,
    return attr;
 };
 //---------------------------------------------------------------------------
+bool uv_gamebutton::set_blink(double time)
+{
+   new_blink = true;
+   blink = true;
+   this->time = static_cast<int>(time) * 1000;
+};
+//---------------------------------------------------------------------------
 void uv_gamebutton::draw(vector<GLuint> * clist)
 {
    if(!get_visible())
       return;
+
+   bool draw_blink = true;
+
+   if(blink)
+   {
+      if(new_blink)
+      {
+         tickdiff = SDL_GetTicks();
+         new_blink = false;
+      }
+      unsigned int speicher = (SDL_GetTicks() - tickdiff);
+      if(time > speicher)
+      {
+         if(speicher > 1000)
+         {
+            time -= speicher;
+            tickdiff = SDL_GetTicks();
+         }
+         if(speicher > 500)
+            draw_blink = false;
+         else
+            draw_blink = true;
+      }
+      else
+      {
+         blink = false;
+         draw_blink = true;
+      }
+   };
 
    if(retranslate)
    {
@@ -101,24 +137,23 @@ void uv_gamebutton::draw(vector<GLuint> * clist)
 
    if(redraw)
    {
-    
       redraw = false;
    }
 
-//   clist->push_back(stranslation);
+   // clist->push_back(stranslation);
    if(!mouse_over())
-	{
+   {
      backa.set_visible(1);
-     backb.set_visible(0); 
-	}
+     backb.set_visible(0);
+   }
    else
-	{
+   {
      backa.set_visible(0);
      backb.set_visible(1);
-	}
-   if(status == 0) {statusx.set_visible(0); statuso.set_visible(0);};
-   if(status == 1) {statusx.set_visible(1); statuso.set_visible(0);};
-   if(status == 2) {statuso.set_visible(1); statusx.set_visible(0);};
+   }
+   if(status == 0 || !draw_blink) {statusx.set_visible(0); statuso.set_visible(0);};
+   if(status == 1 && draw_blink)  {statusx.set_visible(1); statuso.set_visible(0);};
+   if(status == 2 && draw_blink)  {statuso.set_visible(1); statusx.set_visible(0);};
 
    clist->push_back(stranslation);
    draw_childs(clist);
@@ -158,4 +193,9 @@ bool uv_gamebutton::set_status(int status)
    this->status = status;
    return true;
 }
+//---------------------------------------------------------------------------
+int uv_gamebutton::get_status()
+{
+   return status;
+};
 //---------------------------------------------------------------------------

@@ -28,8 +28,6 @@ int main (int argc, char *argv[])
    uv_main::mainwindow = uv_main::konfig.get_mainwindow_attribute();
    uv_main::mainwindow.set_callback(mainloop);
 
-   uv_main::img = uv_image::make_attribut(&uv_main::mainwindow, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", "background.jpg");
-
    uv_main::fps = uv_fpscounter::make_attribut(&uv_main::mainwindow, uv_main::mainwindow.get_w()-100, 0, 0, 0, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Frames", "Wait...", "Test.ttf", uv_color::make_color(255, 255, 255)),"FPS Counter");
 
    uv_main::menu = uv_container::make_attribut(&uv_main::mainwindow);
@@ -62,6 +60,8 @@ void mainloop(uv_callback * cb)
 	    {
 	       for(int u=0; u<4; u++)
 	       {
+                  if(uv_main::gbuttons[x+y*4+z*16+u*64].get_status() != ki_thread::s_feld.feld[x][y][z][u])
+                     uv_main::gbuttons[x+y*4+z*16+u*64].set_blink(5.0);
                   uv_main::gbuttons[x+y*4+z*16+u*64].set_status(ki_thread::s_feld.feld[x][y][z][u]);
                }
             }
@@ -90,6 +90,7 @@ void menueinit()
 
 //(height-7*buttonheight)/2+x*buttonheight
 
+  uv_main::img1 = uv_image::make_attribut(&uv_main::menu, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", "menubackground.tga");
   uv_main::mnewgame = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+0*buttonheight*2,buttonwidth,buttonheight,"newgame","Neues Spiel","");
   uv_main::moptions = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+1*buttonheight*2,buttonwidth,buttonheight,"newgame","Optionen","");
   uv_main::mabout = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+2*buttonheight*2,buttonwidth,buttonheight,"newgame","About","");
@@ -106,6 +107,8 @@ void gameinit()
    int width, height, ak, agh, agv, bu;
    width = uv_main::mainwindow.get_w();
    height = uv_main::mainwindow.get_h();
+
+   uv_main::img2 = uv_image::make_attribut(&uv_main::game, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", "gamebackground.tga");
 
    agh=92;
    agv=75;
@@ -183,7 +186,10 @@ void artificial_intelligence(uv_callback * cb)
    uv_gamebutton::callback * gbcb;
    gbcb = static_cast<uv_gamebutton::callback*>(cb);
    if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
+   {
+      uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_blink(2.0);
       uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_status(1);
+   }
    if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
    {
       ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] = 1;
@@ -241,4 +247,5 @@ void optionscb()
 {
    uv_main::options.set_visible(true, true);
 }
+
 

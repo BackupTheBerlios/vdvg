@@ -56,15 +56,23 @@ private:
    std::string design;
    int status;
    position pos;
+
+   //Für das blinken
+   unsigned int time; //Die Dauer, die der Button noch blinken soll
+   long tickdiff;
+   bool blink;  //Gibt an, ob der Gamebutton blinken soll
+   bool new_blink; //Gibt an, ob der Timer neu initialisiert werden muss
 public:
    uv_gamebutton();
 
    bool initialize(attribute init);
    bool operator=(attribute init) {return initialize(init);};
 
+   bool set_blink(double time);
    void draw(vector<GLuint> * clist);
    bool mouse_action(int x, int y, int button, int what);
    bool set_status(int status);
+   int  get_status();
    void key_action(int key, int sym, int mod, int what);
    static attribute make_attribut(uv_group * parent,
                                   int x, int y, int width, int height,

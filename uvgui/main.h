@@ -18,10 +18,10 @@ namespace uv_main
    //Allgemein:
    uv_mainwindow mainwindow;
    uv_config konfig;
-   uv_image img;
    uv_fpscounter fps;
 	
    //Menue:
+   uv_image img1;
    uv_container menu;
    uv_button mnewgame,moptions, mabout, mexit;
    
@@ -34,6 +34,7 @@ namespace uv_main
    uv_window about;
 
    //Game:
+   uv_image img2;
    uv_container	  game;
    uv_gamebutton  gbuttons[256];
    uv_button	  gexit, new_game, exit, ok1, ok2;
