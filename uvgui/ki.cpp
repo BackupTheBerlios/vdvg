@@ -20,8 +20,11 @@ int ki::tiefe;
 ki::spielfeld ki::calculate_computer_move(ki::spielfeld Feld)
 {
    //Die Suchtiefe wird momentan mit einem Fixen Wert angegeben.
-   suchtiefe = 2;
-   schwierigkeitsgrad = 0;
+   schwierigkeitsgrad = 9;
+   if(schwierigkeitsgrad > 5)
+      suchtiefe = 2;
+   else
+      suchtiefe = 1;
    seed = (unsigned)time(NULL);
    //Die Spielfeldbewertung initialisieren und prüfen, ob der Bewertungs-
    //baum gestartet werden kann.
@@ -404,44 +407,48 @@ ki::dreiint ki::punkt_pruefen(ki::point startpunkt, int &gewonnen, bool updaten)
    gewonnen = 0;
    if(updaten)
    {
+      // Da der Punkt "startpunkt" nun gesetzt wurde, weisst sein Feld keine
+      // Wertung mehr auf, weshalb sie auf 0 gesetzt werden muss.
       wertefeld[startpunkt.x][startpunkt.y][startpunkt.z][startpunkt.w][0]=0;
    }
-   int rueckgabewert1=0,rueckgabewert2=0;
-   dreiint rueckgabewert;
-   bool tsieg=false;
-   int xmove,ymove,zmove,wmove,gang;
-   point punkt=startpunkt;
-   int geprueft[50][4]; int zeiger=0;
-   for(xmove=-1;xmove<2;xmove++)
+   int rueckgabewert1 = 0, rueckgabewert2 = 0; // ????
+   bool tsieg = false;
+   point punkt = startpunkt;
+   int geprueft[50][4]; // Warum 50 ???
+   int zeiger = 0; // Gibt an, wie viele Punkte bereits geprüft wurden
+   for(int xmove = -1; xmove < 2; xmove++)
    {
-      for(ymove=-1;ymove<2;ymove++)
+      for(int ymove = -1; ymove < 2; ymove++)
       {
-         for(zmove=-1;zmove<2;zmove++)
+         for(int zmove = -1; zmove < 2; zmove++)
          {
-            for(wmove=-1;wmove<2;wmove++)
+            for(int wmove = -1; wmove < 2; wmove++)
             {
-               bool loop=true;
-               int xdir=xmove,ydir=ymove,zdir=zmove,wdir=wmove;
+               bool loop = true; // ?????
+               int xdir = xmove, ydir = ymove, zdir = zmove, wdir = wmove;
                tsieg = true;
-               //Ungültigen Punkt ausfiltern
-               if(xmove == 0 && ymove==0 && zmove==0 && wmove==0)
+               // Ungültige Richtung ausfiltern
+               if(xmove == 0 && ymove == 0 && zmove == 0 && wmove == 0)
                {
-                  tsieg=false; //Ungültige ausfiltern
-                  loop=false;
+                  tsieg = false; // Ungültige ausfiltern
+                  loop  = false;
                }
-               //Prüfen, ob dieser Punkt schon abgefragt wurde
-               for(int j=0; j<zeiger; j++)
+               // Prüfen, ob diese Richtung schon abgefragt wurde
+               for(int i = 0; i < zeiger; i++)
                {
-                  if(geprueft[j][0]==xmove*-1 && geprueft[j][1]==ymove*-1 &&
-                     geprueft[j][2]==zmove*-1 && geprueft[j][3]==wmove*-1)
+                  // Wenn gegenüberliegender Punkt
+                  if(geprueft[i][0]==xmove*-1 && geprueft[i][1]==ymove*-1 &&
+                     geprueft[i][2]==zmove*-1 && geprueft[i][3]==wmove*-1)
                   {
-                     tsieg=false;
-                     loop=false;
+                     tsieg = false;
+                     loop  = false;
                      break;
                   }
                };
-               //Diesen Punkt in die Liste der geprüften aufnehmen
-               if(tsieg==true)
+               // Diesen Richtung in die Liste der geprüften Richtungen aufnehmen,
+               // sofern er nicht ungültig, oder bereits abgefragt wurde
+               // (tsieg == false).
+               if(tsieg)
                {
                   geprueft[zeiger][0] = xmove;
                   geprueft[zeiger][1] = ymove;
@@ -449,21 +456,22 @@ ki::dreiint ki::punkt_pruefen(ki::point startpunkt, int &gewonnen, bool updaten)
                   geprueft[zeiger][3] = wmove;
                   zeiger++;
                }
-               //Weitermachen, wenn Sieg noch möglich und maximale Schrittanzahl
-               //noch nicht erreicht ist.
-               int i1=0, i2=0;
-               for(gang=0;gang<3&&loop==true;gang++)
+               // Weitermachen, wenn Sieg noch möglich und maximale Schritt-
+               // anzahl noch nicht erreicht ist.
+               int i1 = 0, i2 = 0; // ????
+               for(int gang = 0; gang < 3 && loop; gang++)
                {
-                  punkt.x = punkt.x+xdir;
-                  punkt.y = punkt.y+ydir;
-                  punkt.z = punkt.z+zdir;
-                  punkt.w = punkt.w+wdir;
+                  punkt.x += xdir;
+                  punkt.y += ydir;
+                  punkt.z += zdir;
+                  punkt.w += wdir;
                   //Prüfen, ob ausserhalb des gültigen Bereiches
                   if((punkt.x<0||xdir==0||punkt.x>3)&&
                      (punkt.y<0||ydir==0||punkt.y>3)&&
                      (punkt.z<0||zdir==0||punkt.z>3)&&
                      (punkt.w<0||wdir==0||punkt.w>3))
                   {
+                     // Nun in die andere Richtung gehen ('*'dir *= -1;)
                      punkt.x = startpunkt.x; xdir *= -1; punkt.x += xdir;
                      punkt.y = startpunkt.y; ydir *= -1; punkt.y += ydir;
                      punkt.z = startpunkt.z; zdir *= -1; punkt.z += zdir;
@@ -471,20 +479,23 @@ ki::dreiint ki::punkt_pruefen(ki::point startpunkt, int &gewonnen, bool updaten)
                   }
                   else
                   {
+                     // Wenn der "Gang" zu kurz ist, das heisst in dieser
+                     // Richtung gar nicht vier möglich sind.
                      if(punkt.x<0||punkt.y<0||
                         punkt.z<0||punkt.w<0||
                         punkt.x>3||punkt.y>3||
                         punkt.z>3||punkt.w>3)
                      {
-                        tsieg=false;
-                        loop=false;
+                        tsieg = false;
+                        loop  = false;
                         break;
                      }
                   }
-                  //Prüfen, ob dieser Punkt vom Typ punkt.typ ist
+                  //Prüfen, ob dieser Punkt vom Typ punkt.typ ist, ...
                   if(feld[punkt.x][punkt.y]
                          [punkt.z][punkt.w] != punkt.typ)
-                     tsieg=false;
+                     // ... andernfalls tsieg auf false setzen.
+                     tsieg = false;
                   //Diese Reihe bewerten:
                   if(feld[punkt.x][punkt.y]
                          [punkt.z][punkt.w] == 1)
@@ -496,52 +507,55 @@ ki::dreiint ki::punkt_pruefen(ki::point startpunkt, int &gewonnen, bool updaten)
                   {
                      i2++;
                   }
-                  if(updaten==true&&feld[punkt.x][punkt.y]
-                                        [punkt.z][punkt.w] == 0)
+                  if(updaten && feld[punkt.x][punkt.y][punkt.z][punkt.w] == 0)
                   {
+                     // Die Bewertungen aller Punkte in dieser Reihe updaten
                      update(punkt, startpunkt, true);
                   }
                };
                punkt = startpunkt;
                //Prüfen, ob jemand gewonnen hat, wenn ja Funktion beenden
-               if (tsieg == true)
+               if(tsieg)
                {
                   gewonnen = punkt.typ;
                }
                //Achtung, noch auf loop prüfen
-               int zahl=0;
+               int zahl = 0;
                if(loop)
                {
                   //Reihe auswerten und Punkte vergeben
-                  if(i1==0&&i2>0)
-                     zahl = (i2==1) ?  2 : ((i2==2) ?  200 :  5000);
-                  if(i1>0&&i2==0)
-                     zahl = (i1==1) ? -2 : ((i1==2) ? -200 : -5000);
-                  if(zahl>0)
+                  if(i1 == 0 && i2 >  0)
+                     zahl = (i2 == 1) ?  2 : ((i2 == 2) ?  200 :  5000);
+                  if(i1 >  0 && i2 == 0)
+                     zahl = (i1 == 1) ? -2 : ((i1 == 2) ? -200 : -5000);
+                  if(zahl > 0 && (schwierigkeitsgrad == 9 || schwierigkeitsgrad == 8))
                   {
                      //verhindert eine doppelte Dreiergruppe
-                     if(rueckgabewert2>=200&&zahl>=200)
-                        rueckgabewert2 += 15000;
+                     if(rueckgabewert2 >=  200 && zahl >=  200)
+                        rueckgabewert2 += 5000;
                      rueckgabewert2 += zahl;
                   }
-                  if(zahl<0)
+                  if(zahl < 0 && (schwierigkeitsgrad == 9 || schwierigkeitsgrad == 8))
                   {
-                     if(rueckgabewert1<=-200&&zahl<=-200)
-                        rueckgabewert1 -= 15000;
+                     if(rueckgabewert1 <= -200 && zahl <= -200)
+                        rueckgabewert1 -= 5000;
                      rueckgabewert1 += zahl;
                   }
-                  //Testweise implementiert
-                  if(updaten&&i1==3)
+                  // Bei vier in einer Reihe hohe Wertung vergeben, da die KI
+                  // den letzten Zug sonst nicht spielt.
+                  if(updaten && i1 == 3)
                   {
-                     if(punkt.typ==1)
+                     if(punkt.typ == 1)
                         wertefeld[startpunkt.x][startpunkt.y]
-                                 [startpunkt.z][startpunkt.w][0]=-30000;
+                                 [startpunkt.z][startpunkt.w][0]
+                                 = (schwierigkeitsgrad > 4) ? -30000 : -10000;
                   }
-                  if(updaten&&i2==3)
+                  if(updaten && i2 == 3)
                   {
-                     if(punkt.typ==2)
+                     if(punkt.typ == 2)
                         wertefeld[startpunkt.x][startpunkt.y]
-                                 [startpunkt.z][startpunkt.w][0]=20000;
+                                 [startpunkt.z][startpunkt.w][0]
+                                 = (schwierigkeitsgrad > 4) ?  40000 :  10000;
                   }
                }
             };
@@ -553,10 +567,10 @@ ki::dreiint ki::punkt_pruefen(ki::point startpunkt, int &gewonnen, bool updaten)
       rueckgabe=10000;
    if(rueckgabe<-10000)
       rueckgabe=-10000; */
-   if(updaten==true)
+   if(updaten)
    {
-      //Gehe jeden freien Punkt durch und bewerte ihn, anschliessen die Punkte
-      //zusammenzählen und abspeichern:
+      // Gehe jeden freien Punkt durch und bewerte ihn, anschliessen die Punkte
+      // zusammenzählen und abspeichern:
       bewertung=0;
       for(int x=0; x<4; x++)
       {
@@ -573,34 +587,40 @@ ki::dreiint ki::punkt_pruefen(ki::point startpunkt, int &gewonnen, bool updaten)
          };
       };
    }
+
+   // Die Ergebnisse zurückgeben
+   dreiint rueckgabewert;
    rueckgabewert.a = rueckgabe;
    rueckgabewert.b = rueckgabewert1;
    rueckgabewert.c = rueckgabewert2;
    return rueckgabewert;
 };
 //---------------------------------------------------------------------------
+// Was tut diese Funktion ?
 bool ki::update(ki::point punkt, ki::point startpunkt, bool down)
 {
+   // Die Richtung des Punktes "punkt" vom Punkt "startpunkt" aus bestimmen.
    int xdir = (punkt.x > startpunkt.x) ? -1 : ((punkt.x < startpunkt.x) ? 1 : 0);
    int ydir = (punkt.y > startpunkt.y) ? -1 : ((punkt.y < startpunkt.y) ? 1 : 0);
    int zdir = (punkt.z > startpunkt.z) ? -1 : ((punkt.z < startpunkt.z) ? 1 : 0);
    int wdir = (punkt.w > startpunkt.w) ? -1 : ((punkt.w < startpunkt.w) ? 1 : 0);
    point neu = startpunkt;
    startpunkt = punkt;
-   int i1=0, i1a=0, i2=0, i2a=0, zahl=0;
+   int i1 = 0, i1a = 0, i2 = 0, i2a = 0; // Nehmen die Bewertungen auf
    bool loop = true;
-   for(int gang=0;gang<3&&loop==true;gang++)
+   for(int gang = 0; gang < 3 && loop; gang++)
    {
-      punkt.x = punkt.x+xdir;
-      punkt.y = punkt.y+ydir;
-      punkt.z = punkt.z+zdir;
-      punkt.w = punkt.w+wdir;
+      punkt.x += xdir;
+      punkt.y += ydir;
+      punkt.z += zdir;
+      punkt.w += wdir;
       //Prüfen, ob ausserhalb des gültigen Bereiches
       if((punkt.x<0||xdir==0||punkt.x>3)&&
          (punkt.y<0||ydir==0||punkt.y>3)&&
          (punkt.z<0||zdir==0||punkt.z>3)&&
          (punkt.w<0||wdir==0||punkt.w>3))
       {
+         // Nun in die andere Richtung gehen ('*'dir *= -1;)
          punkt.x = startpunkt.x; xdir *= -1; punkt.x += xdir;
          punkt.y = startpunkt.y; ydir *= -1; punkt.y += ydir;
          punkt.z = startpunkt.z; zdir *= -1; punkt.z += zdir;
@@ -608,67 +628,79 @@ bool ki::update(ki::point punkt, ki::point startpunkt, bool down)
       }
       else
       {
+         // Wenn der "Gang" zu kurz ist, das heisst in dieser
+         // Richtung gar nicht vier möglich sind.
          if(punkt.x<0||punkt.y<0||
             punkt.z<0||punkt.w<0||
             punkt.x>3||punkt.y>3||
             punkt.z>3||punkt.w>3)
          {
-            loop=false;
+            loop = false;
          }
       }
       //Diese Reihe bewerten:
-      if(feld[punkt.x][punkt.y]
-             [punkt.z][punkt.w] == 1)
+      if(feld[punkt.x][punkt.y][punkt.z][punkt.w] == 1)
       {
          i1++;
-         if(neu==punkt)
-            i1a=1;
+         if(neu == punkt)
+            i1a = 1;
       }
-      if(feld[punkt.x][punkt.y]
-             [punkt.z][punkt.w] == 2)
+      if(feld[punkt.x][punkt.y][punkt.z][punkt.w] == 2)
       {
          i2++;
-         if(neu==punkt)
-            i2a=1;
+         if(neu == punkt)
+            i2a = 1;
       }
    };
    if(loop)
    {
-      //Reihe auswerten und Punkte vergeben
-      int vorher=0;
-      if(i1==0&&i2>0)
-         zahl = (i2==1) ?  2 : ((i2==2) ?  200 :  5000);
-      if(i1>0&&i2==0)
-         zahl = (i1==1) ? -2 : ((i1==2) ? -200 : -5000);
-      i1-=i1a;
-      i2-=i2a;
-      if(i1==0&&i2>0)
-         vorher = (i2==1) ?  2 : ((i2==2) ?  200 :  5000);
-      if(i1>0&&i2==0)
-         vorher = (i1==1) ? -2 : ((i1==2) ? -200 : -5000);
-      
-      zahl-=vorher;
-      //Problem: im wertefeld sind die Werte nicht separat gespeichert==>
-      //muss noch geändert werden
-      int rueckgabewert1=wertefeld[startpunkt.x][startpunkt.y]
-                                  [startpunkt.z][startpunkt.w][1];
-      int rueckgabewert2=wertefeld[startpunkt.x][startpunkt.y]
-                                  [startpunkt.z][startpunkt.w][2];
-      if(zahl>0)
+      // Reihe auswerten und Punkte vergeben (Sp. 1 negativ, Sp. 2 positiv)
+      int vorher = 0, zahl = 0; // Diese Variabeln nehmen Bewertungen auf
+      // Zuerst den jetztigen Punkt bewerten.
+      if(i1 == 0 && i2 >  0)
+         zahl = (i2 == 1) ?  2 : ((i2 == 2) ?  200 :  5000);
+      if(i1 >  0 && i2 == 0)
+         zahl = (i1 == 1) ? -2 : ((i1 == 2) ? -200 : -5000);
+      // Danach den neu gesetzten Punkt von der Bewertung abziehen ...
+      i1 -= i1a;
+      i2 -= i2a;
+      // ... und den vorherigen Wert des Punktes berechnen
+      if(i1 == 0 && i2 >  0)
+         vorher = (i2 == 1) ?  2 : ((i2 == 2) ?  200 :  5000);
+      if(i1 >  0 && i2 == 0)
+         vorher = (i1 == 1) ? -2 : ((i1 == 2) ? -200 : -5000);
+      // Berechnen, um wie viel sich der Wert geändert hat und diese differenz
+      // in der Variablen "zahl" speichern.
+      zahl -= vorher;
+      // Problem: im wertefeld sind die Werte nicht separat gespeichert==>
+      // muss noch geändert werden (schon behoben???)
+      int rueckgabewert1 = wertefeld[startpunkt.x][startpunkt.y]
+                                    [startpunkt.z][startpunkt.w][1];
+      int rueckgabewert2 = wertefeld[startpunkt.x][startpunkt.y]
+                                    [startpunkt.z][startpunkt.w][2];
+      if(zahl > 0)
       {
-         if(rueckgabewert2>=200&&zahl>=200)
-            rueckgabewert2 += 15000;
+         if(rueckgabewert2 >=  200 && zahl >=  200) // Was soll das ?
+            rueckgabewert2 += 5000;
          rueckgabewert2 += zahl;
       }
-      if(zahl<0)
+      if(zahl < 0)
       {
-         if(rueckgabewert1<=-200&&zahl<=-200)
-            rueckgabewert1 -= 15000;
+         if(rueckgabewert1 <= -200 && zahl <= -200) // Was soll das ?
+            rueckgabewert1 -= 5000;
          rueckgabewert1 += zahl;
       }
       //Achtung: Überprüft noch nicht, ob grösser/kleiner als 10'000
-      wertefeld[startpunkt.x][startpunkt.y]
-               [startpunkt.z][startpunkt.w][0] += zahl;
+      if(schwierigkeitsgrad == 9 || schwierigkeitsgrad == 7)
+      {
+         wertefeld[startpunkt.x][startpunkt.y]
+                  [startpunkt.z][startpunkt.w][0] = rueckgabewert1 + rueckgabewert2;
+      }
+      else
+      {
+         wertefeld[startpunkt.x][startpunkt.y]
+                  [startpunkt.z][startpunkt.w][0] += zahl;
+      }
       wertefeld[startpunkt.x][startpunkt.y]
                [startpunkt.z][startpunkt.w][1] = rueckgabewert1;
       wertefeld[startpunkt.x][startpunkt.y]
