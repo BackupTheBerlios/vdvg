@@ -41,10 +41,10 @@ private:
     bool is_run;
 public:
     uv_mainwindow(int width, int height, bool fullscreen=1, char * titel=0);
-	uv_mainwindow();
+    uv_mainwindow();
 	
-	bool initialize(attribute init);
-	bool operator=(attribute init) {return initialize(init);};
+    bool initialize(attribute init);
+    bool operator=(attribute init) {return initialize(init);};
     void draw(vector<GLuint> * clist);
     void key_action(int key, int sym, int mod, int what);
     bool mouse_action(int x, int y, int key, int what);
@@ -53,7 +53,7 @@ public:
     //Funktionen zur Applikationsverwaltung:
     void set_run(bool Run);
     bool get_run();
-	static attribute make_attribut(int widht, int height, bool fullscreen, char *caption);
+    static attribute make_attribut(int widht, int height, bool fullscreen, char *caption);
 
 };
 //---------------------------------------------------------------------------

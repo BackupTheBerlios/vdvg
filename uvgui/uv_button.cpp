@@ -8,19 +8,23 @@
 //---------------------------------------------------------------------------
 uv_button::uv_button():uv_group(0,0,0,0,0,"")
 {
-    //Display-Listen Zeugs:
+
+}
+//---------------------------------------------------------------------------
+bool uv_button::initialize(attribute init)
+{
+   //Display-Listen Zeugs:
     if(!(stranslation = glGenLists(4)))
-       return; //Error !!
+       return false; //Error !!
     drawing1 = stranslation+1;
     drawing2 = drawing1+1;
     etranslation = drawing2+1;
 
     redraw = true;
     retranslate = true;
-}
-//---------------------------------------------------------------------------
-bool uv_button::initialize(attribute init)
-{
+
+
+   ////
    set_parent(init.parent);
    set_size(init.x, init.y, init.width, init.height);
 

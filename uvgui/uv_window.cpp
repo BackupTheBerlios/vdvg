@@ -8,18 +8,21 @@
 //---------------------------------------------------------------------------
 uv_window::uv_window():uv_group(0, 0, 0, 0, 0, "", true)
 {
-    //Noch nicht initialisiert
-    is_init = false;
 
-    //Display-Listen Zeugs:
-    if(!(stranslation = glGenLists(3)))
-       return; //Error !!
-    drawing = stranslation+1;
-    etranslation = drawing+1;
 };
 //---------------------------------------------------------------------------
 bool uv_window::initialize(attribute init)
 {
+   //Noch nicht initialisiert
+    is_init = false;
+
+    //Display-Listen Zeugs:
+    if(!(stranslation = glGenLists(3)))
+       return false; //Error !!
+    drawing = stranslation+1;
+    etranslation = drawing+1;
+
+   /////
    //Den Parent setzen
    set_parent(init.parent);
 

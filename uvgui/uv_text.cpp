@@ -8,22 +8,7 @@
 //---------------------------------------------------------------------------
 uv_text::uv_text():uv_widget(0, 0, 0, 0, 0, "")
 {
-   red=0xff;
-   blue=0xff;
-   green=0xff;
-   len = 10001;
 
-   bbreiteninit = false;
-
-   //Display-Listen Zeugs:
-   if(!(stranslation = glGenLists(3)))
-      return; //Error !!
-   drawing = stranslation+1;
-   etranslation = drawing+1;
-
-   redraw = true;
-   retranslate = true;
-   last_abs_x = -1; last_abs_y = -1;
 }
 //---------------------------------------------------------------------------
 uv_text::~uv_text()
@@ -34,6 +19,24 @@ uv_text::~uv_text()
 //---------------------------------------------------------------------------
 bool uv_text::initialize(attribute init)
 {
+   red=0xff;
+   blue=0xff;
+   green=0xff;
+   len = 10001;
+
+   bbreiteninit = false;
+
+   //Display-Listen Zeugs:
+   if(!(stranslation = glGenLists(3)))
+      return false; //Error !!
+   drawing = stranslation+1;
+   etranslation = drawing+1;
+
+   redraw = true;
+   retranslate = true;
+   last_abs_x = -1; last_abs_y = -1;
+
+   ///
    set_parent(init.parent);
    uv_widget::set_size(init.x, init.y, init.width, init.height);
    set_color(init.font_color.red, init.font_color.green, init.font_color.blue);

@@ -11,19 +11,22 @@ uv_image::uv_image()//int mx, int my, int mw, int mh,
                    //: uv_widget(mx,my,mw,mh,parent,0)
                    : uv_widget(0, 0, 0, 0, 0, 0)
 {
+
+};
+//---------------------------------------------------------------------------
+bool uv_image::initialize(attribute init)
+{
    loaded=false;
    w=0;
    h=0;
 
    //Display-Listen Zeugs:
    if(!(stranslation = glGenLists(3)))
-      return; //Error !!
+      return false; //Error !!
    drawing = stranslation+1;
    etranslation = drawing+1;
-};
-//---------------------------------------------------------------------------
-bool uv_image::initialize(attribute init)
-{
+
+   //////
    //Den Parent setzen
    set_parent(init.parent);
 

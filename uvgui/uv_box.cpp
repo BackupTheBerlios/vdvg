@@ -8,17 +8,20 @@
 //---------------------------------------------------------------------------
 uv_box::uv_box():uv_widget(0,0,0,0,0,0)
 {
-   //Display-Listen Zeugs:
-   if(!(stranslation = glGenLists(3)))
-      return; //Error !!
-   drawing = stranslation+1;
-   etranslation = drawing+1;
 
-   red=0xff; green=0xff; blue=0xff;
 }
 //---------------------------------------------------------------------------
 bool uv_box::initialize(attribute init)
 {
+   //Display-Listen Zeugs:
+   if(!(stranslation = glGenLists(3)))
+      return false; //Error !!
+   drawing = stranslation+1;
+   etranslation = drawing+1;
+
+   red=0xff; green=0xff; blue=0xff;
+
+   ////
    set_parent(init.parent);
    set_size(init.x, init.y, init.width, init.height);
 

@@ -8,17 +8,20 @@
 //---------------------------------------------------------------------------
 uv_textbox::uv_textbox():uv_group(0,0,0,0,0,"")
 {
-   //Display-Listen Zeugs:
-   if(!(stranslation = glGenLists(5)))
-      return; //Error !!
-   drawing = stranslation+1;
-   etranslation = drawing+1;
-   scissoran = etranslation+1;
-   scissoraus = scissoran+1;
+
 };
 //---------------------------------------------------------------------------
 bool uv_textbox::initialize(attribute init)
 {
+   //Display-Listen Zeugs:
+   if(!(stranslation = glGenLists(5)))
+      return false; //Error !!
+   drawing = stranslation+1;
+   etranslation = drawing+1;
+   scissoran = etranslation+1;
+   scissoraus = scissoran+1;
+
+   ////
    set_parent(init.parent);
    set_size(init.x, init.y, init.width, init.height);
 
