@@ -28,7 +28,7 @@ namespace uv_main
    uv_box tst, box1;
    uv_fpscounter fps;
    uv_textbox test1, test2;
-   uv_checkbox cbox;
+   uv_checkbox cbox1, cbox2, cbox3;
 };
 
 //---------------------------------------------------------------------------

@@ -2,25 +2,30 @@
 
 uv_checkbox::uv_checkbox()
 {
- is_init = 0;
+   is_init = 0;
 }
 
 bool uv_checkbox::initialize(attribute init)
 {
-   if(!(stranslation = glGenLists(4)))
+   if(!(stranslation = glGenLists(3)))
       return false; //Error !!
-   drawing1 = stranslation+1;
-   drawing2 = drawing1+1;
-   etranslation = drawing2+1;
+   drawing = stranslation+1;
+   etranslation = drawing+1;
 
    redraw = true;
    retranslate = true;
 
    uv_group::initialize(uv_group::make_attribut(init.parent, init.x, init.y, init.width, init.height, init.name, true));
 
-   uv_color text_color = {0xff, 0x88, 0x00};
-   text = uv_text::make_attribut(this, 0, 0, 0, 0, 25, "Buttontext", init.caption, "Test.ttf", text_color);
-   text.set_pos((get_w()-text.get_width())/2, (get_h()+text.get_height())/2);
+   uv_color text_color = {0x00, 0x00, 0x00};
+   init.text_attribute.parent = this;
+   text = init.text_attribute;
+   text.set_pos(20, (16+text.get_height())/2-3);
+
+   init.image_unchecked.parent = this;
+   init.image_checked.parent = this;
+   uncheckimage = init.image_unchecked;
+   checkimage   = init.image_checked;
 
    redraw = true;
    retranslate = true;
@@ -32,15 +37,17 @@ bool uv_checkbox::initialize(attribute init)
    return true;
 };
 
-uv_checkbox::attribute uv_checkbox::make_attribut(uv_group * parent,
-                                              int x, int y, int width, int height,
-                                              string name, string caption)
+uv_checkbox::attribute uv_checkbox::make_attribut(uv_group * parent, int x, int y,
+                                  int width, int height, uv_image::attribute image_unchecked, uv_image::attribute image_checked,
+                                  uv_text::attribute text_attribute, string name)
 {
    attribute attr;
 
    attr.parent = parent;
    attr.x = x; attr.y = y; attr.width = width; attr.height = height;
-   attr.name = name; attr.caption = caption;
+   attr.image_unchecked = image_unchecked; attr.image_checked = image_checked;
+   attr.text_attribute = text_attribute;
+   attr.name = name;
 
    return attr;
 };
@@ -65,21 +72,10 @@ void uv_checkbox::draw(vector<GLuint> * clist)
 
    if(redraw)
    {
-      glNewList(drawing1, GL_COMPILE);
+      glNewList(drawing, GL_COMPILE);
       glBindTexture(GL_TEXTURE_2D, 0);
       glBegin (GL_QUADS);
-         glColor3ub (100, 100, 100);
-         glVertex2i (0, 0);             // Links Oben
-         glVertex2i (get_w(), 0);       // Rechts Oben
-         glVertex2i (get_w(), get_h()); // Rechts Unten
-         glVertex2i (0, get_h());       // Links Unten
-      glEnd ();
-      glEndList();
-
-      glNewList(drawing2, GL_COMPILE);
-      glBindTexture(GL_TEXTURE_2D, 0);
-      glBegin (GL_QUADS);
-         glColor3ub (150, 150, 150);
+         glColor4ub (100, 100, 100, 120);
          glVertex2i (0, 0);             // Links Oben
          glVertex2i (get_w(), 0);       // Rechts Oben
          glVertex2i (get_w(), get_h()); // Rechts Unten
@@ -92,9 +88,19 @@ void uv_checkbox::draw(vector<GLuint> * clist)
 
    clist->push_back(stranslation);
    if(checked)
-      clist->push_back(drawing1);
+   {
+      uncheckimage.set_visible(false);
+      checkimage.set_visible(true);
+   }
    else
-      clist->push_back(drawing2);
+   {
+      uncheckimage.set_visible(true);
+      checkimage.set_visible(false);
+   }
+   if(mouse_over())
+   {
+      clist->push_back(drawing);
+   }
 
    draw_childs(clist);
 
@@ -108,7 +114,7 @@ bool uv_checkbox::mouse_action(int x, int y,int button,int what)
         callback var;
         var.ID = 12;
         do_callback(&var);
-	  	checked = !checked;
+	checked = !checked;
     }
     uv_widget::mouse_action(x,y,button,what);
     return true;
@@ -121,7 +127,7 @@ void uv_checkbox::key_action(int key, int sym, int mod, int what)
       callback var;
       var.ID = 12;
       do_callback(&var);
-	  checked = !checked;
+      checked = !checked;
    }
 }
 

@@ -31,9 +31,12 @@ int main (int argc, char *argv[])
    uv_main::Button1.set_callback((voidcallback) calli);
    uv_main::Button2.set_callback((voidcallback) calli2);
    uv_main::fps = uv_fpscounter::make_attribut(&uv_main::mainwindow, uv_main::mainwindow.get_w()-100, 0, 0, 0, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Frames", "Wait...", "Test.ttf", uv_color::make_color(255, 255, 255)),"FPS Counter");
-   uv_main::cbox = uv_checkbox::make_attribut(&uv_main::bbb, 30,30, 300,64, "cbox","cgalkj");
+   uv_color text_color = {0x00, 0x00, 0x00};
+   uv_main::cbox1 = uv_checkbox::make_attribut(&uv_main::bbb, 30, 30, 185, 16, uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "unchecked.tga"), uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "checked.tga"), uv_text::make_attribut(0, 20, 16, 0, 0, 16, "Buttontext", "Checkbox Test #1!", "Test.ttf", text_color), "cbox1");
+   uv_main::cbox2 = uv_checkbox::make_attribut(&uv_main::bbb, 30, 50, 185, 16, uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "unchecked.tga"), uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "checked.tga"), uv_text::make_attribut(0, 20, 16, 0, 0, 16, "Buttontext", "Checkbox Test #2!", "Test.ttf", text_color), "cbox2");
+   uv_main::cbox3 = uv_checkbox::make_attribut(&uv_main::bbb, 30, 70, 185, 16, uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "unchecked.tga"), uv_image::make_attribut(0, 0, 0, 16, 16, "Checkbox", "checked.tga"), uv_text::make_attribut(0, 20, 16, 0, 0, 16, "Buttontext", "Checkbox Test #3!", "Test.ttf", text_color), "cbox3");
    uv_main::mainwindow.run();
-  
+
    uv_main::konfig.save_file("config.txt");
    return 0;
 };
