@@ -63,8 +63,8 @@ void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex
 
     //Now we just setup some texture paramaters.
     glBindTexture( GL_TEXTURE_2D, tex_base[ch]);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     //Here we actually create the texture itself, notice
     //that we are using GL_LUMINANCE_ALPHA to indicate that

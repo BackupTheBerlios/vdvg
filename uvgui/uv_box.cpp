@@ -2,7 +2,7 @@
 
 uv_box::uv_box(int mx, int my, int mw, int mh, uv_group *parent):uv_widget(mx, my, mw,mh,parent,0)
 {
-	parent->add_child(this);
+	//parent->add_child(this);
 	uv_box();
 }
 

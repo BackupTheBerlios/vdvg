@@ -2,7 +2,8 @@
 #ifndef _UV_MAINWINDOW_
 #define _UV_MAINWINDOW_
 //---------------------------------------------------------------------------
-#include "uv_group.h"
+#include "uv_include.h"
+//#include "uv_group.h"
 
 #include <SDL.h>
 #include <SDL_main.h>

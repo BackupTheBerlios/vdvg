@@ -1,9 +1,10 @@
 #ifndef _UV_BUTTON_
 #define _UV_BUTTON_
 
-#include "uv_widget.h"
-#include "uv_group.h"
-#include "uv_text.h"
+//#include "uv_widget.h"
+//#include "uv_group.h"
+//#include "uv_text.h"
+#include "uv_include.h"
 #include <SDL.h>
 #include <SDL_opengl.h>
 

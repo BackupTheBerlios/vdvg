@@ -6,7 +6,6 @@ uv_window::uv_window(int mx, int my, int width, int height,
                      :uv_group(mx, my, width, height, parent, label, true)
                       , oben(0, 0, get_w(), 20, this, "Test.bmp")
 {
-    parent->add_child(this);  //Sollte eigentlich in uv_widget
     dragged = 0;
 };
 //---------------------------------------------------------------------------

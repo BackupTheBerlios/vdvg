@@ -3,7 +3,6 @@
 uv_fpscounter::uv_fpscounter(uv_group *parent):uv_group(parent->get_w()-100,0,50,20,parent,"")
 {
 
-	parent->add_child(this);
 	counter.set_parent(this);
 	counter.set_pos(0,0);
 	counter.set_color(0xff,0xff,0xff);

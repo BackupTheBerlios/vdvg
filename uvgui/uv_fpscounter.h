@@ -1,9 +1,10 @@
 #ifndef _UV_FPSCOUNTER_H_
 #define _UV_FPSCOUNTER_H_
 
-#include "uv_widget.h"
-#include "uv_group.h"
-#include "uv_text.h"
+//#include "uv_widget.h"
+//#include "uv_group.h"
+//#include "uv_text.h"
+#include "uv_include.h"
 #include "SDL.h"
 #include <string>
 #include <iostream>

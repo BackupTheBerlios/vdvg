@@ -2,7 +2,6 @@
 
 uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel):uv_group(mx,my,mw,mh,parent,mlabel)
 {
-    parent->add_child(this);
     text.set_parent(this);
     text.init("Test.ttf",20);
     text.set_color(0xff,0x88,0x00);
@@ -22,12 +21,14 @@ void uv_button::draw()
         // Links Oben
         if( mouse_over() ) glColor3ub (150, 150, 150);
         else glColor3ub (100, 100, 100);
+        //glColor3ub(255, 0, 0);
         glVertex2i (get_absolute_x(), get_absolute_y());
         // Rechts Oben
         //glColor3ub (0, 255, 0);
         glVertex2i (get_absolute_x () + get_w (), get_absolute_y());
         // Rechts Unten
         glColor3ub (255, 255, 255);
+        //glColor3ub(255, 0, 0);
 
         glVertex2i (get_absolute_x () + get_w (), get_absolute_y() + get_h ());
         // Links Unten

@@ -36,11 +36,8 @@ private:
 public:
     //setzt Variabeln,Konstruktor, sollte irgendwie protected sein...
     uv_widget(int mx, int my, int mw, int mh,uv_group *parent=0,
-              char *mlabel=0, bool CanFocusHave=false)
-    {
-        x=mx; y=my; w=mw; h=mh; myparent=parent; label=mlabel; visible=1;
-        callback=NULL; can_focus_have=CanFocusHave;
-    };
+              char *mlabel=0, bool CanFocusHave=false);
+
     virtual ~uv_widget() //Macht nichts
     {
 
@@ -49,7 +46,7 @@ public:
     {
         return myparent;
     };
-	void set_parent(uv_group *parent);
+    void set_parent(uv_group *parent);
 
 	
     int get_w()   //Liefert die breite (width)
