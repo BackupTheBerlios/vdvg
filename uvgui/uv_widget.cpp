@@ -2,7 +2,7 @@
 // File:       uv_widget.cpp
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #include "uv_widget.h"
 #include "uv_group.h"

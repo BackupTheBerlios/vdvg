@@ -2,7 +2,7 @@
 // File:       uv_group.h
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #ifndef _UV_GROUP_
 #define _UV_GROUP_
@@ -42,11 +42,12 @@ public:
     void remove_child(uv_widget* widget);
     void add_child_in_front(uv_widget* );
     void set_to_end();
-    bool draw_childs();
+    bool draw_childs(basic_string<GLuint> * clist);
     bool mouse_action_childs(int x, int y, int button, int what);
     bool key_action_childs(int key, int sym, int mod, int what);
     bool mouse_move_rel_childs(int rel_x, int rel_y);
 	void set_mouse_over_off();
+    bool set_focus(uv_widget * widgetpointer);
 };
 //---------------------------------------------------------------------------
 #endif

@@ -2,11 +2,11 @@
 // File:       uv_image.cpp
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #include "uv_image.h"
 //---------------------------------------------------------------------------
-uv_image::uv_image(string filename):uv_widget(0,0,0,0,0,0)
+/*uv_image::uv_image(string filename):uv_widget(0,0,0,0,0,0)
 {
     uv_image();
     LoadImageFile(filename);
@@ -17,7 +17,7 @@ uv_image::uv_image():uv_widget(0,0,0,0,0,0)
     loaded=false;
     w=0;
     h=0;
-};
+};*/
 //---------------------------------------------------------------------------
 uv_image::uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *mlabel):uv_widget(mx,my,mw,mh,parent,0)
 {
@@ -25,6 +25,15 @@ uv_image::uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *mlabe
     w=0;
     h=0;
     LoadImageFile(mlabel);
+
+    //Display-Listen Zeugs:
+    if(!(stranslation = glGenLists(3)))
+       return; //Error !!
+    drawing = stranslation+1;
+    etranslation = drawing+1;
+
+    redraw = true;
+    retranslate = true;
 };
 //---------------------------------------------------------------------------
 bool uv_image::LoadImageFile(string fname)
@@ -199,5 +208,35 @@ void uv_image::draw_size(int x, int y, int w, int h,
     }
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0); //Textur unbinden, für andere Zeichnungsop.
+};
+//---------------------------------------------------------------------------
+void uv_image::draw(basic_string<GLuint> * clist)
+{
+   if(retranslate)
+   {
+      glNewList(stranslation, GL_COMPILE);
+      glTranslatef(get_x(), get_y(), 0);
+      glEndList();
+
+      glNewList(etranslation, GL_COMPILE);
+      glTranslatef(-1*get_x(), -1*get_y(), 0);
+      glEndList();
+
+      retranslate = false;
+   }
+
+   if(redraw)
+   {
+      glNewList(drawing, GL_COMPILE);
+      glColor3f(1, 1, 1);
+      draw_size(0, 0, get_w(), get_h());
+      glEndList();
+
+      redraw = false;
+   }
+
+   clist->push_back(stranslation);
+   clist->push_back(drawing);
+   clist->push_back(etranslation);
 };
 //---------------------------------------------------------------------------

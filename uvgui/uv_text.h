@@ -2,7 +2,7 @@
 // File:       uv_text.h
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #ifndef _UV_TEXT_
 #define _UV_TEXT_
@@ -83,6 +83,8 @@ class uv_text:public uv_widget
       void pushScreenCoordinateMatrix();
       void find_unicode_charmap(FT_Face face);
 
+      GLuint stranslation, etranslation, drawing;
+      bool redraw, retranslate;
    public:
       //Konstruktor
       uv_text(int x, int y, int width, int height, uv_group *parent, char *label);
@@ -94,10 +96,7 @@ class uv_text:public uv_widget
       void print(int x, int y);
       int get_height();
       int get_width();
-      void draw()
-      {
-         print(get_absolute_x(),get_absolute_y());
-      };
+      void draw(basic_string<GLuint> * clist);
 };
 //---------------------------------------------------------------------------
 #endif // _UV_TEXT_

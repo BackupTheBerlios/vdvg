@@ -2,7 +2,7 @@
 // File:       uv_fpscounter.cpp
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sun Sep-12-2004 21:35:53 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #include "uv_fpscounter.h"
 //---------------------------------------------------------------------------
@@ -14,6 +14,7 @@ uv_fpscounter::uv_fpscounter(uv_group *parent)
    counter.set_color(0xff,0xff,0xff);
    counter.init("Test.ttf",16);
    counter.pushtext("Wait...");
+   counter.set_pos(0, counter.get_height());
 }
 //---------------------------------------------------------------------------
 //Eine Hilfsfunktion, um ints in strings zu konvertieren
@@ -24,7 +25,7 @@ std::string uv_fpscounter::IntToString(const int & value)
     return ss.str();
 };
 //---------------------------------------------------------------------------
-void uv_fpscounter::draw()
+void uv_fpscounter::draw(basic_string<GLuint> * clist)
 {
    static int frames=0;
    static long tickdiff=0;
@@ -36,6 +37,6 @@ void uv_fpscounter::draw()
       frames=0;
    }
    frames++;
-   draw_childs();
+   draw_childs(clist);
 };
 //---------------------------------------------------------------------------

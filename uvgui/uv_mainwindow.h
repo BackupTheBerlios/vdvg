@@ -2,7 +2,7 @@
 // File:       uv_mainwindow.h
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #ifndef _UV_MAINWINDOW_
 #define _UV_MAINWINDOW_
@@ -32,7 +32,7 @@ private:
     bool is_run;
 public:
     uv_mainwindow( int width, int height, bool fullscreen=1, char * titel=0);
-    void draw();
+    void draw(basic_string<GLuint> * clist);
     void key_action(int key, int sym, int mod, int what);
     bool mouse_action(int x, int y, int key, int what);
     void mouse_move_rel(int rel_x, int rel_y);

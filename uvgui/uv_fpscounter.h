@@ -2,7 +2,7 @@
 // File:       uv_fpscounter.h
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sun Sep-12-2004 21:35:35 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #ifndef _UV_FPSCOUNTER_H_
 #define _UV_FPSCOUNTER_H_
@@ -24,7 +24,7 @@ class uv_fpscounter:public uv_group
 
    public:
       uv_fpscounter(uv_group *parent);
-      void draw();
+      void draw(basic_string<GLuint> * clist);
 };
 //---------------------------------------------------------------------------
 #endif // _UV_FPSCOUNTER_H_

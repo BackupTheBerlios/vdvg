@@ -2,7 +2,7 @@
 // File:       uv_group.cpp
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #include "uv_group.h"
 //---------------------------------------------------------------------------
@@ -99,7 +99,7 @@ void uv_group::set_to_end()
         childs.move(childs.getiterator()+1, childs.Elemente()-1);
 };
 //---------------------------------------------------------------------------
-bool uv_group::draw_childs()
+bool uv_group::draw_childs(basic_string<GLuint> * clist)
 {
     //Speicher für einen uv_widget Zeiger anlegen
     uv_widget *child;
@@ -110,9 +110,9 @@ bool uv_group::draw_childs()
     while((child=get_next_child()) != NULL)
     {
         //Farbe auf weiss zurücksetzen
-        glColor3f(1, 1, 1);
+        //glColor3f(1, 1, 1);
         //Draw Funktion des Childs aufrufen
-        child->draw();
+        child->draw(clist);
     };
     return true;
 };
@@ -162,14 +162,26 @@ bool uv_group::key_action_childs(int key, int sym, int mod, int what)
 	return 1;
 };
 //---------------------------------------------------------------------------
-
 void uv_group::set_mouse_over_off()
 {
-	uv_widget *child;
+    uv_widget *child;
     set_end_child();
     while((child=get_last_child()) != NULL)
     {
         child->set_mouse_over_off();
     };
-	uv_widget::set_mouse_over_off();
+    uv_widget::set_mouse_over_off();
 }
+//---------------------------------------------------------------------------
+bool uv_group::set_focus(uv_widget * widgetpointer)
+{
+   for(int i=0;i<childs.Elemente();i++)
+   {
+      if(widgetpointer == childs.outpos(i))
+      {
+         childs.poppos(i);
+         childs.pushb(widgetpointer);
+      }
+   };
+};
+//---------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 // File:       uv_text.cpp
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #include "uv_text.h"
 //---------------------------------------------------------------------------
@@ -16,6 +16,15 @@ uv_text::uv_text(int x,int y,int width,int height,uv_group *parent,char *label)
    len = 10001;
 
    bbreiteninit = false;
+
+   //Display-Listen Zeugs:
+   if(!(stranslation = glGenLists(3)))
+      return; //Error !!
+   drawing = stranslation+1;
+   etranslation = drawing+1;
+
+   redraw = true;
+   retranslate = true;
 }
 //---------------------------------------------------------------------------
 uv_text::~uv_text()
@@ -111,7 +120,7 @@ void uv_text::make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuin
    // das Bitmap über die untere Linie geht
    // Das ist nur für Zeichen wir 'g' oder 'y' der Fall.
    glPushMatrix();
-   glTranslatef(0,bitmap_glyph->top-bitmap.rows,0);
+   glTranslatef(0,-1*(bitmap_glyph->top-bitmap.rows),0);
 
    // Nun müssen wir etwas korrigieren, da vieles unserer Textur
    // einfach nur leerer aufgefüllter Platz ist.
@@ -129,10 +138,10 @@ void uv_text::make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuin
    // aber wir linken die Textur auf den Quad
    // Auf diese Weise wird das Ergebniss korrekt ausgerichtet.
    glBegin(GL_QUADS);
-      glTexCoord2d(0,0); glVertex2f(0,bitmap.rows);
       glTexCoord2d(0,y); glVertex2f(0,0);
+      glTexCoord2d(0,0); glVertex2f(0,-bitmap.rows);
+      glTexCoord2d(x,0); glVertex2f(bitmap.width,-bitmap.rows);
       glTexCoord2d(x,y); glVertex2f(bitmap.width,0);
-      glTexCoord2d(x,0); glVertex2f(bitmap.width,bitmap.rows);
    glEnd();
    glPopMatrix();
 
@@ -267,7 +276,7 @@ void uv_text::pushScreenCoordinateMatrix()
    glLoadIdentity();
    //void gluOrtho2D(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top)
    //gluOrtho2D(0,1024,768,0);
-   gluOrtho2D(viewport[0],viewport[2],viewport[1],viewport[3]);
+   gluOrtho2D(viewport[0],viewport[2],viewport[3], viewport[1]);
    glPopAttrib();
 };
 //---------------------------------------------------------------------------
@@ -282,21 +291,23 @@ void uv_text::pop_projection_matrix()
 void uv_text::print(int x, int y)
 {
    // Wir wollen ein Koordinaten-System, wo die Entfernung in Fenster-Pixeln gemessen wird.
-   pushScreenCoordinateMatrix();
+//   pushScreenCoordinateMatrix();
 
    //Es ist einfacher, ein anderes Koordinatensystem zu wählen,
    //da sonst die Buchstaben nicht unten sondern oben bündig werden.
    //y muss ins Koordinantensystem umgerechnet werden:
    GLint viewport[4];
    glGetIntegerv(GL_VIEWPORT, viewport); //Bildschirmgrösse abholen
-   y = viewport[3]-y-(int)h; //Bildschirmhöhe - schrifthöhe - y
+   //y = viewport[3]-y-(int)h; //Bildschirmhöhe - schrifthöhe - y
+   //y = y-viewport[3];
+   //y=view(int)h-y;
 
    GLuint font=list_base;
    float h=this->h/.63f; // Wir machen die Höhe etwas größer. So wird es etwas
                          // Abstand zwischen den Zeilen geben.
 
-   glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
-   glMatrixMode(GL_MODELVIEW);
+//   glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
+//   glMatrixMode(GL_MODELVIEW);
    glDisable(GL_LIGHTING);
    glEnable(GL_TEXTURE_2D);
    glDisable(GL_DEPTH_TEST);
@@ -340,9 +351,9 @@ void uv_text::print(int x, int y)
       glPopMatrix();
    };
 
-   glPopAttrib();
+//   glPopAttrib();
 
-   pop_projection_matrix();
+//   pop_projection_matrix();
    glBindTexture(GL_TEXTURE_2D, 0); //Texturen unbinden
    glColor3ub(0xff,0xff,0xff); //Farbe auf neutral zurÃ¼cksetzen
 };
@@ -393,6 +404,38 @@ int uv_text::get_width()
 int uv_text::get_height()
 {
    return lines.size()*((int)h);
+};
+//---------------------------------------------------------------------------
+void uv_text::draw(basic_string<GLuint> * clist)
+{
+   if(!get_visible())
+      return;
+
+   if(retranslate)
+   {
+      glNewList(stranslation, GL_COMPILE);
+      glTranslatef(get_absolute_x(), get_absolute_y(), 0);
+      glEndList();
+
+      glNewList(etranslation, GL_COMPILE);
+      glTranslatef(-1*get_absolute_x(), -1*get_absolute_y(), 0);
+      glEndList();
+
+      //retranslate = false;
+   }
+
+   glCallList(stranslation);
+   if(redraw)
+   {
+      glNewList(drawing, GL_COMPILE);
+         print(0, 0);
+      glEndList();
+
+      //redraw = false;
+   }
+   glCallList(etranslation);
+
+   clist->push_back(drawing);
 };
 //---------------------------------------------------------------------------
 // <Function>

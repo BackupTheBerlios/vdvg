@@ -2,7 +2,7 @@
 // File:       uv_widget.h
 // Created by: Lukas Hubmel <luki@humbels.com>
 // Created on: Tue Apr 13 00:07:11 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #ifndef _UV_WIDGET_H_
 #define _UV_WIDGET_H_
@@ -63,7 +63,7 @@ class uv_widget
       //Grösse und Position eines Widgets verändern/setzen
       bool set_size(int x, int y, int width, int height);
 
-      virtual void draw()=0; //Zeichnet das Widget
+      virtual void draw(basic_string<GLuint> * clist)=0; //Zeichnet das Widget
 
       //Setz einen Funktionszeiger für Callback
       void set_callback(voidcallback callback);

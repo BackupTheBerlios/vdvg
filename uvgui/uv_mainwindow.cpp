@@ -2,7 +2,7 @@
 // File:       uv_mainwindow.cpp
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #include "uv_mainwindow.h"
 //---------------------------------------------------------------------------
@@ -16,14 +16,14 @@ uv_mainwindow::uv_mainwindow(int mw, int mh,bool fullscreen, char *mlabel)
     init_SDL(mw, mh, fullscreen, 32, 24, 24, 1, 0, mlabel);
 };
 //---------------------------------------------------------------------------
-void uv_mainwindow::draw()
+void uv_mainwindow::draw(basic_string<GLuint> * clist)
 {
     //Überreste aus den Buffern löschen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     //Alle Childs zeichnen
-    draw_childs();
+    draw_childs(clist);
 };
 //---------------------------------------------------------------------------
 void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
@@ -221,7 +221,10 @@ void uv_mainwindow::run()
                          event.button.button, event.button.type);
             break;
         };
-        draw();
+        basic_string<GLuint> clist;
+        draw(&clist);
+        glListBase(0);
+        glCallLists(clist.length(), GL_UNSIGNED_INT, clist.c_str());
         //Hauptschleifenfunktion aufrufen
         do_callback();
         SDL_GL_SwapBuffers();

@@ -2,7 +2,7 @@
 // File:       uv_image.h
 // Created by: Lukas Hubmel <luki@humbels.com>, Benny Löffel <benny@ggs.ch>
 // Created on: 2004
-// Version:    1.0 <last modification: Sat Sep-11-2004 21:22:18 by Benny>
+// Version:    1.0 <last modification: Sat Oct-02-2004 17:05:42 by Benny>
 //---------------------------------------------------------------------------
 #ifndef _UV_DRAW_IMG_
 #define _UV_DRAW_IMG_
@@ -29,11 +29,14 @@ private:
     bool loaded;
     GLfloat texMinX,texMinY,texMaxX,texMaxY;
     bool initialised;
+
+    GLuint stranslation, etranslation, drawing;
+    bool redraw, retranslate;
 public:
     bool LoadImageFile(string fname);
 
-    uv_image(string filename);
-    uv_image();
+//    uv_image(string filename);
+//    uv_image();
     uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *label=0);
 
     GLfloat get_texMinX()
@@ -79,10 +82,7 @@ public:
     {
         draw_size(x, y, get_texture_w(), get_texture_h());
     };
-    void draw()
-    {
-       draw_size(get_absolute_x(),get_absolute_y(), get_w(), get_h());
-    };
+    void draw(basic_string<GLuint> * clist);
 };
 //---------------------------------------------------------------------------
 #endif
