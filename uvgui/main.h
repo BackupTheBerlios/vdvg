@@ -8,7 +8,7 @@
 #define _MAIN_H_
 //---------------------------------------------------------------------------
 #include "uv_include.h"
-#include "uv_textbox.cpp"
+#include "uv_textbox.h"
 /*#include "uv_gui.h"
 #include "uv_mainwindow.h"
 #include "uv_button.h"
@@ -20,7 +20,7 @@
 //---------------------------------------------------------------------------
 namespace uv_main
 {
-uv_mainwindow mainwindow(1024, 768, false, "4D4G");
+uv_mainwindow mainwindow(1024, 768, true, "4D4G");
 
 uv_image img(0,0,1024,768,&mainwindow,"background.jpg");
 uv_window window1(50,50,600,300,&mainwindow,"auh");

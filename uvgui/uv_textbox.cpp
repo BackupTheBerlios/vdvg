@@ -17,7 +17,7 @@ uv_textbox::uv_textbox(int mx, int my,int mw,int mh, uv_group *parent, char *mla
     //Den Text auf dem Button zentrieren
     text.set_pos(5,((get_h()-text.get_height())/2)-2);
     for(int i=0; i<256; i++) str[i]=0;
-    pos = 0;
+    pos = 0; 
 };
 //---------------------------------------------------------------------------
 void uv_textbox::draw()
