@@ -97,9 +97,9 @@ void mainloop(uv_callback * cb)
 	    {
 	       for(int u=0; u<4; u++)
 	       {
-                  if(uv_main::gbuttons[x+y*4+z*16+u*64].get_status() != ((ki_thread::s_feld.feld[x][y][z][u] == 0) ? 0 : ((uv_main::spielmodus == 0) ? ki_thread::s_feld.feld[x][y][z][u] : ((ki_thread::s_feld.feld[x][y][z][u] == 1) ? 2 : 1))))
+                  if(uv_main::gbuttons[x+y*4+z*16+u*64].get_status() != ((ki_thread::s_feld.feld[x][y][z][u] == 0) ? 0 : ((uv_main::spielmodus == 0 || uv_main::spielmodus == 2) ? ki_thread::s_feld.feld[x][y][z][u] : ((ki_thread::s_feld.feld[x][y][z][u] == 1) ? 2 : 1))))
                      uv_main::gbuttons[x+y*4+z*16+u*64].set_blink((uv_main::spielmodus != 3) ? 5.0 : 1.0);
-                  uv_main::gbuttons[x+y*4+z*16+u*64].set_status((ki_thread::s_feld.feld[x][y][z][u] == 0) ? 0 : ((uv_main::spielmodus == 0) ? ki_thread::s_feld.feld[x][y][z][u] : ((ki_thread::s_feld.feld[x][y][z][u] == 1) ? 2 : 1)));
+                  uv_main::gbuttons[x+y*4+z*16+u*64].set_status((ki_thread::s_feld.feld[x][y][z][u] == 0) ? 0 : ((uv_main::spielmodus == 0 || uv_main::spielmodus == 2) ? ki_thread::s_feld.feld[x][y][z][u] : ((ki_thread::s_feld.feld[x][y][z][u] == 1) ? 2 : 1)));
                }
             }
          }
@@ -110,6 +110,18 @@ void mainloop(uv_callback * cb)
          uv_main::won.set_visible(true, true);
 	 //on top setzen
 	 uv_main::mainwindow.set_on_top_widget(&uv_main::won);
+         if(uv_main::spielmodus == 0 || uv_main::spielmodus == 1)
+         {
+            uv_main::verloren.pushtext("Sie haben leider verloren. :-(");
+            uv_main::gewonnen1.pushtext("Gratulation!");
+            uv_main::gewonnen2.pushtext("Sie haben den Computer geschlagen.");
+         }
+         else
+         {
+            uv_main::verloren.pushtext("Spieler 2 hat gewonnen!");
+            uv_main::gewonnen1.pushtext("");
+            uv_main::gewonnen2.pushtext("Spieler 1 hat gewonnen!");
+         }
       }
       if(ki_thread::s_feld.gewonnen==2)
       {
@@ -117,6 +129,18 @@ void mainloop(uv_callback * cb)
          uv_main::lost.set_visible(true, true);
 	 //on top setzen
 	 uv_main::mainwindow.set_on_top_widget(&uv_main::lost);
+         if(uv_main::spielmodus == 0 || uv_main::spielmodus == 1)
+         {
+            uv_main::verloren.pushtext("Sie haben leider verloren. :-(");
+            uv_main::gewonnen1.pushtext("Gratulation!");
+            uv_main::gewonnen2.pushtext("Sie haben den Computer geschlagen.");
+         }
+         else
+         {
+            uv_main::verloren.pushtext("Spieler 2 hat gewonnen!");
+            uv_main::gewonnen1.pushtext("");
+            uv_main::gewonnen2.pushtext("Spieler 1 hat gewonnen!");
+         }
       }
       if(ki_thread::s_feld.gewonnen==0 && uv_main::spielmodus == 3 && uv_main::game.get_visible() && !uv_main::gameoptionen.get_visible())
       {
@@ -578,6 +602,7 @@ std::string uv_main::IntToString(const int & value)
     return ss.str();
 };
 //---------------------------------------------------------------------------
+
 
 
 
