@@ -11,7 +11,7 @@ debug:
 	make "CC=$(CC) -g"
 
 uvgui: $(OBJECTS) 
-	$(LINKER) -o uvgui $(LIBS) $(OBJECTS)
+	$(LINKER) -o vdvg $(LIBS) $(OBJECTS)
 
 main.o: main.cpp main.h
 	$(CC) $(INCLUDES) -c main.cpp
@@ -78,6 +78,6 @@ uv_list.o: uv_list.cpp uv_list.h
 
 clean: 
 	@echo Cleaning Up...
-	@rm uvgui
+	@rm vdvg
 	@rm $(OBJECTS)
 	@echo Done.

@@ -1,23 +1,10 @@
-VERSION 0.1
+VERSION 0.2
 ===========
--neue Widgets: - Optionbox
-               - Dropdownlist
+-Aufraeumen
+-Multi Language (d.h. alle hardcoded strings mit dynamisch aus Textdateien geladenen ersetzen)
+-In Game Tutorial
+-Design Details (transparenz)
 
--Widget Design: -Schrift auf Windows?
-				-Button ans restliche Design anpassen
-
--Schrift(?)
-
--Spielmodi: -Mensch vs. Mensch
-            -Mensch vs. Maschine
-
--Optionsmenü: -Auflösung
-
--Multithreading
-
--Spiel einbauen: -Spielbrett designen
-                 -Diverse Statusmeldungen (Sie haben gewonnen etc.), ev. extra Messagebox?
-                 -Mit KI verknüpfen
 
 VERSION X.Y
 ===========
