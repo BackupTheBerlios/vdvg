@@ -33,6 +33,10 @@ bool uv_image::LoadImageFile(string fname)
 		//sozusagen this=ite->second....
 		w = ite->second->get_texture_w(); //Laden
 		h = ite->second->get_texture_w(); //Laden
+                texMinX = ite->second->get_texMinX();
+                texMinY = ite->second->get_texMinY();
+                texMaxX = ite->second->get_texMaxX();
+                texMaxY = ite->second->get_texMaxY();
 		textur = ite->second->get_texture_index();
 		return 1;
 	}

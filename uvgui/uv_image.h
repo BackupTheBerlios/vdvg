@@ -30,6 +30,22 @@ public:
     uv_image();
     uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *label=0);
 
+    GLfloat get_texMinX()
+    {
+       return texMinX;
+    };
+    GLfloat get_texMinY()
+    {
+       return texMinY;
+    };
+    GLfloat get_texMaxX()
+    {
+       return texMaxX;
+    };
+    GLfloat get_texMaxY()
+    {
+       return texMaxY;
+    };
 
     void set_texcoordinaten(float x, float y, float mx, float my)
     {
