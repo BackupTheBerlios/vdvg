@@ -1,10 +1,17 @@
+//---------------------------------------------------------------------------
 #ifndef _UV_GROUP_
 #define _UV_GROUP_
-
+//---------------------------------------------------------------------------
 #include "uv_widget.h"
+#include "uv_array.h"
 #include <vector>	//Childs speichern
-using namespace std;
 
+#include <SDL.h>
+#include <SDL_main.h>
+#include <SDL_opengl.h>
+//---------------------------------------------------------------------------
+using namespace std;
+//---------------------------------------------------------------------------
 /*! @class uv_group
  *  @brief Verwaltet gemeinsame Optionen fuer alle Widgets mit Childs
  *  @author Lukas H
@@ -12,19 +19,28 @@ using namespace std;
  *
  *  Diese Klasse enthält funktionen, die die Verwaltung von Childs unterstuetzen.
  */
-
+//---------------------------------------------------------------------------
 class uv_group:public uv_widget
 {
 private:
-    vector < uv_widget * >childs;	// Beinhaltet alle Child widgets...
-    vector < uv_widget * >::iterator ite;  //Iterator, der an der aktuellen Pos steht
+    dstack<uv_widget *> childs;
+    bool next_child;
+    bool last_child;
 public:
-    uv_group(int mx, int my, int mw, int mh,uv_group *parent=0, char *mlabel=0);
+    uv_group(int mx, int my, int mw, int mh,uv_group *parent=0, char *mlabel=0, bool CanHaveFocus=false);
     uv_widget* get_next_child();
-    void set_start_child();		//Iterator == 0
+    uv_widget* get_last_child();
+    void set_start_child(); 		//Iterator == 0
+    void set_end_child();
     void mouse_move_rel(int rel_x, int rel_y);
     void add_child(uv_widget* );
+    void add_child_in_front(uv_widget* );
+    void set_to_end();
+    bool draw_childs();
+    bool mouse_action_childs(int x, int y, int button, int what);
+    bool mouse_move_rel_childs(int rel_x, int rel_y);
 };
-
-
+//---------------------------------------------------------------------------
 #endif
+//---------------------------------------------------------------------------
+

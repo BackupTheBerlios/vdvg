@@ -3,11 +3,13 @@
 uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel):uv_widget(mx,my,mw,mh,parent,mlabel)
 {
     parent->add_child(this);
+    text.init("Test.ttf",16);
 
 }
 
 void uv_button::draw()
 {
+    glBindTexture(GL_TEXTURE_2D, 0);
     if(get_visible())
     {
         glBegin (GL_QUADS);
@@ -26,10 +28,19 @@ void uv_button::draw()
         //glColor3ub (255, 255, 0);
         glVertex2i (get_absolute_x (), get_absolute_y() + get_h ());
         glEnd ();
+
+        //kommt noch in die Text Klasse
+        glColor3ub(0xff,0,0);
+        //glRasterPos2f(50.0f, 50.0f);
+        text.print(get_absolute_x(),750-get_absolute_y(),get_label());
+        //sehr, sehr, sehr unschön...
+        glColor3ub(0xff,0xff,0xff);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
     }
 }
 
-void uv_button::mouse_action(int x, int y,int button,int what)
+bool uv_button::mouse_action(int x, int y,int button,int what)
 {
     if( what==SDL_MOUSEBUTTONDOWN)
     {

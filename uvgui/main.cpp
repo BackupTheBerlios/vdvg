@@ -1,37 +1,38 @@
+//---------------------------------------------------------------------------
 #include "uv_gui.h"
 #include "uv_mainwindow.h"
 #include "uv_button.h"
 #include "uv_window.h"
 #include "uv_imagebox.h"
-
-using namespace std;
-
-void calli();
-
-uv_button *rpr;
-
+#include "main.h"
+//---------------------------------------------------------------------------
+void calli();      //Button1 Action
+void calli2();     //Button2 Action
+void mainloop();   //Hauptschleife
+//---------------------------------------------------------------------------
+//Hauptprogramm
 int main (int argc, char *argv[])
 {
-    uv_mainwindow fenster(1024,768,1,"test");
-    uv_imagebox img(0,0,1024,768,&fenster,"background.jpg");
-    uv_window fens2(50,50,200,200,&fenster,"auh");
-    uv_button knopf(10,10,50,50,&fens2 );
-    uv_button knopf2(70,70,50,50,&fens2 );
-    knopf2.set_visible(1);
-    rpr=&knopf2;
-    knopf.set_callback((voidcallback) calli);
-    fenster.run();
+    uv_main::mainwindow.set_callback(mainloop);
+    uv_main::Button1.set_callback((voidcallback) calli);
+    uv_main::Button2.set_callback((voidcallback) calli2);
+    uv_main::mainwindow.run();
     return 0;
 };
-
-
+//---------------------------------------------------------------------------
+void mainloop()
+{
+    //momentan noch leer
+};
+//---------------------------------------------------------------------------
 void calli()
 {
-    rpr->set_visible(!rpr->get_visible());
-    //cout << "Callback\n";
-    /*static int x=10;
-    x += 60;
-    uv_button *tmp = new uv_button(x,10,50,50,rpr);
-    tmp->set_callback((voidcallback)calli);
-    //cout << "callback"<<endl;*/
-}
+    uv_main::Button2.set_visible(!uv_main::Button2.get_visible());
+};
+//---------------------------------------------------------------------------
+void calli2()
+{
+    uv_main::mainwindow.set_run(false);
+};
+//---------------------------------------------------------------------------
+

@@ -1,36 +1,33 @@
-
+//---------------------------------------------------------------------------
 #include "uv_mainwindow.h"
-#define TRUE 1
-#define FALSE 0
-
-uv_mainwindow::uv_mainwindow(int mw, int mh,bool fullscreen, char *mlabel):uv_group(0,0,mw,mh,0,mlabel)
+//---------------------------------------------------------------------------
+uv_mainwindow::uv_mainwindow(int mw, int mh,bool fullscreen, char *mlabel)
+        :uv_group(0, 0, mw, mh, 0, mlabel)
 {
-    static bool already_exist = FALSE;
+    static bool already_exist = false;
     if(already_exist) return;
-    already_exist=TRUE;
-    init_SDL(mw,mh,fullscreen);
-
-}
-
+    already_exist = true;
+    is_run = true;
+    init_SDL(mw, mh, fullscreen, 32, 24, 24, 1, 0, mlabel);
+};
+//---------------------------------------------------------------------------
 void uv_mainwindow::draw()
 {
-    uv_widget *child;
-    set_start_child();
-    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
-    while((child=get_next_child()) && child != NULL)
-    {
-        child->draw();
-    }
-}
+    //Überreste aus den Buffern löschen
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+    //Alle Childs zeichnen
+    draw_childs();
+};
+//---------------------------------------------------------------------------
 void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
                               int depth_size,
                               int stencil_size, int doublebuffer, int noframe,
                               char *label)
 {
-    //bool fullscreen = 0; //Ã¤ndorn
-    SDL_Surface *screen;
+    //bool fullscreen = 0; //ändern
+    //SDL_Surface *screen;
     int rgb_size[4];
     float gamma = 0.0;
     Uint32 video_flags;
@@ -53,19 +50,19 @@ void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
         }
     }
     // Flags des Video modes setzen
-    // video_flags = SDL_OPENGLBLIT; //FÃ¼r Blitten, performance--, daher
+    // video_flags = SDL_OPENGLBLIT; //Für Blitten, performance--, daher
     // inaktiv
     video_flags = SDL_OPENGL;
-    // video_flags = SDL_RESIZABLE; //Wenn aktiv funktioniert nicht mehr
+    // video_flags = SDL_RESIZABLE;  //Wenn aktiv funktioniert nicht mehr
     // alles
 
-    // Auf Fullscreen prÃ¼fen
-    if (fullscreen)
+    // Auf Fullscreen prüfen
+    if(fullscreen)
     {
         video_flags |= SDL_FULLSCREEN;
     }
 
-    if (noframe)
+    if(noframe)
     {
         video_flags |= SDL_NOFRAME;
     }
@@ -97,7 +94,7 @@ void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
         rgb_size[3] = 8;
         break;
     };
-    // Farbtiefen an OpenGl Ã¼bergeben
+    // Farbtiefen an OpenGl übergeben
     SDL_GL_SetAttribute (SDL_GL_RED_SIZE, rgb_size[0]);
     SDL_GL_SetAttribute (SDL_GL_GREEN_SIZE, rgb_size[1]);
     SDL_GL_SetAttribute (SDL_GL_BLUE_SIZE, rgb_size[2]);
@@ -106,7 +103,7 @@ void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
     SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, doublebuffer);
     // SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, stencil_size);
 
-    if ((screen = SDL_SetVideoMode (breite, hoehe, bit, video_flags)) == NULL)
+    if((SDL_SetVideoMode(breite, hoehe, bit, video_flags)) == NULL)
     {
         fprintf (stderr, "Couldn't set GL mode: %s\n", SDL_GetError ());
         SDL_Quit ();
@@ -119,7 +116,7 @@ void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
     }
     else
     {
-        SDL_WM_SetCaption (label, "");
+        SDL_WM_SetCaption (label, "");//"uv.ico");
     }
     // Gamma des Fensters setzen
     if (gamma != 0.0)
@@ -156,87 +153,95 @@ void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
     glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Sehr gute
     // Perspektive
 
-    // LÃ¶sche den Bildschirm und den Depth Buffer:
+    // Lösche den Bildschirm und den Depth Buffer:
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Zeichnen fertig
     SDL_GL_SwapBuffers ();
-
-}
-
+};
+//---------------------------------------------------------------------------
 void uv_mainwindow::run()
 {
     SDL_Event event;
-    bool last_was_mouse_down=FALSE;
-    while (SDL_PollEvent(&event) >= 0) {
-        switch (event.type) {
+    bool last_was_mouse_down = false;
+    while (SDL_PollEvent(&event) >= 0)
+    {
+        switch (event.type)
+        {
         case SDL_QUIT:
             return;
-            break;
         case SDL_KEYDOWN:
         case SDL_KEYUP:
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
+            if(event.key.keysym.sym == SDLK_ESCAPE)
                 return;
-            }
-            key_action(event.key.keysym.sym,event.key.keysym.mod,event.key.type);
+            key_action(event.key.keysym.sym, event.key.keysym.mod, event.key.type);
             break;
         case SDL_MOUSEMOTION:
             set_mouse_x(event.motion.x);
             set_mouse_y(event.motion.y);
-            mouse_move_rel(event.motion.x,event.motion.y); //wird noch in rel. Bewegung umgerechnet
 
+            //mouse_move_rel(event.motion.x,event.motion.y); //wird noch in rel. Bewegung umgerechnet
+            mouse_move_rel(rel_mouse_x(event.motion.x), rel_mouse_y(event.motion.y));
             break;
         case SDL_MOUSEBUTTONDOWN:
-            if(last_was_mouse_down) break;
-            last_was_mouse_down=TRUE;
-            mouse_action(event.button.x, event.button.y, event.button.button, event.button.type);
+            if(last_was_mouse_down)
+                break;
+            last_was_mouse_down = true;
+            mouse_action(event.button.x, event.button.y,
+                         event.button.button, event.button.type);
             break;
         case SDL_MOUSEBUTTONUP:
-            if(!last_was_mouse_down) break;
-            last_was_mouse_down=FALSE;
-            mouse_action(event.button.x, event.button.y, event.button.button, event.button.type);
+            if(!last_was_mouse_down)
+                break;
+            last_was_mouse_down = false;
+            mouse_action(event.button.x, event.button.y,
+                         event.button.button, event.button.type);
             break;
-
-        }
+        };
         draw();
-        //cout << "redraw..."<<endl;
         SDL_GL_SwapBuffers();
-    }
+        //Hauptschleifenfunktion aufrufen
+        do_callback();
 
-}
-
+        //Auf run prüfen
+        if(!is_run)
+            return;
+    };
+};
+//---------------------------------------------------------------------------
 void uv_mainwindow::key_action (int key,int mod, int what)
 {
 
-}
-
-void uv_mainwindow::mouse_action (int x, int y, int button, int what)
+};
+//---------------------------------------------------------------------------
+bool uv_mainwindow::mouse_action (int x, int y, int button, int what)
 {
-    uv_widget *child;
-    set_start_child();
-    while((child=get_next_child()) && child != NULL)
-    {
-        if(child->get_x() < x &&
-                child->get_y() < y &&
-                (child->get_x() + child->get_w()) > x &&
-                (child->get_y() + child->get_h()) > y)
-        {
-            child->mouse_action(x - (child->get_x()),y - (child->get_y()),button,what);
-        }
-    }
-}
-
+    return mouse_action_childs(x, y, button, what);
+};
+//---------------------------------------------------------------------------
 void uv_mainwindow::mouse_move_rel(int rel_x, int rel_y)
 {
-    static int old_x=rel_x,old_y=rel_y;
+    /*static int old_x=rel_x, old_y=rel_y;
 
     uv_widget *child;
-    set_start_child();
-    while((child=get_next_child()) && child != NULL)
+    set_end_child();
+    while((child=get_last_child()) != NULL)
     {
-
-        child->mouse_move_rel(rel_x-old_x,rel_y-old_y);
+       child->mouse_move_rel(rel_x-old_x,rel_y-old_y);
     }
     old_x = rel_x;
-    old_y = rel_y;
-}
+    old_y = rel_y;*/
+    mouse_move_rel_childs(rel_x, rel_y);
+};
+//---------------------------------------------------------------------------
+void uv_mainwindow::set_run(bool Run)
+{
+    is_run = Run;
+};
+//---------------------------------------------------------------------------
+bool uv_mainwindow::get_run()
+{
+    return is_run;
+};
+//---------------------------------------------------------------------------
+
