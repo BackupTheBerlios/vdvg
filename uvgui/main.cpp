@@ -200,7 +200,7 @@ void menueinit()
 
 //(height-7*buttonheight)/2+x*buttonheight
 
-  uv_main::img1 = uv_image::make_attribut(&uv_main::menu, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", ((uv_main::konfig.get_config().width == 1600 && uv_main::konfig.get_config().height == 1200) || (uv_main::konfig.get_config().width == 800 && uv_main::konfig.get_config().height == 600)) ? "menubackground high.tga" : ((uv_main::konfig.get_config().width == 1280 && uv_main::konfig.get_config().height == 1024) ? "menubackground medium.tga" : "menubackground low.tga"));
+  uv_main::img1 = uv_image::make_attribut(&uv_main::menu, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", ((uv_main::konfig.get_config().width == 1600 && uv_main::konfig.get_config().height == 1200) || (uv_main::konfig.get_config().width == 800 && uv_main::konfig.get_config().height == 600)) ? "menubackground high.png" : ((uv_main::konfig.get_config().width == 1280 && uv_main::konfig.get_config().height == 1024) ? "menubackground medium.png" : "menubackground low.png"));
   uv_main::mnewgame = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+0*buttonheight*2,buttonwidth,buttonheight,"newgame","Neues Spiel","");
   uv_main::moptions = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+1*buttonheight*2,buttonwidth,buttonheight,"newgame","Optionen","");
   uv_main::mabout = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+2*buttonheight*2,buttonwidth,buttonheight,"newgame","About","");
@@ -219,7 +219,7 @@ void gameinit()
    width = uv_main::mainwindow.get_w();
    height = uv_main::mainwindow.get_h();
 
-   uv_main::img2 = uv_image::make_attribut(&uv_main::game, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", ((uv_main::konfig.get_config().width == 1600 && uv_main::konfig.get_config().height == 1200) || (uv_main::konfig.get_config().width == 800 && uv_main::konfig.get_config().height == 600)) ? "gamebackground high.tga" : ((uv_main::konfig.get_config().width == 1280 && uv_main::konfig.get_config().height == 1024) ? "gamebackground medium.tga" : "gamebackground low.tga"));
+   uv_main::img2 = uv_image::make_attribut(&uv_main::game, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", ((uv_main::konfig.get_config().width == 1600 && uv_main::konfig.get_config().height == 1200) || (uv_main::konfig.get_config().width == 800 && uv_main::konfig.get_config().height == 600)) ? "gamebackground high.png" : ((uv_main::konfig.get_config().width == 1280 && uv_main::konfig.get_config().height == 1024) ? "gamebackground medium.png" : "gamebackground low.png"));
 
    agh=92;
    agv=75;
