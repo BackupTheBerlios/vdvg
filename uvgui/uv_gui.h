@@ -5,5 +5,7 @@
 
 void run();
 void set_root_pointer(uv_window *ptr);
+int get_mouse_x();
+int get_mouse_y();
 
 #endif

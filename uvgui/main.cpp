@@ -1,12 +1,10 @@
 #include "uv_gui.h"
-
-
-int main(int argc, char *argv[])
+int main (int argc, char *argv[])
 {
-	uv_window test(800,600);
-	uv_window sef(200,100,20,20,&test);
-	uv_window ssef(200,300,200,400,&test);
-	run();
-	
-   return 0;
+    uv_window test (800, 600);
+    uv_window sef (200, 100, 300, 300, &test);
+    uv_window ssef (50, 50, 20, 20, &sef);
+    run ();
+
+    return 0;
 };
