@@ -29,6 +29,7 @@ namespace uv_main
    uv_fpscounter fps;
    uv_textbox test1, test2;
    uv_checkbox cbox1, cbox2, cbox3;
+   uv_gamebutton gb;
 };
 
 //---------------------------------------------------------------------------

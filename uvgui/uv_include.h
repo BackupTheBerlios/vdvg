@@ -21,6 +21,7 @@
 #include "uv_box.h"
 #include "uv_container.h"
 #include "uv_checkbox.h"
+#include "uv_gamebutton.h"
 //#include "uv_config.h"
 //#include "uv_array.h"
 //---------------------------------------------------------------------------
