@@ -14,6 +14,8 @@ void gameinit();
 void menucallback();
 void gamestartcallback();
 void artificial_intelligence(uv_callback * cb);
+void ok1callback(uv_callback * cb);
+void ok2callback(uv_callback * cb);
 void exitcallback();
 //---------------------------------------------------------------------------
 //Hauptprogramm
@@ -31,9 +33,9 @@ int main (int argc, char *argv[])
    uv_main::game = uv_container::make_attribut(&uv_main::mainwindow);
    uv_main::game.set_visible(0);
    uv_main::menu.set_visible(1);
-   
+
    menueinit();
-   gameinit();	
+   gameinit();
 
    uv_main::mainwindow.run();
    uv_main::konfig.save_file("config.txt");
@@ -64,15 +66,16 @@ void mainloop(uv_callback * cb)
       if(ki_thread::s_feld.gewonnen==1)
       {
          // Anzeigen, dass sp 1 gewonnen
+         uv_main::won.set_visible(true);
       }
       if(ki_thread::s_feld.gewonnen==2)
       {
          // Anzeigen, dass comp gewonnen
+         uv_main::lost.set_visible(true);
       }
    }
 };
 //---------------------------------------------------------------------------
-
 void menueinit()
 {
   int width, height, buttonheight, buttonwidth;
@@ -91,7 +94,7 @@ void menueinit()
   uv_main::mnewgame.set_callback((voidcallback) gamestartcallback);
   uv_main::mexit.set_callback((voidcallback) exitcallback);
 }
-
+//---------------------------------------------------------------------------
 void gameinit()
 {
  //agh abstandhalter grosshorizontal, ak abstandhalter klein, bu gamebuttonbreite
@@ -103,7 +106,7 @@ void gameinit()
    agh=92;
    agv=75;
    ak=46;
-   bu=30;
+   bu=(height-2*agv-3*ak)/16;
 
    for(int x=0; x<4; x++)
    {
@@ -121,10 +124,25 @@ void gameinit()
       }
    }
 
-   uv_main::gexit = uv_button::make_attribut(&uv_main::game,2*agh+3*ak+16*bu, agv,120,50,"a","Menü","");
+   uv_main::gexit = uv_button::make_attribut(&uv_main::game, 2*agh+3*ak+16*bu, agv+60, 150, 40, "a", "Menü","");//2*agh+3*ak+16*bu, agv,120,50,"a","Menü","");
    uv_main::gexit.set_callback((voidcallback) menucallback);
-}
+   uv_main::new_game = uv_button::make_attribut(&uv_main::game, 2*agh+3*ak+16*bu, agv, 150, 40, "a", "Neues Spiel","");
+   uv_main::new_game.set_callback((voidcallback) gamestartcallback);
+   uv_main::exit = uv_button::make_attribut(&uv_main::game, 2*agh+3*ak+16*bu, agv+120, 150, 40, "a", "Beenden","");
+   uv_main::exit.set_callback((voidcallback) exitcallback);
 
+   uv_main::lost = uv_window::make_attribut(&uv_main::mainwindow, (width-500)/2, (height-200)/2, 500, 150, "Lost_window", "Verloren!", "", "windowdesign.tga", false, false, true, false);
+   uv_main::won  = uv_window::make_attribut(&uv_main::mainwindow, (width-500)/2, (height-200)/2, 500, 150, "Won_window",  "Gewonnen!", "", "windowdesign.tga", false, false, true, false);
+   uv_main::ok1  = uv_button::make_attribut(&uv_main::lost, 175, 90, 150, 40, "b", "OK","");
+   uv_main::ok2  = uv_button::make_attribut(&uv_main::won , 175, 90, 150, 40, "c", "OK","");
+   uv_main::verloren = uv_text::make_attribut(&uv_main::lost, 20, 70, 260, 50, 17, "Verloren Text", "Sie haben leider verloren. :-(", "Test.ttf",uv_color::make_color(0,0,0));
+   uv_main::gewonnen = uv_text::make_attribut(&uv_main::won , 20, 70, 260, 50, 17, "Verloren Text", "Gratulation! Sie haben den Computer geschlagen.", "Test.ttf",uv_color::make_color(0,0,0));
+   uv_main::ok1.set_callback(ok1callback);
+   uv_main::ok2.set_callback(ok2callback);
+   uv_main::lost.set_visible(false);
+   uv_main::won.set_visible(false);
+}
+//---------------------------------------------------------------------------
 void gamestartcallback()
 {
    uv_main::game.set_visible(1);
@@ -147,13 +165,13 @@ void gamestartcallback()
 
    ki_thread::s_feld.reset();
 }
-
+//---------------------------------------------------------------------------
 void menucallback()
 {
    uv_main::game.set_visible(0);
    uv_main::menu.set_visible(1);
 }
-
+//---------------------------------------------------------------------------
 void artificial_intelligence(uv_callback * cb)
 {
    if(cb->ID != 18)
@@ -167,10 +185,22 @@ void artificial_intelligence(uv_callback * cb)
 
    ki_thread::start_calculations(ki_thread::s_feld);
 }
-
+//---------------------------------------------------------------------------
+void ok1callback(uv_callback * cb)
+{
+   uv_main::lost.set_visible(false);
+}
+//---------------------------------------------------------------------------
+void ok2callback(uv_callback * cb)
+{
+   uv_main::won.set_visible(false);
+}
+//---------------------------------------------------------------------------
 void exitcallback()
 {
    uv_main::mainwindow.set_run(false);
 }
+//---------------------------------------------------------------------------
+
 
 

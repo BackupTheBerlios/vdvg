@@ -15,7 +15,7 @@ return tmp;
 
 bool uv_container::initialize(attribute atr)
 {
- uv_group::initialize(uv_group::make_attribut(atr.parent,0,0,1000,1000,"",0));
+ uv_group::initialize(uv_group::make_attribut(atr.parent,0,0,1600,1400,"",0));
  return 1;
 };
 

@@ -143,9 +143,10 @@ bool uv_group::mouse_action_childs(int x, int y, int button, int what)
     while((child=get_last_child()) != NULL)
     {
         if(child->get_x() < x &&
-                child->get_y() < y &&
-                (child->get_x()+child->get_w()) > x &&
-                (child->get_y()+child->get_h()) > y)
+           child->get_y() < y &&
+           (child->get_x()+child->get_w()) > x &&
+           (child->get_y()+child->get_h()) > y &&
+           child->get_visible())
         {
             bool focus = child->mouse_action(x-(child->get_x()),
                                              y-(child->get_y()), button, what);

@@ -35,8 +35,9 @@ namespace uv_main
    //Game:
    uv_container	  game;
    uv_gamebutton  gbuttons[256];
-   uv_button	  gexit;
-//   uv_window      gewonnen;
+   uv_button	  gexit, new_game, exit, ok1, ok2;
+   uv_window      lost, won;
+   uv_text        verloren, gewonnen;
 };
 
 //---------------------------------------------------------------------------
