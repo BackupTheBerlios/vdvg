@@ -26,6 +26,7 @@ void goschwerercb(uv_callback * cb);
 void goselect1cb(uv_callback * cb);
 void goselect2cb(uv_callback * cb);
 void goselect3cb(uv_callback * cb);
+void goselect4cb(uv_callback * cb);
 //---------------------------------------------------------------------------
 //Hauptprogramm
 int main (int argc, char *argv[])
@@ -59,6 +60,24 @@ void mainloop(uv_callback * cb)
    if(ki_thread::check_end_of_calculations())
    {
       ki_thread::s_feld = ki_thread::hole_ergebnis();
+      //Bei "Computer gegen Computer" prüfen, ob gekehrt werden muss
+      if(!uv_main::compcomp)
+      {
+         for(int x=0; x<4; x++)
+         {
+            for(int y=0; y<4; y++)
+            {
+	       for (int z=0; z<4; z++)
+	       {
+	          for(int u=0; u<4; u++)
+	          {
+                     ki_thread::s_feld.feld[x][y][z][u] = (ki_thread::s_feld.feld[x][y][z][u] == 1) ? 2 : ((ki_thread::s_feld.feld[x][y][z][u] == 2) ? 1 : 0);
+                  }
+               }
+            }
+         }
+         uv_main::compcomp = false;
+      }
       //Spielfeld zurücksetzen
       for(int x=0; x<4; x++)
       {
@@ -68,9 +87,9 @@ void mainloop(uv_callback * cb)
 	    {
 	       for(int u=0; u<4; u++)
 	       {
-                  if(uv_main::gbuttons[x+y*4+z*16+u*64].get_status() != ki_thread::s_feld.feld[x][y][z][u])
-                     uv_main::gbuttons[x+y*4+z*16+u*64].set_blink(5.0);
-                  uv_main::gbuttons[x+y*4+z*16+u*64].set_status(ki_thread::s_feld.feld[x][y][z][u]);
+                  if(uv_main::gbuttons[x+y*4+z*16+u*64].get_status() != ((ki_thread::s_feld.feld[x][y][z][u] == 0) ? 0 : ((uv_main::spielmodus == 0) ? ki_thread::s_feld.feld[x][y][z][u] : ((ki_thread::s_feld.feld[x][y][z][u] == 1) ? 2 : 1))))
+                     uv_main::gbuttons[x+y*4+z*16+u*64].set_blink((uv_main::spielmodus != 3) ? 5.0 : 1.0);
+                  uv_main::gbuttons[x+y*4+z*16+u*64].set_status((ki_thread::s_feld.feld[x][y][z][u] == 0) ? 0 : ((uv_main::spielmodus == 0) ? ki_thread::s_feld.feld[x][y][z][u] : ((ki_thread::s_feld.feld[x][y][z][u] == 1) ? 2 : 1)));
                }
             }
          }
@@ -89,6 +108,49 @@ void mainloop(uv_callback * cb)
 	 //on top setzen
 	 uv_main::mainwindow.set_on_top_widget(&uv_main::lost);
       }
+      if(ki_thread::s_feld.gewonnen==0 && uv_main::spielmodus == 3 && uv_main::game.get_visible() && !uv_main::gameoptionen.get_visible())
+      {
+         if(uv_main::compcomp)
+         {
+            for(int x=0; x<4; x++)
+            {
+               for(int y=0; y<4; y++)
+               {
+	          for (int z=0; z<4; z++)
+	          {
+	             for(int u=0; u<4; u++)
+	             {
+                        ki_thread::s_feld.feld[x][y][z][u] = (ki_thread::s_feld.feld[x][y][z][u] == 1) ? 2 : ((ki_thread::s_feld.feld[x][y][z][u] == 2) ? 1 : 0);
+                     }
+                  }
+               }
+            }
+            uv_main::compcomp = false;
+         }
+         else
+         {
+            uv_main::compcomp = true;
+         }
+         ki_thread::start_calculations(ki_thread::s_feld);
+      }
+      if(!uv_main::game.get_visible() || uv_main::gameoptionen.get_visible())
+      {
+         //Spielfeld zurücksetzen
+         for(int x=0; x<4; x++)
+         {
+            for(int y=0; y<4; y++)
+            {
+	       for (int z=0; z<4; z++)
+	       {
+	          for(int u=0; u<4; u++)
+	          {
+                     uv_main::gbuttons[x+y*4+z*16+u*64].set_status(0);
+                  }
+               }
+            }
+         }
+         ki_thread::s_feld.reset();
+      }
    }
 };
 //---------------------------------------------------------------------------
@@ -102,7 +164,7 @@ void menueinit()
 
 //(height-7*buttonheight)/2+x*buttonheight
 
-  uv_main::img1 = uv_image::make_attribut(&uv_main::menu, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", "menubackground low.tga");
+  uv_main::img1 = uv_image::make_attribut(&uv_main::menu, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", ((uv_main::konfig.get_config().width == 1600 && uv_main::konfig.get_config().height == 1200) || (uv_main::konfig.get_config().width == 800 && uv_main::konfig.get_config().height == 600)) ? "menubackground high.tga" : ((uv_main::konfig.get_config().width == 1280 && uv_main::konfig.get_config().height == 1024) ? "menubackground medium.tga" : "menubackground low.tga"));
   uv_main::mnewgame = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+0*buttonheight*2,buttonwidth,buttonheight,"newgame","Neues Spiel","");
   uv_main::moptions = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+1*buttonheight*2,buttonwidth,buttonheight,"newgame","Optionen","");
   uv_main::mabout = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+2*buttonheight*2,buttonwidth,buttonheight,"newgame","About","");
@@ -120,7 +182,7 @@ void gameinit()
    width = uv_main::mainwindow.get_w();
    height = uv_main::mainwindow.get_h();
 
-   uv_main::img2 = uv_image::make_attribut(&uv_main::game, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", "gamebackground low.tga");
+   uv_main::img2 = uv_image::make_attribut(&uv_main::game, 0, 0, uv_main::konfig.get_config().width, uv_main::konfig.get_config().height, "Hintergrund", ((uv_main::konfig.get_config().width == 1600 && uv_main::konfig.get_config().height == 1200) || (uv_main::konfig.get_config().width == 800 && uv_main::konfig.get_config().height == 600)) ? "gamebackground high.tga" : ((uv_main::konfig.get_config().width == 1280 && uv_main::konfig.get_config().height == 1024) ? "gamebackground medium.tga" : "gamebackground low.tga"));
 
    agh=92;
    agv=75;
@@ -177,10 +239,16 @@ void gameinit()
    uv_main::gomenschcomp   = uv_checkbox::make_attribut(&uv_main::gameoptionen, 20, 70,  310, 16, uv_image::make_attribut(0,0,0,16,16,"Checkbox","unselected.tga"),uv_image::make_attribut(0,0,0,16,16,"Checkbox","selected.tga"),uv_text::make_attribut(0,20,20,0,0,20,"Buttontext","Mensch gegen Computer", "Test.ttf", uv_color::make_color(255, 255, 255)), "spielmodus");
    uv_main::gocompmensch   = uv_checkbox::make_attribut(&uv_main::gameoptionen, 20, 100, 310, 16, uv_image::make_attribut(0,0,0,16,16,"Checkbox","unselected.tga"),uv_image::make_attribut(0,0,0,16,16,"Checkbox","selected.tga"),uv_text::make_attribut(0,20,20,0,0,20,"Buttontext","Computer gegen Mensch", "Test.ttf", uv_color::make_color(255, 255, 255)), "spielmodus");
    uv_main::gomenschmensch = uv_checkbox::make_attribut(&uv_main::gameoptionen, 20, 130, 310, 16, uv_image::make_attribut(0,0,0,16,16,"Checkbox","unselected.tga"),uv_image::make_attribut(0,0,0,16,16,"Checkbox","selected.tga"),uv_text::make_attribut(0,20,20,0,0,20,"Buttontext","Mensch gegen Mensch", "Test.ttf", uv_color::make_color(255, 255, 255)), "spielmodus");
+   uv_main::gocompcomp     = uv_checkbox::make_attribut(&uv_main::gameoptionen, 20, 160, 310, 16, uv_image::make_attribut(0,0,0,16,16,"Checkbox","unselected.tga"),uv_image::make_attribut(0,0,0,16,16,"Checkbox","selected.tga"),uv_text::make_attribut(0,20,20,0,0,20,"Buttontext","Computer gegen Computer", "Test.ttf", uv_color::make_color(255, 255, 255)), "spielmodus");
    uv_main::gomenschcomp.set_callback(goselect1cb);
    uv_main::gocompmensch.set_callback(goselect2cb);
    uv_main::gomenschmensch.set_callback(goselect3cb);
+   uv_main::gocompcomp.set_callback(goselect4cb);
+   uv_main::gomenschcomp.set_checked(true);
    uv_main::gameoptionen.set_visible(false);
+
+   uv_main::compcomp = true;
+   uv_main::spielmodus = 0;
 }
 //---------------------------------------------------------------------------
 void gamestartcallback()
@@ -223,15 +291,23 @@ void artificial_intelligence(uv_callback * cb)
       return;
    uv_gamebutton::callback * gbcb;
    gbcb = static_cast<uv_gamebutton::callback*>(cb);
-   if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
+   //Wenn "Mensch gegen Computer" oder "Computer gegen Mensch"
+   if(uv_main::spielmodus == 0 || uv_main::spielmodus == 1)
    {
-      uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_blink(2.0);
-      uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_status(1);
+      if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
+      {
+         uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_blink(2.0);
+         uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_status((uv_main::spielmodus == 0) ? 1 : 2);
+      }
+      if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
+      {
+         ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] = 1;
+         ki_thread::start_calculations(ki_thread::s_feld);
+      }
    }
-   if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
+   if(uv_main::spielmodus == 2)
    {
-      ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] = 1;
-      ki_thread::start_calculations(ki_thread::s_feld);
+
    }
 }
 //---------------------------------------------------------------------------
@@ -245,7 +321,7 @@ void ok1callback(uv_callback * cb)
 void ok2callback(uv_callback * cb)
 {
    uv_main::won.set_visible(false);
-	uv_main::mainwindow.set_on_top_widget(0);	
+   uv_main::mainwindow.set_on_top_widget(0);
 }
 //---------------------------------------------------------------------------
 void exitcallback()
@@ -300,7 +376,12 @@ void gookcb(uv_callback * cb)
    //On Top entfernen
    uv_main::mainwindow.set_on_top_widget(0);
 
-   
+   uv_main::spielmodus = (uv_main::gomenschcomp.get_checked()) ? 0 : ((uv_main::gocompmensch.get_checked()) ? 1 : ((uv_main::gomenschmensch.get_checked()) ? 2 : 3));
+
+   if(uv_main::spielmodus == 1 || uv_main::spielmodus == 3)
+      ki_thread::start_calculations(ki_thread::s_feld);
+
+   uv_main::compcomp = true;
 }
 //---------------------------------------------------------------------------
 void goleichtercb(uv_callback * cb)
@@ -377,20 +458,34 @@ void goschwerercb(uv_callback * cb)
 //---------------------------------------------------------------------------
 void goselect1cb(uv_callback * cb)
 {
+   uv_main::gomenschcomp.set_checked(true);
    uv_main::gocompmensch.set_checked(false);
    uv_main::gomenschmensch.set_checked(false);
+   uv_main::gocompcomp.set_checked(false);
 }
 //---------------------------------------------------------------------------
 void goselect2cb(uv_callback * cb)
 {
    uv_main::gomenschcomp.set_checked(false);
+   uv_main::gocompmensch.set_checked(true);
    uv_main::gomenschmensch.set_checked(false);
+   uv_main::gocompcomp.set_checked(false);
 }
 //---------------------------------------------------------------------------
 void goselect3cb(uv_callback * cb)
 {
    uv_main::gomenschcomp.set_checked(false);
    uv_main::gocompmensch.set_checked(false);
+   uv_main::gomenschmensch.set_checked(true);
+   uv_main::gocompcomp.set_checked(false);
+}
+//---------------------------------------------------------------------------
+void goselect4cb(uv_callback * cb)
+{
+   uv_main::gomenschcomp.set_checked(false);
+   uv_main::gocompmensch.set_checked(false);
+   uv_main::gomenschmensch.set_checked(false);
+   uv_main::gocompcomp.set_checked(true);
 }
 //---------------------------------------------------------------------------
 //Eine Hilfsfunktion, um ints in strings zu konvertieren
@@ -401,6 +496,7 @@ std::string uv_main::IntToString(const int & value)
     return ss.str();
 };
 //---------------------------------------------------------------------------
+
 
 
 

@@ -111,10 +111,10 @@ bool uv_checkbox::mouse_action(int x, int y,int button,int what)
 {
     if( what==SDL_MOUSEBUTTONDOWN && get_visible())  //Nur reagieren, wenn der Button sichtbar ist...
     {
+        checked = !checked;
         callback var;
         var.ID = 12;
         do_callback(&var);
-	checked = !checked;
     }
     uv_widget::mouse_action(x,y,button,what);
     return true;
@@ -124,10 +124,10 @@ bool uv_checkbox::key_action(int key, int sym, int mod, int what)
 {
    if(sym == SDLK_RETURN && what== SDL_KEYDOWN)//key == SDLK_RETURN)
    {
+      checked = !checked;
       callback var;
       var.ID = 12;
       do_callback(&var);
-      checked = !checked;
    }
 }
 

@@ -50,7 +50,9 @@ namespace uv_main
    uv_button      gook, goleichter, goschwerer;
    uv_text        goschwierigkeitsgrad, goschwierigkeitsstufe, goschwierigkeit;
    uv_text        gospielmodus;
-   uv_checkbox    gomenschcomp, gocompmensch, gomenschmensch;
+   uv_checkbox    gomenschcomp, gocompmensch, gomenschmensch, gocompcomp;
+   bool           compcomp;
+   int            spielmodus;
 
    //Hilfsfunktion
    std::string IntToString(const int & value);
