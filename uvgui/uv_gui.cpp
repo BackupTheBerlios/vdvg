@@ -31,6 +31,7 @@ void run()
             	break;
       	}
 		root_pointer->draw();
+		SDL_GL_SwapBuffers();
 	}
 
 }

@@ -1,3 +1,5 @@
+
+
 #ifndef _UV_WINDOW_H_
 #define _UV_WINDOW_H_
 
@@ -5,8 +7,9 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
 #include <vector>
+#include "debug_help.h"
 
-//typedef vector<uv_widget> WIDGETVECTOR;
+
 
 using namespace std;
 
@@ -20,7 +23,7 @@ class uv_window :  public uv_widget
                            	int doublebuffer=1, int noframe=0, char *label=0);
 		//Ist das Window das root window?
 		bool is_root_window;
-		//WIDGETVECTOR child_vector; //Beinhaltet alle Child widgets...
+		vector<uv_widget*> childs; //Beinhaltet alle Child widgets...
 	public:
 		/*uv_window(int breite=1024, int hoehe=768, uv_window *parent=0, int bit=32, 
                           	int depth_size=24, int stencil_size=24,

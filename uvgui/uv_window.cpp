@@ -31,13 +31,15 @@ welches dann in einem dyn. array abgelegt wird.
 */
 void uv_window::add_me(uv_widget *new_child)	
 {
-	
+	childs.push_back(new_child);	
 }
 
 void uv_window::draw() //Zeichenfunktion
 {
 	if(is_root_window)
 	{
+		DEBUGPRINT;
+		glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 		//Bildschirm löschen
 	}
 	else
@@ -166,8 +168,8 @@ void uv_window::init_SDL(int breite, int hoehe, int bit, uv_window *parent,
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
-   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-   //glClearColor(0.2f, 0.4f, 1.0f, 0.0f);
+   //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+   glClearColor(0.2f, 0.4f, 1.0f, 0.0f);
    glClearDepth(1.0f);
    //glClearStencil(24);
    glEnable(GL_DEPTH_TEST);
