@@ -10,7 +10,6 @@
 #include "uv_include.h"
 #include "uv_textbox.h"
 #include "uv_config.h"
-//#include "ki.h"
 #include "uv_kithread.h"
 //---------------------------------------------------------------------------
 
