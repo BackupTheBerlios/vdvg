@@ -213,7 +213,7 @@ void uv_mainwindow::run()
 //---------------------------------------------------------------------------
 void uv_mainwindow::key_action (int key,int mod, int what)
 {
-
+    key_action_childs(key, mod, what);
 };
 //---------------------------------------------------------------------------
 bool uv_mainwindow::mouse_action (int x, int y, int button, int what)
@@ -223,16 +223,6 @@ bool uv_mainwindow::mouse_action (int x, int y, int button, int what)
 //---------------------------------------------------------------------------
 void uv_mainwindow::mouse_move_rel(int rel_x, int rel_y)
 {
-    /*static int old_x=rel_x, old_y=rel_y;
-
-    uv_widget *child;
-    set_end_child();
-    while((child=get_last_child()) != NULL)
-    {
-       child->mouse_move_rel(rel_x-old_x,rel_y-old_y);
-    }
-    old_x = rel_x;
-    old_y = rel_y;*/
     mouse_move_rel_childs(rel_x, rel_y);
 };
 //---------------------------------------------------------------------------

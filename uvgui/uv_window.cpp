@@ -45,7 +45,7 @@ bool uv_window::mouse_action(int x, int y, int button, int what)
 //---------------------------------------------------------------------------
 void uv_window::key_action(int key, int mod, int what)
 {
-
+    key_action_childs(key, mod, what);
 };
 //---------------------------------------------------------------------------
 void uv_window::mouse_move_rel(int rel_x, int rel_y)
