@@ -7,7 +7,7 @@ LINKER = g++
 
 all: uvgui
 
-debug: 
+debug: clean
 	make "CC=$(CC) -g"
 
 uvgui: $(OBJECTS) 

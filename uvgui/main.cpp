@@ -14,9 +14,13 @@ void fensterinit();
 //Hauptprogramm
 int main (int argc, char *argv[])
 {
+   uv_main::mainwindow = uv_mainwindow::make_attribut(1024,768,0,"4D4G");
 
-   uv_main::mainwindow.set_callback(mainloop);
-   uv_main::img = uv_image::make_attribut(&uv_main::mainwindow, 0, 0, uv_main::width, uv_main::height, "Hintergrund", "background.jpg");
+   // uv_main::mainwindow = uv_mainwindow::make_attribut(1024, 768,0,"4D4G");
+   // Irgendwie funktioniert mainwindow nicht mit dem make_attribut (d.h. kompiliert fehlerfrei, zeigt aber nur
+   // leeren (schwarzen) Bildschirm an.
+  // uv_main::mainwindow.set_callback(mainloop);
+   uv_main::img = uv_image::make_attribut(&uv_main::mainwindow, 0, 0, 1024, 768, "Hintergrund", "background.jpg"); /*
    uv_main::test = uv_image::make_attribut(&uv_main::window1, 20, 110, 200, 100, "test", "Testbild2.bmp", 0.5, 0.0, 1.0, 1.0);
    uv_main::testa = uv_image::make_attribut(&uv_main::window2, 20, 110, 64, 64, "testa","test3.tga");
    fensterinit();
@@ -28,11 +32,13 @@ int main (int argc, char *argv[])
    uv_main::test2 = uv_textbox::make_attribut(&uv_main::aaa, 10, 60, 266, 20, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Text", "", "Franklin-Italic.ttf", uv_color::make_color(255, 128, 0)), uv_color::make_color(255, 255, 255), "Textbox1");
    uv_main::Button1.set_callback((voidcallback) calli);
    uv_main::Button2.set_callback((voidcallback) calli2);
-   uv_main::fps = uv_fpscounter::make_attribut(&uv_main::mainwindow, uv_main::mainwindow.get_w()-100, 0, 0, 0, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Frames", "Wait...", "Test.ttf", uv_color::make_color(255, 255, 255)),"FPS Counter");
+   uv_main::fps = uv_fpscounter::make_attribut(&uv_main::mainwindow, uv_main::mainwindow.get_w()-100, 0, 0, 0, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Frames", "Wait...", "Test.ttf", uv_color::make_color(255, 255, 255)),"FPS Counter");*/
    uv_main::mainwindow.run();
+
    return 0;
 };
 //---------------------------------------------------------------------------
+/*
 void mainloop(uv_callback * cb)
 {
     //momentan noch leer
@@ -65,6 +71,6 @@ void fensterinit()
    uv_main::fff = uv_window::make_attribut(&uv_main::mainwindow, 145, 145, 300, 500, "window2", "window2", "", "", true, true, true, false);
 };
 //---------------------------------------------------------------------------
-
+*/
 
 

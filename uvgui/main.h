@@ -21,21 +21,22 @@
 
 namespace uv_main
 {
+
 	uv_config konfig;
    // konfig.load_file("config.conf");
 
-   const int width = 1024, height = 768;
-   uv_mainwindow mainwindow(width, height, true, "4D4G");
+  //const int width = 1024, height = 768;
+   uv_mainwindow mainwindow;
    //Die Fenster
-   uv_window window1, window2, aaa, bbb, ccc, ddd, eee, fff;
+//   uv_window window1, window2, aaa, bbb, ccc, ddd, eee, fff;
    //Die Buttons
-   uv_button Button1, Button2;
+//   uv_button Button1, Button2;
    //Die Bilder
-   uv_image img, test, testa;
+   uv_image img;//, test, testa;
    //Die Boxen
-   uv_box tst, box1;
-   uv_fpscounter fps;
-   uv_textbox test1, test2;
+//   uv_box tst, box1;
+//   uv_fpscounter fps;
+//   uv_textbox test1, test2;
 };
 
 //---------------------------------------------------------------------------

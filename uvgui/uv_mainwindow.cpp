@@ -6,6 +6,36 @@
 //---------------------------------------------------------------------------
 #include "uv_mainwindow.h"
 //---------------------------------------------------------------------------
+uv_mainwindow::uv_mainwindow():uv_group(0,0,0,0,0,"")
+{
+
+}
+
+bool uv_mainwindow::initialize(attribute init)
+{
+//	uv_mainwindow(init.width, init.height, init.fullscreen,init.caption); //habe schon mehrere Methoden durch, funktioniert keine
+
+	static bool already_exist = false;
+    if(already_exist) return 0;
+    already_exist = true;
+    is_run = true;
+	set_size(0,0,init.width, init.height);
+    init_SDL(init.width, init.height, init.fullscreen, 32, 24, 24, 1, 0, init.caption); 
+    return 1;
+
+}
+
+uv_mainwindow::attribute uv_mainwindow::make_attribut(int width, int height, bool fullscreen, char * caption)
+{
+	attribute attr;
+	attr.width = width;
+	attr.height = height;
+	attr.fullscreen = fullscreen;
+	attr.caption = caption;
+	return attr;
+}
+
+
 uv_mainwindow::uv_mainwindow(int mw, int mh,bool fullscreen, char *mlabel)
         :uv_group(0, 0, mw, mh, 0, mlabel)
 {
@@ -15,6 +45,8 @@ uv_mainwindow::uv_mainwindow(int mw, int mh,bool fullscreen, char *mlabel)
     is_run = true;
     init_SDL(mw, mh, fullscreen, 32, 24, 24, 1, 0, mlabel);
 };
+
+
 //---------------------------------------------------------------------------
 void uv_mainwindow::draw(vector<GLuint> * clist)
 {
@@ -33,6 +65,7 @@ void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
 {
     //bool fullscreen = 0; //ändern
     //SDL_Surface *screen;
+	
     int rgb_size[4];
     float gamma = 0.0;
     Uint32 video_flags;
@@ -106,7 +139,8 @@ void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
     SDL_GL_SetAttribute (SDL_GL_GREEN_SIZE, rgb_size[1]);
     SDL_GL_SetAttribute (SDL_GL_BLUE_SIZE, rgb_size[2]);
     SDL_GL_SetAttribute (SDL_GL_ALPHA_SIZE, rgb_size[3]);
-    SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, depth_size);
+    //depth_size und doublebuffer sind OK
+	SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, depth_size);
     SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, doublebuffer);
     // SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, stencil_size);
 
@@ -167,6 +201,7 @@ void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
 
     // Zeichnen fertig
     SDL_GL_SwapBuffers ();
+
 };
 //---------------------------------------------------------------------------
 void uv_mainwindow::run()
@@ -225,6 +260,7 @@ void uv_mainwindow::run()
         vector<GLuint> clist;
         draw(&clist);
         glListBase(0);
+		cout << clist.size() << endl;
 		GLuint *test = new GLuint[clist.size()];
 		vector<GLuint>::const_iterator iter;
 		int pi=0;
