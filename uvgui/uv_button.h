@@ -35,6 +35,9 @@ public:
       bool used;
    };
 private:
+   //Schon initialisiert?
+   bool is_init;
+
    uv_text text;
    std::string textspeicher;
    GLuint stranslation, etranslation, drawing1, drawing2;

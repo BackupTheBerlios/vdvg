@@ -28,6 +28,9 @@ class uv_box:public uv_widget
 
       };
    private:
+      //Schon initialisiert?
+      bool is_init;
+
       GLubyte red, green, blue;
 
       GLuint stranslation, etranslation, drawing;

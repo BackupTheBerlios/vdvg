@@ -6,9 +6,10 @@
 //---------------------------------------------------------------------------
 #include "uv_box.h"
 //---------------------------------------------------------------------------
-uv_box::uv_box():uv_widget(0,0,0,0,0,0)
+uv_box::uv_box()
 {
-
+   //Noch nicht initialisiert
+   is_init = false;
 }
 //---------------------------------------------------------------------------
 bool uv_box::initialize(attribute init)
@@ -21,14 +22,16 @@ bool uv_box::initialize(attribute init)
 
    red=0xff; green=0xff; blue=0xff;
 
-   ////
-   set_parent(init.parent);
-   set_size(init.x, init.y, init.width, init.height);
+   uv_widget::initialize(uv_widget::make_attribut(init.parent, init.x, init.y,
+                         init.width, init.height, init.name, false));
 
    red = init.color.red; green = init.color.green; blue = init.color.blue;
 
    redraw = true;
    retranslate = true;
+
+   //Initialisierung erfolgt
+   is_init = true;
 
    return true;
 };

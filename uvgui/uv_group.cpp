@@ -6,11 +6,17 @@
 //---------------------------------------------------------------------------
 #include "uv_group.h"
 //---------------------------------------------------------------------------
-uv_group::uv_group(int mx, int my, int mw, int mh,uv_group *parent,
-                   char *mlabel, bool CanHaveFocus)
-        :uv_widget(mx, my, mw, mh,parent,mlabel,CanHaveFocus)
+uv_group::uv_group()
 {
-    next_child = false;
+   is_init = false;
+};
+//---------------------------------------------------------------------------
+bool uv_group::initialize(attribute init)
+{
+   uv_widget::initialize(uv_widget::make_attribut(init.parent, init.x, init.y, init.width, init.height, init.label, init.can_focus_have));
+   next_child = false;
+
+   is_init = true;
 };
 //---------------------------------------------------------------------------
 uv_group::attribute uv_group::make_attribut(uv_group * parent,

@@ -6,28 +6,22 @@
 //---------------------------------------------------------------------------
 #include "uv_window.h"
 //---------------------------------------------------------------------------
-uv_window::uv_window():uv_group(0, 0, 0, 0, 0, "", true)
+uv_window::uv_window()
 {
-
+   //Noch nicht initialisiert
+   is_init = false;
 };
 //---------------------------------------------------------------------------
 bool uv_window::initialize(attribute init)
 {
-   //Noch nicht initialisiert
-    is_init = false;
+   //Display-Listen Zeugs:
+   if(!(stranslation = glGenLists(3)))
+      return false; //Error !!
+   drawing = stranslation+1;
+   etranslation = drawing+1;
 
-    //Display-Listen Zeugs:
-    if(!(stranslation = glGenLists(3)))
-       return false; //Error !!
-    drawing = stranslation+1;
-    etranslation = drawing+1;
-
-   /////
-   //Den Parent setzen
-   set_parent(init.parent);
-
-   //Die Fensterposition und Grösse setzen:
-   set_size(init.x, init.y, init.width, init.height);
+   uv_group::initialize(uv_group::make_attribut(init.parent, init.x, init.y,
+                        init.width, init.height, init.name, true));
 
    //Wichtige Fenstervariablen setzen
    closeexist = init.closebutton;

@@ -7,19 +7,24 @@
 #include "uv_fpscounter.h"
 //---------------------------------------------------------------------------
 //Der Konstruktor
-uv_fpscounter::uv_fpscounter():uv_group(0,0,0,0,0,"")
+uv_fpscounter::uv_fpscounter()
 {
-   //macht momentan nichts
+   //Noch nicht initialisiert
+   is_init = false;
 }
 //---------------------------------------------------------------------------
 bool uv_fpscounter::initialize(attribute init)
 {
-   set_parent(init.parent);
-   set_size(init.x, init.y, init.width, init.height);
+   uv_group::initialize(uv_group::make_attribut(init.parent, init.x, init.y,
+                        init.width, init.height, init.name, false));
 
    init.text_attribute.parent = this;
    counter = init.text_attribute;
    counter.set_pos(0, counter.get_height());
+
+   //Initialisierung erfolgt
+   is_init = true;
+
    return true;
 };
 //---------------------------------------------------------------------------

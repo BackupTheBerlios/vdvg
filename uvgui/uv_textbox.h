@@ -26,6 +26,9 @@ class uv_textbox: public uv_group
 
       };
    private:
+      //Schon initialisiert?
+      bool is_init;
+
       uv_text text;
       char str2[256];
       std::string str;

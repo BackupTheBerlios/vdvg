@@ -31,6 +31,8 @@ class uv_fpscounter:public uv_group
 
       };
    private:
+      //Schon initialisiert?
+      bool is_init;
       uv_text counter;
       std::string IntToString(const int & value);
 

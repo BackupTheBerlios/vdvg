@@ -6,27 +6,25 @@
 //---------------------------------------------------------------------------
 #include "uv_button.h"
 //---------------------------------------------------------------------------
-uv_button::uv_button():uv_group(0,0,0,0,0,"")
+uv_button::uv_button()
 {
-
+   //Noch nicht initialisiert
+   is_init = false;
 }
 //---------------------------------------------------------------------------
 bool uv_button::initialize(attribute init)
 {
    //Display-Listen Zeugs:
-    if(!(stranslation = glGenLists(4)))
-       return false; //Error !!
-    drawing1 = stranslation+1;
-    drawing2 = drawing1+1;
-    etranslation = drawing2+1;
+   if(!(stranslation = glGenLists(4)))
+      return false; //Error !!
+   drawing1 = stranslation+1;
+   drawing2 = drawing1+1;
+   etranslation = drawing2+1;
 
-    redraw = true;
-    retranslate = true;
+   redraw = true;
+   retranslate = true;
 
-
-   ////
-   set_parent(init.parent);
-   set_size(init.x, init.y, init.width, init.height);
+   uv_group::initialize(uv_group::make_attribut(init.parent, init.x, init.y, init.width, init.height, init.name, true));
 
    uv_color text_color = {0xff, 0x88, 0x00};
    text = uv_text::make_attribut(this, 0, 0, 0, 0, 25, "Buttontext", init.caption, "Test.ttf", text_color);
@@ -34,6 +32,9 @@ bool uv_button::initialize(attribute init)
 
    redraw = true;
    retranslate = true;
+
+   //Initialisierung erfolgt
+   is_init = true;
 
    return true;
 };

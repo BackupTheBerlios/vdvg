@@ -6,9 +6,10 @@
 //---------------------------------------------------------------------------
 #include "uv_textbox.h"
 //---------------------------------------------------------------------------
-uv_textbox::uv_textbox():uv_group(0,0,0,0,0,"")
+uv_textbox::uv_textbox()
 {
-
+   //Noch nicht initialisiert
+   is_init = false;
 };
 //---------------------------------------------------------------------------
 bool uv_textbox::initialize(attribute init)
@@ -21,9 +22,7 @@ bool uv_textbox::initialize(attribute init)
    scissoran = etranslation+1;
    scissoraus = scissoran+1;
 
-   ////
-   set_parent(init.parent);
-   set_size(init.x, init.y, init.width, init.height);
+   uv_group::initialize(uv_group::make_attribut(init.parent, init.x, init.y, init.width, init.height, init.name, false));  //Warum false ?!?
 
    init.text_attribute.parent = this;
    text = init.text_attribute;
@@ -32,6 +31,9 @@ bool uv_textbox::initialize(attribute init)
    redraw = true;
    retranslate = true;
    last_abs_x = -1; last_abs_y = -1;
+
+   //Initialisierung erfolgt
+   is_init = true;
 
    return true;
 };

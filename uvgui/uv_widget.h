@@ -51,6 +51,14 @@ typedef void (*voidcallback)(uv_callback * cb);
 //-------------------------------------------------------------------------//
 class uv_widget
 {
+   public:
+      struct attribute
+      {
+         uv_group * parent;
+         int x, y, width, height;
+         string label;
+         bool CanFocusHave;
+      };
    private:
       int x, y, w, h;
       voidcallback callback;
@@ -61,10 +69,17 @@ class uv_widget
       bool can_focus_have;  //Kann das Widget den Focus bekommen?
       bool mouseover;
 
+      //Wurde das Widget initialisier?
+      bool is_init;
    public:
-      //setzt Variabeln,Konstruktor, sollte irgendwie protected sein...
-      uv_widget(int x, int y, int width, int height,uv_group *parent=0,
-                char *label=0, bool CanFocusHave=false);
+      uv_widget();
+
+      bool initialize(attribute init);
+      bool operator=(attribute init) {return initialize(init);};
+
+      static attribute make_attribut(uv_group * parent, int x, int y,
+                                     int width, int height, string label="",
+                                     bool CanFocusHave=false);
 
       //Destruktor
       virtual ~uv_widget(); //Macht nichts

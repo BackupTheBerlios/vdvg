@@ -70,6 +70,9 @@ class uv_text:public uv_widget
 
       };
    private:
+      //Schon initialisiert?
+      bool is_init;
+
       //Variabeln:
       //font_data ft_font;
       GLuint * textures; // Variable mit der Textur ID

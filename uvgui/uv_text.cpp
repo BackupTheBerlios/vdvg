@@ -6,9 +6,10 @@
 //---------------------------------------------------------------------------
 #include "uv_text.h"
 //---------------------------------------------------------------------------
-uv_text::uv_text():uv_widget(0, 0, 0, 0, 0, "")
+uv_text::uv_text()
 {
-
+   //Noch nicht initialisiert
+   is_init = false;
 }
 //---------------------------------------------------------------------------
 uv_text::~uv_text()
@@ -36,9 +37,8 @@ bool uv_text::initialize(attribute init)
    retranslate = true;
    last_abs_x = -1; last_abs_y = -1;
 
-   ///
-   set_parent(init.parent);
-   uv_widget::set_size(init.x, init.y, init.width, init.height);
+   uv_widget::initialize(uv_widget::make_attribut(init.parent, init.x, init.y,
+                         init.width, init.height, init.name, false));
    set_color(init.font_color.red, init.font_color.green, init.font_color.blue);
    uv_text::init(init.font.c_str(), init.font_size);
    pushtext(init.text);
@@ -46,6 +46,9 @@ bool uv_text::initialize(attribute init)
    redraw = true;
    retranslate = true;
    last_abs_x = -1; last_abs_y = -1;
+
+   //Initialisierung erfolgt
+   is_init = true;
 
    return true;
 };

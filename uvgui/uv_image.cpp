@@ -6,12 +6,10 @@
 //---------------------------------------------------------------------------
 #include "uv_image.h"
 //---------------------------------------------------------------------------
-uv_image::uv_image()//int mx, int my, int mw, int mh,
-                   //uv_group *parent, char *mlabel)
-                   //: uv_widget(mx,my,mw,mh,parent,0)
-                   : uv_widget(0, 0, 0, 0, 0, 0)
+uv_image::uv_image()
 {
-
+   //Noch nicht initialisiert
+   is_init = false;
 };
 //---------------------------------------------------------------------------
 bool uv_image::initialize(attribute init)
@@ -26,9 +24,8 @@ bool uv_image::initialize(attribute init)
    drawing = stranslation+1;
    etranslation = drawing+1;
 
-   //////
-   //Den Parent setzen
-   set_parent(init.parent);
+   uv_widget::initialize(uv_widget::make_attribut(init.parent, init.x, init.y,
+                         init.width, init.height, init.name, false));
 
    //Position und Grösse des Bildes setzen
    set_size(init.x, init.y, init.width, init.height,
@@ -40,6 +37,9 @@ bool uv_image::initialize(attribute init)
 
    redraw = true;
    retranslate = true;
+
+   //Initialisierung erfolgt
+   is_init = true;
 
    return true;
 };

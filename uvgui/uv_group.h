@@ -43,8 +43,10 @@ class uv_group:public uv_widget
       dstack<uv_widget *> childs;
       bool next_child;
       bool last_child;
+
+      bool is_init;
    public:
-      uv_group(int mx, int my, int mw, int mh,uv_group *parent=0, char *mlabel=0, bool CanHaveFocus=false);
+      uv_group();
 
       bool initialize(attribute init);
       bool operator=(attribute init) {return initialize(init);};

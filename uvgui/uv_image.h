@@ -34,6 +34,9 @@ public:
 
    };
 private:
+    //Schon initialisiert?
+    bool is_init;
+
     //Variabeln:
     int w, h;
     GLuint textur;

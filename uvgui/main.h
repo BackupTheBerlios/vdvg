@@ -10,19 +10,11 @@
 #include "uv_include.h"
 #include "uv_textbox.h"
 #include "uv_config.h"
-/*#include "uv_gui.h"
-#include "uv_mainwindow.h"
-#include "uv_button.h"
-#include "uv_window.h"
-#include "uv_image.h"
-#include "uv_fpscounter.h"
-#include "uv_box.h"
-#include "uv_text.h"*/
 //---------------------------------------------------------------------------
 
 namespace uv_main
 {
-	uv_config konfig;
+   uv_config konfig;
 
    uv_mainwindow mainwindow;
    //Die Fenster

@@ -7,23 +7,45 @@
 #include "uv_widget.h"
 #include "uv_group.h"
 //---------------------------------------------------------------------------
-uv_widget::uv_widget(int x, int y, int width, int height, uv_group *parent,
-                     char *label, bool CanFocusHave)
+uv_widget::uv_widget()
 {
-   this->x=x; this->y=y;
-   w=width; h=height;
+   is_init = false;
+};
+//---------------------------------------------------------------------------
+bool uv_widget::initialize(attribute init)
+{
+   //Die Geometriedaten setzen:
+   x = init.x; y = init.y;
+   w = init.width; h = init.height;
 
-   myparent=parent;
-   this->label=label;
-   visible=true;
-   callback=NULL;
-   can_focus_have=CanFocusHave;
+   myparent = init.parent;
+   label = const_cast<char *>(init.label.c_str());
+   visible = true;
+   callback = NULL;
+   can_focus_have = init.CanFocusHave;
 
-   //Das Child beim Parent eintragen (wenn parent != 0)
-   if(parent!=0)
+   //Das Child beim Parent eintragen (falls parent != 0):
+   if(init.parent!=0)
       myparent->add_child(this);
 
    mouseover = false;
+   is_init = true;
+
+   return true;
+};
+//---------------------------------------------------------------------------
+uv_widget::attribute uv_widget::make_attribut(uv_group * parent, int x, int y,
+                                              int width, int height,
+                                              string label, bool CanFocusHave)
+{
+   attribute attr;
+
+   attr.parent = parent;
+   attr.x = x; attr.y = y; attr.width = width; attr.height = height;
+   attr.label = label;
+   attr.CanFocusHave = CanFocusHave;
+
+   return attr;
 };
 //---------------------------------------------------------------------------
 uv_widget::~uv_widget()
