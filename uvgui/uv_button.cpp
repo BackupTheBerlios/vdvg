@@ -1,6 +1,6 @@
 #include "uv_button.h"
 
-uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel):uv_widget(mx,my,mw,mh,parent,mlabel)
+uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel):uv_group(mx,my,mw,mh,parent,mlabel)
 {
     parent->add_child(this);
     text.init("Test.ttf",20);

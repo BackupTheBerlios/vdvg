@@ -49,6 +49,9 @@ public:
     {
         return myparent;
     };
+	void set_parent(uv_group *parent);
+
+	
     int get_w()   //Liefert die breite (width)
     {
         return w;
@@ -134,4 +137,3 @@ public:
 //---------------------------------------------------------------------------
 #endif	//_UVWIDGET_H_
 //---------------------------------------------------------------------------
-

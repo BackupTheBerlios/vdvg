@@ -4,8 +4,9 @@
 #include "uv_widget.h"
 #include "uv_group.h"
 #include "uv_text.h"
-#include <SDL_opengl.h>
 #include <SDL.h>
+#include <SDL_opengl.h>
+
 
 /*! @class uv_button
  *  @brief Erstellt ein anklickbaren Button
@@ -13,7 +14,7 @@
  *  @version 1.0
  *
  */
-class uv_button:public uv_widget
+class uv_button:public uv_group
 {
 private:
     uv_text text;

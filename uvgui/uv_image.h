@@ -5,13 +5,16 @@
 #include "SDL.h"
 #include "SDL_opengl.h"
 #include "SDL_image.h"  //Reihenfolge vertauschen
+#include "uv_widget.h"
+#include "uv_group.h"
+
 
 #include <iostream>
 #include <string>
 //---------------------------------------------------------------------------
 using namespace std;
 //---------------------------------------------------------------------------
-class uv_texture
+class uv_image:public uv_widget
 {
 private:
     GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord );
@@ -23,8 +26,9 @@ private:
 public:
     bool LoadImageFile(string fname);
 
-    uv_texture(string filename);
-    uv_texture();
+    uv_image(string filename);
+    uv_image();
+	uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *label=0);
 
     GLuint get_texture_index()
     {
@@ -47,8 +51,11 @@ public:
     {
         draw_size(x, y, get_texture_w(), get_texture_h());
     };
+	void draw()
+	{
+		draw_original_size(get_x(),get_y());
+	};
 };
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------
-

@@ -1,24 +1,32 @@
 //---------------------------------------------------------------------------
-#include "uv_texture.h"
+#include "uv_image.h"
 //---------------------------------------------------------------------------
-uv_texture::uv_texture(string filename)
+uv_image::uv_image(string filename):uv_widget(0,0,0,0,0,0)
 {
-    loaded=false;
-    w=0;
-    h=0;
+    uv_image();
     LoadImageFile(filename);
 };
 //---------------------------------------------------------------------------
-uv_texture::uv_texture()
+uv_image::uv_image():uv_widget(0,0,0,0,0,0)
 {
     loaded=false;
     w=0;
     h=0;
 };
-//---------------------------------------------------------------------------
-bool uv_texture::LoadImageFile(string fname)
+
+uv_image::uv_image(int mx, int my, int mw, int mh, uv_group *parent, char *mlabel):uv_widget(mx,my,mw,mh,parent,0)
 {
-    GLuint global_texture = 0;
+    parent->add_child(this);
+	loaded=false;
+    w=0;
+    h=0;
+	LoadImageFile(mlabel);
+};
+//---------------------------------------------------------------------------
+bool uv_image::LoadImageFile(string fname)
+{
+ 
+	GLuint global_texture = 0;
     SDL_Surface *image;
     GLfloat texcoord[4];
 
@@ -53,7 +61,7 @@ bool uv_texture::LoadImageFile(string fname)
     return true;
 };
 //---------------------------------------------------------------------------
-GLuint uv_texture::SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
+GLuint uv_image::SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
 {
     GLuint texture;
     int w, h;
@@ -130,7 +138,7 @@ GLuint uv_texture::SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
     return texture;
 };
 //---------------------------------------------------------------------------
-int uv_texture::power_of_two(int input)
+int uv_image::power_of_two(int input)
 {
     int value = 1;
     while(value < input)
@@ -140,7 +148,7 @@ int uv_texture::power_of_two(int input)
     return value;
 };
 //---------------------------------------------------------------------------
-void uv_texture::draw_size(int x, int y, int w, int h)
+void uv_image::draw_size(int x, int y, int w, int h)
 {
     // x,y,w,h sind OK
     glBindTexture(GL_TEXTURE_2D, textur);
@@ -157,4 +165,3 @@ void uv_texture::draw_size(int x, int y, int w, int h)
     glBindTexture(GL_TEXTURE_2D, 0); //Textur unbinden, für andere Zeichnungsop.
 };
 //---------------------------------------------------------------------------
-

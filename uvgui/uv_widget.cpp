@@ -16,4 +16,9 @@ int uv_widget::get_absolute_y()
     return 0;
 };
 //---------------------------------------------------------------------------
-
+void uv_widget::set_parent(uv_group *parent)
+{
+		//Hier muss sich, wenn myparent != 0, das child noch abmelden
+		myparent=parent;
+		myparent->add_child(this);
+}

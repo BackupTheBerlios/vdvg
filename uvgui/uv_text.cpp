@@ -1,8 +1,12 @@
 #include "uv_text.h"
-
-
-uv_text::uv_text()
+uv_text::uv_text():uv_widget(0,0,0,0,0,0)
 {
+	
+}
+
+uv_text::uv_text(int mx,int my,int mh,int mw,uv_group *parent,char *label):uv_widget(mx,my,mh,mw, parent,label)
+{
+	parent->add_child(this);
 	red=0xff;
 	blue=0xff;
 	green=0xff;

@@ -6,7 +6,7 @@ namespace uv_main
 {
 uv_mainwindow mainwindow(1024, 768, 1, "4D4G");
 
-uv_imagebox img(0,0,1024,768,&mainwindow,"background.jpg");
+uv_image img(0,0,1024,768,&mainwindow,"background.jpg");
 
 uv_window window1(50,50,600,300,&mainwindow,"auh");
 uv_fpscounter fps(&mainwindow);

@@ -9,10 +9,11 @@
 #include <iostream>
 using namespace std;
 
-class uv_fpscounter:public uv_widget
+class uv_fpscounter:public uv_group
 {
 	private:
 	uv_text counter;
+	
 	public:
 	uv_fpscounter(uv_group *parent);
 	void draw();

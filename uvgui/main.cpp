@@ -3,7 +3,7 @@
 #include "uv_mainwindow.h"
 #include "uv_button.h"
 #include "uv_window.h"
-#include "uv_imagebox.h"
+#include "uv_image.h"
 #include "uv_fpscounter.h"
 #include "main.h"
 //---------------------------------------------------------------------------

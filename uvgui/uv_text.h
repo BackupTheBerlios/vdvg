@@ -13,6 +13,8 @@
 #include "SDL_opengl.h"
 #include "SDL.h"
 #include "SDL_image.h"
+#include "uv_widget.h"
+#include "uv_group.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -22,7 +24,7 @@ using namespace std;
 
 // Drawing routines are stolen from Nehe, Lesson 46
 
-class uv_text
+class uv_text:public uv_widget
 {
 private:
     //font_data ft_font;
@@ -40,7 +42,8 @@ private:
 	float len;
 
 public:
-    uv_text(); //does currently nothing
+    uv_text(int mx,int my,int mw,int mh,uv_group *parent,char *label); //does currently nothing
+	uv_text();
     bool init(const char * fname, unsigned int h);
 	void set_color(GLubyte red,GLubyte green,GLubyte blue);
 	stringstream text;
@@ -48,6 +51,9 @@ public:
     void print(int x, int y);
 	int get_height();
 	int get_width();
+	void draw(){
+		print(get_absolute_x(),get_absolute_y());
+		};
 };
 
 #endif
