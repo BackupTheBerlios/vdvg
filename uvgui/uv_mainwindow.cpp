@@ -319,7 +319,7 @@ bool uv_mainwindow::mouse_action (int x, int y, int button, int what)
 {
    if(on_top_widget) 
 	{
-		if(on_top_widget->mouse_action(x,y,button,what)){}
+		if(on_top_widget->mouse_action(x-on_top_widget->get_absolute_x(),y-on_top_widget->get_absolute_y(),button,what)){}
 		else
 		{
 			mouse_action_childs(x, y, button, what);

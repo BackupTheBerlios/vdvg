@@ -38,7 +38,9 @@ int main (int argc, char *argv[])
    menueinit();
    gameinit();
    optionsinit();
-
+   
+//	uv_main::options.set_visible(1);
+//	uv_main::mainwindow.set_on_top_widget(&uv_main::options);
    uv_main::mainwindow.run();
    uv_main::konfig.save_file("config.txt");
    ki_thread::kill_thread();
@@ -71,11 +73,15 @@ void mainloop(uv_callback * cb)
       {
          // Anzeigen, dass sp 1 gewonnen
          uv_main::won.set_visible(true, true);
+			//on top setzen
+			uv_main::mainwindow.set_on_top_widget(&uv_main::won);
       }
       if(ki_thread::s_feld.gewonnen==2)
       {
          // Anzeigen, dass comp gewonnen
          uv_main::lost.set_visible(true, true);
+			//on top setzen
+			uv_main::mainwindow.set_on_top_widget(&uv_main::lost);
       }
    }
 };
@@ -200,11 +206,14 @@ void artificial_intelligence(uv_callback * cb)
 void ok1callback(uv_callback * cb)
 {
    uv_main::lost.set_visible(false);
+	//ON TOP entfernen
+	uv_main::mainwindow.set_on_top_widget(0);	
 }
 //---------------------------------------------------------------------------
 void ok2callback(uv_callback * cb)
 {
    uv_main::won.set_visible(false);
+	uv_main::mainwindow.set_on_top_widget(0);	
 }
 //---------------------------------------------------------------------------
 void exitcallback()
