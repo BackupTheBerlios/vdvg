@@ -10,6 +10,8 @@
 #include "uv_include.h"
 #include "uv_textbox.h"
 #include "uv_config.h"
+#include "ki.h"
+#include "uv_kithread.h"
 //---------------------------------------------------------------------------
 
 namespace uv_main
@@ -34,7 +36,7 @@ namespace uv_main
    uv_container	  game;
    uv_gamebutton  gbuttons[256];
    uv_button	  gexit;
-
+//   uv_window      gewonnen;
 };
 
 //---------------------------------------------------------------------------

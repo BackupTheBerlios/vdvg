@@ -13,6 +13,7 @@ void aboutinit();
 void gameinit();
 void menucallback();
 void gamestartcallback();
+void artificial_intelligence(uv_callback * cb);
 void exitcallback();
 //---------------------------------------------------------------------------
 //Hauptprogramm
@@ -26,22 +27,49 @@ int main (int argc, char *argv[])
 
    uv_main::fps = uv_fpscounter::make_attribut(&uv_main::mainwindow, uv_main::mainwindow.get_w()-100, 0, 0, 0, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Frames", "Wait...", "Test.ttf", uv_color::make_color(255, 255, 255)),"FPS Counter");
 
-	uv_main::menu = uv_container::make_attribut(&uv_main::mainwindow);
+   uv_main::menu = uv_container::make_attribut(&uv_main::mainwindow);
    uv_main::game = uv_container::make_attribut(&uv_main::mainwindow);
    uv_main::game.set_visible(0);
-	uv_main::menu.set_visible(1);
+   uv_main::menu.set_visible(1);
    
    menueinit();
    gameinit();	
 
    uv_main::mainwindow.run();
    uv_main::konfig.save_file("config.txt");
+   ki_thread::kill_thread();
    return 0;
 };
 //---------------------------------------------------------------------------
 void mainloop(uv_callback * cb)
 {
-    //momentan noch leer
+   //momentan noch leer
+   if(ki_thread::check_end_of_calculations())
+   {
+      ki_thread::s_feld = ki_thread::hole_ergebnis();
+      //Spielfeld zurücksetzen
+      for(int x=0; x<4; x++)
+      {
+         for(int y=0; y<4; y++)
+         {
+	    for (int z=0; z<4; z++)
+	    {
+	       for(int u=0; u<4; u++)
+	       {
+                  uv_main::gbuttons[x+y*4+z*16+u*64].set_status(ki_thread::s_feld.feld[x][y][z][u]);
+               }
+            }
+         }
+      }
+      if(ki_thread::s_feld.gewonnen==1)
+      {
+         // Anzeigen, dass sp 1 gewonnen
+      }
+      if(ki_thread::s_feld.gewonnen==2)
+      {
+         // Anzeigen, dass comp gewonnen
+      }
+   }
 };
 //---------------------------------------------------------------------------
 
@@ -68,49 +96,81 @@ void gameinit()
 {
  //agh abstandhalter grosshorizontal, ak abstandhalter klein, bu gamebuttonbreite
  //agv abstandhalter vertikal
- 	int width, height, ak, agh, agv, bu;
-	width = uv_main::mainwindow.get_w();
-  	height = uv_main::mainwindow.get_h();
-	
+   int width, height, ak, agh, agv, bu;
+   width = uv_main::mainwindow.get_w();
+   height = uv_main::mainwindow.get_h();
+
    agh=92;
    agv=75;
-	ak=46;
+   ak=46;
    bu=30;
-   
 
-	for(int x=0; x<4; x++)
-	{
-		for(int y=0; y<4; y++)
-		{
-			for (int z=0; z<4; z++)
-			{
-				for(int w=0; w<4; w++)
-				{
-					uv_main::gbuttons[x+y*4+z*16+w*64] = uv_gamebutton::make_attribut(&uv_main::game,agh+x*bu+w*(ak+4*bu), agv+y*bu+z*(ak+4*bu),bu,bu,"","");
-				}
-			}
-		}
-	}
+   for(int x=0; x<4; x++)
+   {
+      for(int y=0; y<4; y++)
+      {
+	 for (int z=0; z<4; z++)
+	 {
+	    for(int w=0; w<4; w++)
+	    {
+               uv_gamebutton::position pos; pos.x_pos = x; pos.y_pos = y; pos.z_pos = z; pos.u_pos = w;
+	       uv_main::gbuttons[x+y*4+z*16+w*64] = uv_gamebutton::make_attribut(&uv_main::game,agh+x*bu+w*(ak+4*bu), agv+y*bu+z*(ak+4*bu),bu,bu, pos,"","");
+               uv_main::gbuttons[x+y*4+z*16+w*64].set_callback(artificial_intelligence);
+	    }
+	 }
+      }
+   }
 
-  uv_main::gexit = uv_button::make_attribut(&uv_main::game,2*agh+3*ak+16*bu, agv,120,50,"a","Menü","");
-  uv_main::gexit.set_callback((voidcallback) menucallback);
+   uv_main::gexit = uv_button::make_attribut(&uv_main::game,2*agh+3*ak+16*bu, agv,120,50,"a","Menü","");
+   uv_main::gexit.set_callback((voidcallback) menucallback);
 }
 
 void gamestartcallback()
 {
    uv_main::game.set_visible(1);
-	uv_main::menu.set_visible(0);
+   uv_main::menu.set_visible(0);
 
+   //Spielfeld zurücksetzen
+   for(int x=0; x<4; x++)
+   {
+      for(int y=0; y<4; y++)
+      {
+	 for (int z=0; z<4; z++)
+	 {
+	    for(int u=0; u<4; u++)
+	    {
+               uv_main::gbuttons[x+y*4+z*16+u*64].set_status(0);
+            }
+         }
+      }
+   }
+
+   ki_thread::s_feld.reset();
 }
 
 void menucallback()
 {
    uv_main::game.set_visible(0);
-	uv_main::menu.set_visible(1);
+   uv_main::menu.set_visible(1);
+}
+
+void artificial_intelligence(uv_callback * cb)
+{
+   if(cb->ID != 18)
+      return;
+   uv_gamebutton::callback * gbcb;
+   gbcb = static_cast<uv_gamebutton::callback*>(cb);
+   if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
+      uv_main::gbuttons[gbcb->pos.x_pos+gbcb->pos.y_pos*4+gbcb->pos.z_pos*16+gbcb->pos.u_pos*64].set_status(1);
+   if(ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] == 0 && !ki_thread::s_feld.gewonnen)
+      ki_thread::s_feld.feld[gbcb->pos.x_pos][gbcb->pos.y_pos][gbcb->pos.z_pos][gbcb->pos.u_pos] = 1;
+
+   ki_thread::start_calculations(ki_thread::s_feld);
 }
 
 void exitcallback()
 {
- uv_main::mainwindow.set_run(false);
+   uv_main::mainwindow.set_run(false);
 }
+
 

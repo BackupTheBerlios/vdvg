@@ -26,6 +26,8 @@ bool uv_gamebutton::initialize(attribute init)
 
    uv_group::initialize(uv_group::make_attribut(init.parent, init.x, init.y, init.width, init.height, init.name, true));
 
+  pos = init.pos;
+
   design  = (init.design == "") ? static_cast<string>("buttondesign.tga") : init.design;
 
   obenlinks  = oben.make_attribut(this, 0,  0, 5, 5, "oben", design, 0, 0,         1.0/3.0, 1/3.0);
@@ -44,7 +46,7 @@ bool uv_gamebutton::initialize(attribute init)
   statusx    = oben.make_attribut(this, 5, 5, get_w()-10, get_h()-10, "oben", "x.tga");
   statuso    = oben.make_attribut(this, 5, 5, get_w()-10, get_h()-10, "oben", "o.tga");
   statusx.set_visible(0);
-  statuso.set_visible(0); 
+  statuso.set_visible(0);
   status = 0;
 
 
@@ -67,14 +69,15 @@ bool uv_gamebutton::initialize(attribute init)
 uv_gamebutton::attribute uv_gamebutton::make_attribut(uv_group * parent,
                                               int x, int y, int width, int height,
                                               //uv_image::attribute image_attribute,
-                                              string name, string design)
+                                              position pos, string name, string design)
 {
    attribute attr;
 
    attr.parent = parent;
    attr.x = x; attr.y = y; attr.width = width; attr.height = height;
    //attr.image_attribute = image_attribute;
-   attr.name = name; 
+   attr.pos = pos;
+   attr.name = name;
    return attr;
 };
 //---------------------------------------------------------------------------
@@ -113,6 +116,7 @@ void uv_gamebutton::draw(vector<GLuint> * clist)
      backa.set_visible(0);
      backb.set_visible(1);
 	}
+   if(status == 0) {statusx.set_visible(0); statuso.set_visible(0);};
    if(status == 1) {statusx.set_visible(1); statuso.set_visible(0);};
    if(status == 2) {statuso.set_visible(1); statusx.set_visible(0);};
 
@@ -126,10 +130,11 @@ bool uv_gamebutton::mouse_action(int x, int y,int button,int what)
     if( what==SDL_MOUSEBUTTONDOWN && get_visible())  //Nur reagieren, wenn der Button sichtbar ist...
     {
         callback var;
-        var.ID = 11;
+        var.ID = 18;
+        var.pos = pos;
         do_callback(&var);
-		if(status < 2) status++;
-	    else status=0;
+//		if(status < 2) status++;
+//	    else status=0;
 
     }
         uv_widget::mouse_action(x,y,button,what);
@@ -141,8 +146,16 @@ void uv_gamebutton::key_action(int key, int sym, int mod, int what)
    if(sym == SDLK_RETURN && what== SDL_KEYDOWN)//key == SDLK_RETURN)
    {
       callback var;
-      var.ID = 11;
+      var.ID = 18;
       do_callback(&var);
    }
+}
+//---------------------------------------------------------------------------
+bool uv_gamebutton::set_status(int status)
+{
+   if(status > 2 || status < 0)
+      return false;
+   this->status = status;
+   return true;
 }
 //---------------------------------------------------------------------------

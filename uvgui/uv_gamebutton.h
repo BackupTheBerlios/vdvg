@@ -25,16 +25,23 @@
 class uv_gamebutton: public uv_group
 {
 public:
+   struct position
+   {
+      int x_pos, y_pos, z_pos, u_pos;
+   };
    struct attribute
    {
       uv_group * parent;
       int x, y, width, height;
   //    uv_image::attribute image_attribute;
+      position pos;
       string name, design;
    };
    struct callback: public uv_callback
    {
       bool used;
+
+      position pos;
    };
 private:
    //Schon initialisiert?
@@ -45,9 +52,10 @@ private:
    //uv_text text; 
    std::string textspeicher;
    GLuint stranslation, etranslation, drawing1, drawing2;
-   bool redraw, retranslate; 
+   bool redraw, retranslate;
    std::string design;
    int status;
+   position pos;
 public:
    uv_gamebutton();
 
@@ -56,11 +64,12 @@ public:
 
    void draw(vector<GLuint> * clist);
    bool mouse_action(int x, int y, int button, int what);
+   bool set_status(int status);
    void key_action(int key, int sym, int mod, int what);
    static attribute make_attribut(uv_group * parent,
                                   int x, int y, int width, int height,
                                   //uv_image::attribute image_attribute,
-                                  string name, string design);
+                                  position pos, string name, string design);
 };
 //---------------------------------------------------------------------------
 #endif
