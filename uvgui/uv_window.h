@@ -22,10 +22,12 @@ class uv_window :  public uv_widget
 		bool is_root_window;
 		//WIDGETVECTOR child_vector; //Beinhaltet alle Child widgets...
 	public:
-		uv_window(int breite=1280, int hoehe=1024, uv_window *parent=0, int bit=32, 
+		/*uv_window(int breite=1024, int hoehe=768, uv_window *parent=0, int bit=32, 
                           	int depth_size=24, int stencil_size=24,
-                           	int doublebuffer=1, int noframe=0, char *label=0);
-							//:uv_widget(0,0,breite,hoehe,label);
+                           	int doublebuffer=1, int noframe=0, char *label=0);*/
+		uv_window(int =1024, int =768, uv_window * =0, int =32, 
+                          	int =24, int =24,
+                           	int =1, int =0, char * =0);
 		~uv_window();
 		//Zeichne dich!
 		void draw();

@@ -1,9 +1,9 @@
 #include "uv_window.h"
 
 
-uv_window::uv_window(int breite=1024, int hoehe=768, uv_window *parent=0, int bit=32,
-                          	int depth_size=24, int stencil_size=24,
-                           	int doublebuffer=1, int noframe=0, char *label=0)
+uv_window::uv_window(int breite, int hoehe, uv_window *parent, int bit,
+                          	int depth_size, int stencil_size,
+                           	int doublebuffer, int noframe, char *label) : uv_widget(0,0,breite,hoehe,label)
 {
 	static bool sdl_initialized=0;
 	if(!sdl_initialized)	//SDL ist noch nicht initialisiert
@@ -48,9 +48,9 @@ void uv_window::draw() //Zeichenfunktion
 	//Alle Child-draw funktionen aufrufen.
 }
 
-void uv_window::init_SDL(int breite=1280, int hoehe=1024, int bit=32, uv_window *parent=0,
-                          	int depth_size=24, int stencil_size=24,
-                           	int doublebuffer=1, int noframe=0, char *label=0)
+void uv_window::init_SDL(int breite, int hoehe, int bit, uv_window *parent,
+                          	int depth_size, int stencil_size,
+                           	int doublebuffer, int noframe, char *label)
 {
 	bool fullscreen=1;
 	SDL_Surface *screen;

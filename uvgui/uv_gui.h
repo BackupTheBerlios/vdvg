@@ -3,6 +3,7 @@
 #define _UV_GUI_H_
 #include "uv_window.h"
 
-extern void run();
+void run();
+void set_root_pointer(uv_window *ptr);
 
 #endif

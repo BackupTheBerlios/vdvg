@@ -1,6 +1,6 @@
+#include "uv_gui.h"
 //Diese Source Datei beinhaltet einige Zeiger und globale Funktionen...
-void run();
-void set_root_pointer(uv_window *ptr);
+
 
 
 static uv_window *root_pointer;
