@@ -97,3 +97,10 @@ void uv_config::make_string_lowercase(string &a)
 		if( 64 < a[i] && 91 > a[i]) a[i] = a[i]+32;
 	}
 }
+
+uv_mainwindow::attribute uv_config::get_mainwindow_attribute()
+{
+ return uv_mainwindow::make_attribut(akt_config.width, akt_config.height, akt_config.fullscreen, "4D4G");
+}
+
+

@@ -15,8 +15,9 @@ void fensterinit();
 int main (int argc, char *argv[])
 {
 
-
-   uv_main::mainwindow = uv_mainwindow::make_attribut(1024, 768, false, "4D4G");
+   uv_main::konfig.load_file("config.txt");
+//   uv_main::mainwindow = uv_mainwindow::make_attribut(1024, 768, false, "4D4G");
+   uv_main::mainwindow = uv_main::konfig.get_mainwindow_attribute(); 
    uv_main::mainwindow.set_callback(mainloop);
    uv_main::img = uv_image::make_attribut(&uv_main::mainwindow, 0, 0, uv_main::width, uv_main::height, "Hintergrund", "background.jpg");
    uv_main::test = uv_image::make_attribut(&uv_main::window1, 20, 110, 200, 100, "test", "Testbild2.bmp", 0.5, 0.0, 1.0, 1.0);
@@ -32,6 +33,7 @@ int main (int argc, char *argv[])
    uv_main::Button2.set_callback((voidcallback) calli2);
    uv_main::fps = uv_fpscounter::make_attribut(&uv_main::mainwindow, uv_main::mainwindow.get_w()-100, 0, 0, 0, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Frames", "Wait...", "Test.ttf", uv_color::make_color(255, 255, 255)),"FPS Counter");
    uv_main::mainwindow.run();
+   uv_main::konfig.save_file("config.txt");
    return 0;
 };
 //---------------------------------------------------------------------------

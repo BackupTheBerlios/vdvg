@@ -1,8 +1,12 @@
 //Klass zum Verwalten einiger Optionen (Auflösung, etc)
+#ifndef _UV_CONFIG_
+#define _UV_CONFIG_
+
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "uv_mainwindow.h" //wegen attribute
 using namespace std;
 
 
@@ -26,6 +30,7 @@ private:
 	void make_string_lowercase(string &a);
 
 public:
+	
 	uv_config();
 	~uv_config();
 	bool load_file(char *filename);
@@ -34,4 +39,9 @@ public:
 	bool save_standard_file();
 	config get_config();
 	bool set_config(config configuration);
+    uv_mainwindow::attribute get_mainwindow_attribute();
+   
 };
+
+
+#endif

@@ -13,7 +13,6 @@ uv_mainwindow::uv_mainwindow():uv_group(0,0,0,0,0,"")
 
 bool uv_mainwindow::initialize(attribute init)
 {
-//	uv_mainwindow(init.width, init.height, init.fullscreen,init.caption); //habe schon mehrere Methoden durch, funktioniert keine
 
 	static bool already_exist = false;
     if(already_exist) return 0;
@@ -256,11 +255,9 @@ void uv_mainwindow::run()
                          event.button.button, event.button.type);
             break;
         };
-        //basic_string<GLuint> clist;
         vector<GLuint> clist;
         draw(&clist);
         glListBase(0);
-		cout << clist.size() << endl;
 		GLuint *test = new GLuint[clist.size()];
 		vector<GLuint>::const_iterator iter;
 		int pi=0;

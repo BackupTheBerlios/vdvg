@@ -19,7 +19,7 @@
 #include "uv_image.h"
 #include "uv_fpscounter.h"
 #include "uv_box.h"
-#include "uv_config.h"
+//#include "uv_config.h"
 //#include "uv_array.h"
 //---------------------------------------------------------------------------
 #endif

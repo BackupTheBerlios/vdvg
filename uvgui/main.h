@@ -9,6 +9,7 @@
 //---------------------------------------------------------------------------
 #include "uv_include.h"
 #include "uv_textbox.h"
+#include "uv_config.h"
 /*#include "uv_gui.h"
 #include "uv_mainwindow.h"
 #include "uv_button.h"
