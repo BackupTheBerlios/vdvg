@@ -4,6 +4,7 @@
 #include "uv_button.h"
 #include "uv_window.h"
 #include "uv_imagebox.h"
+#include "uv_fpscounter.h"
 #include "main.h"
 //---------------------------------------------------------------------------
 void calli();      //Button1 Action
@@ -35,4 +36,3 @@ void calli2()
     uv_main::mainwindow.set_run(false);
 };
 //---------------------------------------------------------------------------
-
