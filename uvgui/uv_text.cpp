@@ -178,16 +178,16 @@ void uv_text::make_dlist(FT_Face face, unsigned char ch, GLuint list_base, GLuin
 
    //Bei der distanzberechnung ist eine Korrektur für sehr nahe beieinander-
    //liegende Glyphen eingebaut.
-   //
-   //glTranslatef(face->glyph->advance.x >> 6,0,0);
-   if(face->glyph->metrics.horiAdvance < (0.6)*face->glyph->metrics.width)
-   {
-      glTranslatef((face->glyph->metrics.width) >> 6, 0, 0);
-   }
-   else
-   {
-      glTranslatef(face->glyph->metrics.horiAdvance >> 6, 0, 0);
-   }
+   
+  // glTranslatef(face->glyph->advance.x >> 6,0,0);
+  // if(face->glyph->metrics.horiAdvance < (0.6)*face->glyph->metrics.width)
+   //{
+    // glTranslatef((face->glyph->metrics.width) >> 6, 0, 0);
+   //}
+   //else
+   //{
+     glTranslatef(face->glyph->metrics.horiAdvance >> 6, 0, 0);
+   //}
 
    // Inkrementiere die Raster Position so, als ob wir ein Bitmap Font wären.
    // (wird nur benötigt, wenn Sie die Text Länge berechnen wollen)

@@ -23,7 +23,7 @@ int main (int argc, char *argv[])
    uv_main::Button2 = uv_button::make_attribut(&uv_main::window2, 30, 30, 256, 64, "Button2", "Beenden");
    uv_main::tst = uv_box::make_attribut(&uv_main::window1, 20, 110, 200, 100, uv_color::make_color(0, 0, 0), "tst box");
    uv_main::box1 = uv_box::make_attribut(&uv_main::aaa, 20, 150, 40, 80, uv_color::make_color(0, 0, 0), "box1");
-   uv_main::test1 = uv_textbox::make_attribut(&uv_main::aaa, 10, 30, 266, 20, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Text", "", "Franklin-Italic.ttf", uv_color::make_color(0, 0, 0)), uv_color::make_color(255, 255, 255), "Textbox1");
+   uv_main::test1 = uv_textbox::make_attribut(&uv_main::aaa, 10, 30, 266, 20, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Text", "", "Test.ttf", uv_color::make_color(0, 0, 0)), uv_color::make_color(255, 255, 255), "Textbox1");
    uv_main::test2 = uv_textbox::make_attribut(&uv_main::aaa, 10, 60, 266, 20, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Text", "", "Franklin-Italic.ttf", uv_color::make_color(255, 128, 0)), uv_color::make_color(255, 255, 255), "Textbox1");
    uv_main::Button1.set_callback((voidcallback) calli);
    uv_main::Button2.set_callback((voidcallback) calli2);

@@ -225,17 +225,13 @@ void uv_mainwindow::run()
         vector<GLuint> clist;
         draw(&clist);
         glListBase(0);
-		int *test = new int[clist.size()];
-		vector<int>::iterator iter;
+		GLuint *test = new GLuint[clist.size()];
+		vector<GLuint>::const_iterator iter;
 		int pi=0;
-		for(pi=0; pi<clist.size(); pi++)
+		for(iter=clist.begin(); iter != clist.end(); iter++)
 		{
-		test[pi]=clist[pi];
-		}	
-	//	for(iter=clist.begin(); iter == clist.end(); iter++)
-	//	{
-	//		test[pi++] = iter;
-	//	}
+			test[pi++] = *iter;
+		}
         glCallLists(clist.size(), GL_UNSIGNED_INT, test);
         //Hauptschleifenfunktion aufrufen
         uv_callback var = {0};
