@@ -111,7 +111,7 @@ bool uv_window::mouse_action(int x, int y, int button, int what)
 {
     if(what==SDL_MOUSEBUTTONDOWN)
     {
-       if(draggable && y < 20 && x >= 5 && x < get_w()-37)
+       if(draggable && y < 20 && x >= 5 && x < get_w()-37 && y>0)
           dragged = true; //Mausklick im Drag Bereich
 
        if(closeexist && y < 20 && x >= get_w()-21 && x < get_w()-5)
