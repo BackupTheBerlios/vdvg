@@ -3,12 +3,14 @@
 uv_button::uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel):uv_group(mx,my,mw,mh,parent,mlabel)
 {
     parent->add_child(this);
+    text.set_parent(this);
     text.init("Test.ttf",20);
-	text.set_color(0xff,0x88,0x00);
-	text.text << mlabel;
-	cout << "Höhe: "<< text.get_height()<<endl;
-	cout << "Breite: "<< text.get_width()<<endl;
-
+    text.set_color(0xff,0x88,0x00);
+    text.text << mlabel;
+    //Den Text auf dem Button zentrieren
+    text.set_pos((get_w()-text.get_width())/2,(get_h()-text.get_height())/2);
+    //cout << "Höhe: "<< text.get_height()<<endl;
+    //cout << "Breite: "<< text.get_width()<<endl;
 }
 
 void uv_button::draw()
@@ -33,8 +35,7 @@ void uv_button::draw()
         glVertex2i (get_absolute_x (), get_absolute_y() + get_h ());
         glEnd ();
 
-        text.print(get_absolute_x()+(get_w()-text.get_width())/2 ,get_absolute_y()+(get_h()-text.get_height())/2);
-
+        draw_childs();
     }
 }
 
@@ -44,7 +45,7 @@ bool uv_button::mouse_action(int x, int y,int button,int what)
     {
         do_callback();
     }
-	return 1;
+    return true;
 }
 
 void uv_button::key_action(int key, int mod, int what)

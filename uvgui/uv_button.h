@@ -14,7 +14,7 @@
  *  @version 1.0
  *
  */
-class uv_button:public uv_group
+class uv_button: public uv_group
 {
 private:
     uv_text text;

@@ -10,8 +10,8 @@
 #include <freetype/fttrigon.h>
 
 
-#include "SDL_opengl.h"
 #include "SDL.h"
+#include "SDL_opengl.h"
 #include "SDL_image.h"
 #include "uv_widget.h"
 #include "uv_group.h"

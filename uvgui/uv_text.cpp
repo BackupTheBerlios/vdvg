@@ -1,16 +1,19 @@
 #include "uv_text.h"
 uv_text::uv_text():uv_widget(0,0,0,0,0,0)
 {
-	
+   red=0xff;
+   blue=0xff;
+   green=0xff;
+   len = 10001;
 }
 
 uv_text::uv_text(int mx,int my,int mh,int mw,uv_group *parent,char *label):uv_widget(mx,my,mh,mw, parent,label)
 {
-	parent->add_child(this);
-	red=0xff;
-	blue=0xff;
-	green=0xff;
-	len = 10001;
+   parent->add_child(this);
+   red=0xff;
+   blue=0xff;
+   green=0xff;
+   len = 10001;
 }
 
 
@@ -309,8 +312,8 @@ void uv_text::splitup()
 
 int uv_text::get_width()
 {
-	if( len > 10000) print(0,0);
-	return (int)len*-1+15; //+15, Korrektur für das Font System, das irgendwetwas falsch macht. 
+      if( len > 10000) print(0,0);
+	return (int)len*-1+15; //+15, Korrektur für das Font System, das irgendwetwas falsch macht.
 }
 
 int uv_text::get_height()
