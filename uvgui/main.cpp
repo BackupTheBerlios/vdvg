@@ -28,6 +28,8 @@ void goselect1cb(uv_callback * cb);
 void goselect2cb(uv_callback * cb);
 void goselect3cb(uv_callback * cb);
 void goselect4cb(uv_callback * cb);
+void aboutcallback();
+void aboutclosecb();
 //---------------------------------------------------------------------------
 //Hauptprogramm
 int main (int argc, char *argv[])
@@ -43,10 +45,10 @@ int main (int argc, char *argv[])
    uv_main::game.set_visible(0);
    uv_main::menu.set_visible(1);
 
+   aboutinit();
    menueinit();
    gameinit();
    optionsinit();
-   
 //	uv_main::options.set_visible(1);
 //	uv_main::mainwindow.set_on_top_widget(&uv_main::options);
 //TEST
@@ -204,6 +206,7 @@ void menueinit()
   uv_main::mabout = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+2*buttonheight*2,buttonwidth,buttonheight,"newgame","About","");
   uv_main::mexit  = uv_button::make_attribut(&uv_main::menu, (width-buttonwidth)/2,(height-7*buttonheight)/2+3*buttonheight*2,buttonwidth,buttonheight,"newgame","Beenden","");
 
+  uv_main::mabout.set_callback((voidcallback) aboutcallback);
   uv_main::mnewgame.set_callback((voidcallback) gamestartcallback);
   uv_main::mexit.set_callback((voidcallback) exitcallback);
 }
@@ -383,15 +386,16 @@ void optionsinit()
    uv_main::options.set_visible(0);
    uv_main::moptions.set_callback((voidcallback) optionscb);
    uv_main::ofullscreen.set_checked(uv_main::konfig.get_config().fullscreen);
+
 	uv_main::orestext = uv_text::make_attribut(&uv_main::options,30,110,200,16,16,"","Aufloesung:","Test.ttf",uv_color::make_color(255,255,255));
-	uv_main::oinfotext = uv_text::make_attribut(&uv_main::options,30,176,200,16,16,"","Aufloesung aendern erfordert","Test.ttf",uv_color::make_color(255,255,255));
+	uv_main::oinfotext = uv_text::make_attribut(&uv_main::options,30,176,200,16,16,"","Aenderungen erfordern","Test.ttf",uv_color::make_color(255,255,255));
+
 	uv_main::oinfotextb = uv_text::make_attribut(&uv_main::options,30,200,200,16,16,"","Neustart","Test.ttf",uv_color::make_color(255,255,255));
 	uv_main::vec_resolutions.push_back("800x600");
 	uv_main::vec_resolutions.push_back("1024x768");
 	uv_main::vec_resolutions.push_back("1280x1024");
 	uv_main::vec_resolutions.push_back("1600x1200");
 	uv_main::oresolution = uv_dropdown::make_attribut(&uv_main::options,&uv_main::mainwindow,30,120,200,30,"", uv_main::vec_resolutions, "");
-//	uv_main::oresolution.set_callback(oresolutioncallback);
 	uv_main::oresolution.set_act_ele((uv_main::konfig.get_config().width/200)-4);
 }
 //---------------------------------------------------------------------------
@@ -605,9 +609,41 @@ std::string uv_main::IntToString(const int & value)
 
 
 
+void aboutinit()
+{
+
+   uv_main::about=uv_window::make_attribut(&uv_main::mainwindow,200,200,600,230,"","","","",0,0,1,0);
+//   uv_main::about = uv_window::make_attribut(&uv_main::mainwindow, 200, 200, 500, 150, "", "", "", "windowdesign.tga", false, false, true, false);
+	uv_main::about.set_visible(0);
+	uv_main::aba=uv_text::make_attribut(&uv_main::about, 20, 40, 540, 50, 20, "Text", "Benny Loeffel, Programmierung", "Test.ttf",uv_color::make_color(255,255,255));
+	uv_main::abb=uv_text::make_attribut(&uv_main::about, 20, 60, 540, 50, 20, "Text", "Lukas Humbel, Programmierung", "Test.ttf",uv_color::make_color(255,255,255));
+	uv_main::abc=uv_text::make_attribut(&uv_main::about, 20, 80, 540, 50, 20, "Text", "Tugrul Guenes, GFX", "Test.ttf",uv_color::make_color(255,255,255));
+	uv_main::abd=uv_text::make_attribut(&uv_main::about, 20, 80, 540, 50, 20, "Text", "4D 4Gewinnt wurde gemacht von:", "Test.ttf",uv_color::make_color(255,255,255));
+	
+   uv_main::abd.set_pos((uv_main::about.get_w()-uv_main::abd.get_width())/2, 50);
+   uv_main::aba.set_pos((uv_main::about.get_w()-uv_main::aba.get_width())/2, 90);
+   uv_main::abb.set_pos((uv_main::about.get_w()-uv_main::abb.get_width())/2, 120);
+   uv_main::abc.set_pos((uv_main::about.get_w()-uv_main::abc.get_width())/2, 150);
+
+	uv_main::aclose = uv_button::make_attribut(&uv_main::about,(600-150)/2 , 180, 150, 40, "b", "OK","");
+	uv_main::aclose.set_callback((voidcallback)aboutclosecb);
 
 
+}
 
+
+void aboutcallback()
+{
+	uv_main::about.set_visible(1,1);	
+   uv_main::mainwindow.set_on_top_widget(&uv_main::about);
+}
+
+void aboutclosecb()
+{
+	uv_main::about.set_visible(0);
+	uv_main::mainwindow.set_on_top_widget(0);
+
+}
 
 
 

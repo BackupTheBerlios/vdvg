@@ -41,6 +41,8 @@ namespace uv_main
 
    //About:
    uv_window about;
+   uv_text aba, abb, abc,abd;
+   uv_button aclose;
 
    //Game:
    uv_image img2;
