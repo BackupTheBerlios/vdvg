@@ -29,8 +29,8 @@ public:
    {
       uv_group * parent;
       int x, y, width, height;
-      uv_image::attribute image_attribute;
-      string name, caption;
+  //    uv_image::attribute image_attribute;
+      string name, caption, design;
    };
    struct callback: public uv_callback
    {
@@ -40,11 +40,13 @@ private:
    //Schon initialisiert?
    bool is_init;
 
-   uv_image image;
-   uv_text text;
+   uv_image obenrechts, oben, obenlinks, links, untenlinks, unten, untenrechts, rechts;
+   //uv_image backa, backb;
+   uv_text text; 
    std::string textspeicher;
    GLuint stranslation, etranslation, drawing1, drawing2;
-   bool redraw, retranslate;
+   bool redraw, retranslate; 
+   std::string design;
 public:
    uv_button();
 
@@ -56,8 +58,8 @@ public:
    void key_action(int key, int sym, int mod, int what);
    static attribute make_attribut(uv_group * parent,
                                   int x, int y, int width, int height,
-                                  uv_image::attribute image_attribute,
-                                  string name, string caption);
+                                  //uv_image::attribute image_attribute,
+                                  string name, string caption, string design);
 };
 //---------------------------------------------------------------------------
 #endif

@@ -20,14 +20,28 @@ bool uv_button::initialize(attribute init)
    drawing1 = stranslation+1;
    drawing2 = drawing1+1;
    etranslation = drawing2+1;
-
+   
    redraw = true;
    retranslate = true;
 
    uv_group::initialize(uv_group::make_attribut(init.parent, init.x, init.y, init.width, init.height, init.name, true));
 
-   init.image_attribute.parent = this;
-   image = init.image_attribute;
+  design  = (init.design == "") ? static_cast<string>("buttondesign.tga") : init.design;
+
+  obenlinks  = oben.make_attribut(this, 0,  0, 5, 5, "oben", design, 0, 0,         1.0/3.0, 1/3.0);
+  links      = oben.make_attribut(this, 0, 5, 5, get_h()-10, "oben", design, 0, 1.0/3.0,     1.0/3.0, 2.0/3.0);
+  untenlinks = untenlinks.make_attribut(this, 0, get_h()-5, 5, 5, "oben", design, 0, 2.0/3.0,     1.0/3.0, 1);
+	
+  unten      = oben.make_attribut(this, 5, get_h()-5, get_w()-10, 5, "oben", design, 1.0/3.0, 2.0/3.0, 2.0/3.0, 3.0/3.0);
+  untenrechts= oben.make_attribut(this, get_w()-5, get_h()-5, 5, 5, "oben", design, 2.0/3.0, 2/3.0, 3/3.0, 3/3.0);
+  rechts     = oben.make_attribut(this, get_w()-5, 5, 5, get_h()-10, "oben", design, 2.0/3.0, 1/3.0, 3/3.0, 2/3.0); 
+  obenrechts = oben.make_attribut(this, get_w()-5, 0, 5, 5, "oben", design, 2/3.0, 0,       3/3.0, 1/3.0);
+  oben       = oben.make_attribut(this, 5, 0, get_w()-10, 5, "oben", design, 1/3.0, 0, 2/3.0, 0);
+
+
+
+   //init.image_attribute.parent = this;
+   //image = init.image_attribute;
 
    uv_color text_color = {0xff, 0x88, 0x00};
    text = uv_text::make_attribut(this, 0, 0, 0, 0, 25, "Buttontext", init.caption, "Test.ttf", text_color);
@@ -44,14 +58,14 @@ bool uv_button::initialize(attribute init)
 //---------------------------------------------------------------------------
 uv_button::attribute uv_button::make_attribut(uv_group * parent,
                                               int x, int y, int width, int height,
-                                              uv_image::attribute image_attribute,
-                                              string name, string caption)
+                                              //uv_image::attribute image_attribute,
+                                              string name, string caption, string design)
 {
    attribute attr;
 
    attr.parent = parent;
    attr.x = x; attr.y = y; attr.width = width; attr.height = height;
-   attr.image_attribute = image_attribute;
+   //attr.image_attribute = image_attribute;
    attr.name = name; attr.caption = caption;
 
    return attr;
@@ -75,7 +89,7 @@ void uv_button::draw(vector<GLuint> * clist)
       retranslate = false;
    }
 
-   if(redraw)
+/*   if(redraw)
    {
       glNewList(drawing1, GL_COMPILE);
       glBindTexture(GL_TEXTURE_2D, 0);
@@ -102,14 +116,15 @@ void uv_button::draw(vector<GLuint> * clist)
       glEndList();
 
       redraw = false;
-   }
+   }*/
 
-   clist->push_back(stranslation);
+//   clist->push_back(stranslation);
    if(!mouse_over())
       clist->push_back(drawing1);
    else
       clist->push_back(drawing2);
 
+	clist->push_back(stranslation);
    draw_childs(clist);
 
    clist->push_back(etranslation);

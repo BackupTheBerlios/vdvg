@@ -22,8 +22,8 @@ int main (int argc, char *argv[])
    uv_main::test = uv_image::make_attribut(&uv_main::window1, 20, 110, 200, 100, "test", "Testbild2.bmp", 0.5, 0.0, 1.0, 1.0);
    uv_main::testa = uv_image::make_attribut(&uv_main::window2, 20, 110, 64, 64, "testa","test3.tga");
    fensterinit();
-   uv_main::Button1 = uv_button::make_attribut(&uv_main::window1, 30, 30, 256, 64, uv_image::make_attribut(0, 0, 0, 256, 64, "Buttonimage", "Button.tga"), "Button1", "Klick Mich !");
-   uv_main::Button2 = uv_button::make_attribut(&uv_main::window2, 30, 30, 256, 64, uv_image::make_attribut(0, 0, 0, 256, 64, "Buttonimage", "Button.tga"), "Button2", "Beenden");
+   uv_main::Button1 = uv_button::make_attribut(&uv_main::window1, 30, 30, 256, 64, "Button1", "Klick Mich !","");
+   uv_main::Button2 = uv_button::make_attribut(&uv_main::window2, 30, 30, 256, 64, "Button2", "Beenden","");
    uv_main::tst = uv_box::make_attribut(&uv_main::window1, 20, 110, 200, 100, uv_color::make_color(0, 0, 0), "tst box");
    uv_main::box1 = uv_box::make_attribut(&uv_main::aaa, 20, 150, 40, 80, uv_color::make_color(0, 0, 0), "box1");
    uv_main::test1 = uv_textbox::make_attribut(&uv_main::aaa, 10, 30, 266, 20, uv_text::make_attribut(0, 0, 0, 0, 0, 16, "Text", "", "Franklin-Italic.ttf", uv_color::make_color(0, 0, 0)), uv_color::make_color(255, 255, 255), "Textbox1");
