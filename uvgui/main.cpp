@@ -352,8 +352,8 @@ void optionsinit()
    uv_main::options.set_visible(0);
    uv_main::moptions.set_callback((voidcallback) optionscb);
    uv_main::ofullscreen.set_checked(uv_main::konfig.get_config().fullscreen);
-	uv_main::orestext = uv_text::make_attribut(&uv_main::options,30,110,200,16,16,"","Auflösung:","Test.ttf",uv_color::make_color(255,255,255));
-	uv_main::oinfotext = uv_text::make_attribut(&uv_main::options,30,176,200,16,16,"","Auflösung ändern erfordert","Test.ttf",uv_color::make_color(255,255,255));
+	uv_main::orestext = uv_text::make_attribut(&uv_main::options,30,110,200,16,16,"","Aufloesung:","Test.ttf",uv_color::make_color(255,255,255));
+	uv_main::oinfotext = uv_text::make_attribut(&uv_main::options,30,176,200,16,16,"","Aufloesung aendern erfordert","Test.ttf",uv_color::make_color(255,255,255));
 	uv_main::oinfotextb = uv_text::make_attribut(&uv_main::options,30,200,200,16,16,"","Neustart","Test.ttf",uv_color::make_color(255,255,255));
 	uv_main::vec_resolutions.push_back("800x600");
 	uv_main::vec_resolutions.push_back("1024x768");
