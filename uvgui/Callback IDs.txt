@@ -1,0 +1,35 @@
+ID's der Callbacks (Version 1.001, 03.12.2004)
+
+Es ist sehr wichtig, dass die Callback ID's von den Widgets nach dieser Tabelle korrekt gesetzt werden, da es sonst zu fatalen Fehlern bei der Callbackverarbeitung kommen kann. Jedes neue Widget sollte sofort in diese Tabelle eingetragen werden.
+
+0  Undefinierters Objekt / Fehler
+1  uv_mainwindow
+2  reserviert für zukünftige Implementationen
+3  reserviert für zukünftige Implementationen
+4  reserviert für zukünftige Implementationen
+5  reserviert für zukünftige Implementationen
+6  reserviert für zukünftige Implementationen
+7  reserviert für zukünftige Implementationen
+8  reserviert für zukünftige Implementationen
+9  reserviert für zukünftige Implementationen
+
+10 uv_window
+11 uv_button
+12 uv_image
+13 uv_text
+14 uv_box
+15 uv_textbox
+16 uv_fpscounter
+17 uv_textbox
+18 uv_gamebutton
+19 uv_container
+20 uv_checkbox
+21 ...
+22 ...
+23 ...
+24 ...
+...
+
+
+
+
