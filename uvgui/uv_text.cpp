@@ -227,7 +227,7 @@ void uv_text::print( int x, int y)
 	//y muss ins Koordinantensystem umgerechnet werden:
 	GLint	viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport); //Bildschirmgrösse abholen
-	y = viewport[3]-y-h; //Bildschirmhöhe - schrifthöhe - y
+	y = viewport[3]-y-(int)h; //Bildschirmhöhe - schrifthöhe - y
 	//fertig
 	
     GLuint font=list_base;
@@ -319,5 +319,5 @@ int uv_text::get_width()
 int uv_text::get_height()
 {
 	splitup();
-	return lines.size()*(h);
+	return lines.size()*((int)h);
 }
