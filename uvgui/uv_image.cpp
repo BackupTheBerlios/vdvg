@@ -40,7 +40,6 @@ bool uv_image::LoadImageFile(string fname)
 		textur = ite->second->get_texture_index();
 		return 1;
 	}
-	
 	GLuint global_texture = 0;
     SDL_Surface *image;
     GLfloat texcoord[4];
@@ -74,7 +73,9 @@ bool uv_image::LoadImageFile(string fname)
     texMaxY = texcoord[3];
 	
 	texturindex.insert(pair<string,uv_image*>(fname,this));
+
     return true;
+	
 };
 //---------------------------------------------------------------------------
 GLuint uv_image::SDL_GL_LoadTexture(SDL_Surface *surface, GLfloat *texcoord)
