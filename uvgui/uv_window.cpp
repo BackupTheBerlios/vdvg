@@ -1,9 +1,9 @@
 #include "uv_window.h"
 
 
-uv_window::uv_window(int breite, int hoehe, uv_window *parent, int bit,
+uv_window::uv_window(int breite, int hoehe, int win_x, int win_y, uv_window *parent, int bit,
                           	int depth_size, int stencil_size,
-                           	int doublebuffer, int noframe, char *label) : uv_widget(0,0,breite,hoehe,label)
+                           	int doublebuffer, int noframe, char *label) : uv_widget(win_x,win_y,breite,hoehe,label)
 {
 	static bool sdl_initialized=0;
 	if(!sdl_initialized)	//SDL ist noch nicht initialisiert
@@ -39,15 +39,27 @@ void uv_window::draw() //Zeichenfunktion
 	if(is_root_window)
 	{
 		DEBUGPRINT;
-		glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		
 		//Bildschirm löschen
 	}
 	else
 	{
-		//Fenster zeichnen
+    glBegin(GL_QUADS);
+        glColor3ub(255, 0, 0);        glVertex2i(get_x(), get_y());						//Links Oben
+        glColor3ub(0, 255, 0);        glVertex2i(get_x()+get_w(), get_y());				//Rechts Oben
+        glColor3ub(0, 0, 255);        glVertex2i(get_x()+get_w(), get_y()+get_h());		//Rechts Unten
+        glColor3ub(255, 255, 0);    glVertex2i(get_x(), get_y()+get_h());				//Links Unten
+    glEnd();
 	}
 	
 	//Alle Child-draw funktionen aufrufen.
+	vector<uv_widget*>::iterator ite;
+	for ( ite = childs.begin(); ite != childs.end(); ++ite )
+  	{
+    	(*ite)->draw();
+  	}
 }
 
 void uv_window::init_SDL(int breite, int hoehe, int bit, uv_window *parent,
@@ -162,7 +174,9 @@ void uv_window::init_SDL(int breite, int hoehe, int bit, uv_window *parent,
    //Kameramatrix laden:
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
-   glOrtho(0.0f, breite-1, hoehe-1, 0.0f, -100.0f, 100.0f);
+   //glOrtho(0.0f, breite-1, hoehe-1, 0.0f, -100.0f, 100.0f);
+   glOrtho(0, breite, hoehe, 0, -1.0, 1.0); //Projektionsmatrix
+   //ändern: Punkt(0,0) Oben Links punkt(640,480) unten rechts.
 
    //Objekt und Modellmatrix laden:
    glMatrixMode(GL_MODELVIEW);

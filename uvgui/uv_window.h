@@ -28,7 +28,7 @@ class uv_window :  public uv_widget
 		/*uv_window(int breite=1024, int hoehe=768, uv_window *parent=0, int bit=32, 
                           	int depth_size=24, int stencil_size=24,
                            	int doublebuffer=1, int noframe=0, char *label=0);*/
-		uv_window(int =1024, int =768, uv_window * =0, int =32, 
+		uv_window(int =1024, int =768, int =0, int =0, uv_window * =0, int =32, 
                           	int =24, int =24,
                            	int =1, int =0, char * =0);
 		~uv_window();
