@@ -22,25 +22,24 @@ using namespace std;
 //---------------------------------------------------------------------------
 class uv_group:public uv_widget
 {
-private:
-    dstack<uv_widget *> childs;
-    bool next_child;
-    bool last_child;
-public:
-    uv_group(int mx, int my, int mw, int mh,uv_group *parent=0, char *mlabel=0, bool CanHaveFocus=false);
-    uv_widget* get_next_child();
-    uv_widget* get_last_child();
-    void set_start_child(); 		//Iterator == 0
-    void set_end_child();
-    void mouse_move_rel(int rel_x, int rel_y);
-    void add_child(uv_widget* );
-    void add_child_in_front(uv_widget* );
-    void set_to_end();
-    bool draw_childs();
-    bool mouse_action_childs(int x, int y, int button, int what);
-    bool mouse_move_rel_childs(int rel_x, int rel_y);
+   private:
+      dstack<uv_widget *> childs;
+      bool next_child;
+      bool last_child;
+   public:
+      uv_group(int mx, int my, int mw, int mh,uv_group *parent=0, char *mlabel=0, bool CanHaveFocus=false);
+      uv_widget* get_next_child();
+      uv_widget* get_last_child();
+      void set_start_child(); 		//Iterator == 0
+      void set_end_child();
+      void mouse_move_rel(int rel_x, int rel_y);
+      void add_child(uv_widget* );
+      void add_child_in_front(uv_widget* );
+      void set_to_end();
+      bool draw_childs();
+      bool mouse_action_childs(int x, int y, int button, int what);
+      bool mouse_move_rel_childs(int rel_x, int rel_y);
 };
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------
-

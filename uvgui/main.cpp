@@ -4,7 +4,6 @@
 #include "uv_button.h"
 #include "uv_window.h"
 #include "uv_imagebox.h"
-#include "uv_fpscounter.h"
 #include "main.h"
 //---------------------------------------------------------------------------
 void calli();      //Button1 Action
@@ -15,7 +14,7 @@ void mainloop();   //Hauptschleife
 int main (int argc, char *argv[])
 {
     uv_main::mainwindow.set_callback(mainloop);
-    uv_main::Button1.set_callback((voidcallback) calli);
+    //uv_main::Button1.set_callback((voidcallback) calli);
     uv_main::Button2.set_callback((voidcallback) calli2);
     uv_main::mainwindow.run();
     return 0;
@@ -33,6 +32,6 @@ void calli()
 //---------------------------------------------------------------------------
 void calli2()
 {
-    uv_main::mainwindow.set_run(false);
+   uv_main::mainwindow.set_run(false);
 };
 //---------------------------------------------------------------------------

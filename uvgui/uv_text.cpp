@@ -1,44 +1,47 @@
+//---------------------------------------------------------------------------
 #include "uv_text.h"
-
-
-uv_text::uv_text()
+//---------------------------------------------------------------------------
+uv_text::uv_text(int x, int y, int w, int h, uv_group *parent,
+                 char *mlabel, bool CFH)
+                 :uv_widget(x, y, w, h, parent, mlabel, CFH)
 {
-	red=0xff;
-	blue=0xff;
-	green=0xff;
-	len = 10001;
-}
-
-
+   parent->add_child(this); //sich beim Parent eintragen
+   init("Test.ttf", 15);
+   red=0xff;
+   blue=0xff;
+   green=0xff;
+   set_color(0,0,0);
+};
+//---------------------------------------------------------------------------
 void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base )
 {
-    //The first thing we do is get FreeType to render our character
-    //into a bitmap.  This actually requires a couple of FreeType commands:
+   //The first thing we do is get FreeType to render our character
+   //into a bitmap.  This actually requires a couple of FreeType commands:
 
-    //Load the Glyph for our character.
-    if(FT_Load_Glyph( face, FT_Get_Char_Index( face, ch ), FT_LOAD_DEFAULT ))
-        cout << "FT_Load_Glyph failed";
+   //Load the Glyph for our character.
+   if(FT_Load_Glyph( face, FT_Get_Char_Index( face, ch ), FT_LOAD_DEFAULT ))
+      cout << "FT_Load_Glyph failed";
 
-    //Move the face's glyph into a Glyph object.
-    FT_Glyph glyph;
-    if(FT_Get_Glyph( face->glyph, &glyph ))
-        cout << "FT_Get_Glyph failed";
+   //Move the face's glyph into a Glyph object.
+   FT_Glyph glyph;
+   if(FT_Get_Glyph( face->glyph, &glyph ))
+      cout << "FT_Get_Glyph failed";
 
-    //Convert the glyph to a bitmap.
-    FT_Glyph_To_Bitmap( &glyph, ft_render_mode_normal, 0, 1 );
-    FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)glyph;
+   //Convert the glyph to a bitmap.
+   FT_Glyph_To_Bitmap( &glyph, ft_render_mode_normal, 0, 1 );
+   FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)glyph;
 
-    //This reference will make accessing the bitmap easier
-    FT_Bitmap& bitmap=bitmap_glyph->bitmap;
+   //This reference will make accessing the bitmap easier
+   FT_Bitmap& bitmap=bitmap_glyph->bitmap;
 
-    //Use our helper function to get the widths of
-    //the bitmap data that we will need in order to create
-    //our texture.
-    int width = next_p2( bitmap.width );
-    int height = next_p2( bitmap.rows );
+   //Use our helper function to get the widths of
+   //the bitmap data that we will need in order to create
+   //our texture.
+   int width = next_p2( bitmap.width );
+   int height = next_p2( bitmap.rows );
 
-    //Allocate memory for the texture data.
-    GLubyte* expanded_data = new GLubyte[ 2 * width * height];
+   //Allocate memory for the texture data.
+   GLubyte* expanded_data = new GLubyte[ 2 * width * height];
 
     //Here we fill in the data for the expanded bitmap.
     //Notice that we are using two channel bitmap (one for
@@ -86,6 +89,7 @@ void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex
     //(this is only true for characters like 'g' or 'y'.
     glPushMatrix();
     glTranslatef(0,bitmap_glyph->top-bitmap.rows,0);
+    //glTranslatef(0,bitmap_glyph->top-bitmap.rows
 
     //Now we need to account for the fact that many of
     //our textures are filled with empty padding space.
@@ -94,8 +98,8 @@ void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex
     //the x and y variables, then when we draw the
     //quad, we will only reference the parts of the texture
     //that we contain the character itself.
-    float	x=(float)bitmap.width / (float)width,
-            y=(float)bitmap.rows / (float)height;
+    float   x=(float)bitmap.width / (float)width,
+            y=(float)bitmap.rows  / (float)height;
 
     //Here we draw the texturemaped quads.
     //The bitmap that we got from FreeType was not
@@ -103,7 +107,7 @@ void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex
     //so we need to link the texture to the quad
     //so that the result will be properly aligned.
     glBegin(GL_QUADS);
-    	glTexCoord2d(0,0); glVertex2f(0,bitmap.rows);
+    	glTexCoord2d(0,0); glVertex2f(0,bitmap.rows);                         ///Quad funktionen (von mir ge�ndert)
     	glTexCoord2d(0,y); glVertex2f(0,0);
     	glTexCoord2d(x,y); glVertex2f(bitmap.width,0);
     	glTexCoord2d(x,0); glVertex2f(bitmap.width,bitmap.rows);
@@ -114,12 +118,12 @@ void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex
 
     //increment the raster position as if we were a bitmap font.
     //(only needed if you want to calculate text length)
-    glBitmap(0,0,0,0,face->glyph->advance.x >> 6,0,NULL);
+    //glBitmap(0,0,0,0,face->glyph->advance.x >> 6,0,NULL);
 
     //Finnish the display list
     glEndList();
-}
-
+};
+//---------------------------------------------------------------------------
 bool uv_text::init(const char * fname, unsigned int h)
 {
     //Allocate some memory to store the texture ids.
@@ -172,60 +176,102 @@ bool uv_text::init(const char * fname, unsigned int h)
     FT_Done_FreeType(library);
 
     return 1;
-}
-
+};
+//---------------------------------------------------------------------------
 void uv_text::clean()
 {
     //
     glDeleteLists(list_base,128);
     glDeleteTextures(128,textures);
     delete [] textures;
-
-}
-
+};
+//---------------------------------------------------------------------------
 void uv_text::pushScreenCoordinateMatrix()
 {
     glPushAttrib(GL_TRANSFORM_BIT);
-    GLint	viewport[4];
+    int	viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
 	//void gluOrtho2D(GLdouble left,GLdouble right,GLdouble bottom,GLdouble top)
-	//gluOrtho2D(0,1024,768,0);
-	gluOrtho2D(viewport[0],viewport[2],viewport[1],viewport[3]);
+	gluOrtho2D(0,1024,0,768);//768,0);
+	//gluOrtho2D(viewport[0],viewport[2],viewport[1],viewport[3]);
     glPopAttrib();
-
-
-}
-
-
+};
+/*void uv_text::pushScreenCoordinateMatrix()
+{
+	glPushAttrib(GL_TRANSFORM_BIT);
+	GLint	viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(viewport[0],viewport[2],viewport[1],viewport[3]);
+	glPopAttrib();
+}*/
+//---------------------------------------------------------------------------
 void uv_text::pop_projection_matrix()
 {
     glPushAttrib(GL_TRANSFORM_BIT);
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glPopAttrib();
-
-
-}
-
-void uv_text::print( int x, int y)
+};
+//---------------------------------------------------------------------------
+void uv_text::print( float x, float y, const char *fmt, ...)
 {
     // We want a coordinate system where things coresponding to window pixels.
     pushScreenCoordinateMatrix();
-	
-	//Es ist einfacher, ein anderes Koordinatensystem zu wählen,
-	//da sonst die Buchstaben nicht unten sondern oben bündig werden.
-	//y muss ins Koordinantensystem umgerechnet werden:
-	GLint	viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport); //Bildschirmgrösse abholen
-	y = viewport[3]-y-h; //Bildschirmhöhe - schrifthöhe - y
+    //y muss ins Koordinantensystem umgerechnet werden:
+    GLint viewport[4];
+    //glGetIntegerv(GL_VIEWPORT, viewport); //Bildschirmgrösse abholen
+    //   	y = viewport[3]-y-h; //Bildschirmhöhe - schrifthöhe - y
+    y = 768-y-h;
 	//fertig
 	
     GLuint font=list_base;
     float h=this->h/.63f;						//We make the height about 1.5* that of
 	
+
+    char		text[256];								// Holds Our String
+    va_list		ap;										// Pointer To List Of Arguments
+
+    if (fmt == NULL)									// If There's No Text
+        *text=0;											// Do Nothing
+
+    else {
+        va_start(ap, fmt);									// Parses The String For Variables
+        vsprintf(text, fmt, ap);						// And Converts Symbols To Actual Numbers
+        va_end(ap);											// Results Are Stored In Text
+    }
+
+
+    //Here is some code to split the text that we have been
+    //given into a set of lines.
+    //This could be made much neater by using
+    //a regular expression library such as the one avliable from
+    //boost.org (I've only done it out by hand to avoid complicating
+    //this tutorial with unnecessary library dependencies).
+    const char *start_line=text;
+    vector<string> lines;
+
+    const char * c = text;;
+
+    //for(const char *c=text;*c;c++) {
+    for(;*c;c++) {
+        if(*c=='\n') {
+            string line;
+            for(const char *n=start_line;n<c;n++) line.append(1,*n);
+            lines.push_back(line);
+            start_line=c+1;
+        }
+    }
+    if(start_line) {
+        string line;
+        for(const char *n=start_line;n<c;n++) line.append(1,*n);
+        lines.push_back(line);
+    }
 
     glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT);
     glMatrixMode(GL_MODELVIEW);
@@ -249,7 +295,6 @@ void uv_text::print( int x, int y)
     //down by h. This is because when each character is
     //draw it modifies the current matrix so that the next character
     //will be drawn immediatly after it.
-	splitup();
 	glColor3ub(red,green,blue); //passende Farbe laden
 	
     for(unsigned int i=0;i<lines.size();i++) {
@@ -257,19 +302,19 @@ void uv_text::print( int x, int y)
 
         glPushMatrix();
         glLoadIdentity();
-        glTranslatef(x,y-h*i,0);
+        glTranslatef(x, y-h*i, 0);
+        //glTranslatef(x, y+h*i, 0);
         glMultMatrixf(modelview_matrix);
 
         //  The commented out raster position stuff can be useful if you need to
         //  know the length of the text that you are creating.
         //  If you decide to use it make sure to also uncomment the glBitmap command
         //  in make_dlist().
-        	glRasterPos2f(0,0);
+        //	glRasterPos2f(0,0);
         glCallLists(lines[i].length(), GL_UNSIGNED_BYTE, lines[i].c_str());
-        	int rpos[4];
-        	glGetIntegerv(GL_CURRENT_RASTER_POSITION ,rpos);
-		//cout << rpos[0] << endl;
-        	len=x-rpos[0];
+        //	float rpos[4];
+        //	glGetFloatv(GL_CURRENT_RASTER_POSITION ,rpos);
+        //	float len=x-rpos[0];
 
         glPopMatrix();
 
@@ -281,36 +326,18 @@ void uv_text::print( int x, int y)
 	glBindTexture(GL_TEXTURE_2D, 0); //Texturen unbinden
 	glColor3ub(0xff,0xff,0xff); //Farbe auf neutral zurücksetzen
 
-}
-
+};
+//---------------------------------------------------------------------------
 void uv_text::set_color(GLubyte red,GLubyte green,GLubyte blue)
 {
 	this->red=red;
 	this->blue=blue;
 	this->green=green;
-}
-
-void uv_text::splitup()
+};
+//---------------------------------------------------------------------------
+void uv_text::draw()
 {
-	lines.clear();
-	int pos=0;
-	//int lastpos=0;
-	while (text.str().find('\n',pos) != string::npos)
-	{
-		lines.push_back(text.str().substr(pos, text.str().find('\n',pos)-pos));
-		pos = this->text.str().find('\n',pos)+1;
-	}
-	if (lines.empty()) lines.push_back(this->text.str());
-}
-
-int uv_text::get_width()
-{
-	if( len > 10000) print(0,0);
-	return (int)len*-1+15; //+15, Korrektur für das Font System, das irgendwetwas falsch macht. 
-}
-
-int uv_text::get_height()
-{
-	splitup();
-	return lines.size()*(h);
-}
+   print(get_absolute_x(), get_absolute_y(), get_label());//"Dies ist ein Test\n\nBenny!");//label);
+   //print(1024, 700, "Tesgty \n llli");
+};
+//---------------------------------------------------------------------------

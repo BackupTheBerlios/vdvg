@@ -7,16 +7,17 @@
 //---------------------------------------------------------------------------
 #include "uv_texture.h"
 #include "uv_window.h"
+#include "uv_text.h"
 //---------------------------------------------------------------------------
 class uv_imagebox:public uv_widget
 {
-private:
-    uv_texture tex;
-public:
-    uv_imagebox(int mx, int my, int mw, int mh,uv_group *parent/*=0*/, string file /*=""*/);
-    void draw();
+   private:
+      uv_texture tex;
+      //uv_text ntext;
+   public:
+      uv_imagebox(int mx, int my, int mw, int mh,uv_group *parent/*=0*/, string file /*=""*/);
+      void draw();
 };
 //---------------------------------------------------------------------------
 #endif
 //---------------------------------------------------------------------------
-
