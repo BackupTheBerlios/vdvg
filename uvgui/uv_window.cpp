@@ -192,7 +192,7 @@ void uv_window::key_action(char key)
 	
 }
 
-void mouse_action(int x, int y,int what)
+void uv_window::mouse_action(int x, int y,int what)
 {
 	
 }
