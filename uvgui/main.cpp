@@ -70,12 +70,12 @@ void mainloop(uv_callback * cb)
       if(ki_thread::s_feld.gewonnen==1)
       {
          // Anzeigen, dass sp 1 gewonnen
-         uv_main::won.set_visible(true);
+         uv_main::won.set_visible(true, true);
       }
       if(ki_thread::s_feld.gewonnen==2)
       {
          // Anzeigen, dass comp gewonnen
-         uv_main::lost.set_visible(true);
+         uv_main::lost.set_visible(true, true);
       }
    }
 };
