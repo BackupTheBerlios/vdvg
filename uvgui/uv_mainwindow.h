@@ -28,7 +28,7 @@ private:
 public:
     uv_mainwindow( int width, int height, bool fullscreen=1, char * titel=0);
     void draw();
-    void key_action(int key,int mod, int what);
+    void key_action(int key, int sym, int mod, int what);
     bool mouse_action(int x, int y, int key, int what);
     void mouse_move_rel(int rel_x, int rel_y);
     void run();

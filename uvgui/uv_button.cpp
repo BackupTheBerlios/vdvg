@@ -50,8 +50,8 @@ bool uv_button::mouse_action(int x, int y,int button,int what)
     return true;
 }
 
-void uv_button::key_action(int key, int mod, int what)
+void uv_button::key_action(int key, int sym, int mod, int what)
 {
-   if(key == SDLK_RETURN && what== SDL_KEYDOWN)//key == SDLK_RETURN)
+   if(sym == SDLK_RETURN && what== SDL_KEYDOWN)//key == SDLK_RETURN)
       do_callback();
 }

@@ -5,16 +5,17 @@ uv_text::uv_text():uv_widget(0,0,0,0,0,0)
    blue=0xff;
    green=0xff;
    len = 10001;
+   manual = false;
 }
 
 uv_text::uv_text(int mx,int my,int mh,int mw,uv_group *parent,char *label):uv_widget(mx,my,mh,mw, parent,label)
 {
    	parent->add_child(this);
 	uv_text();
+        manual = false;
 }
 
-
-void uv_text::make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base )
+void uv_text::make_dlist( FT_Face face, char ch, GLuint list_base, GLuint * tex_base )
 {
     //The first thing we do is get FreeType to render our character
     //into a bitmap.  This actually requires a couple of FreeType commands:
@@ -269,6 +270,7 @@ void uv_text::print( int x, int y)
     //down by h. This is because when each character is
     //draw it modifies the current matrix so that the next character
     //will be drawn immediatly after it.
+    if(!manual)
 	splitup();
 	glColor3ub(red,green,blue); //passende Farbe laden
 	
@@ -310,16 +312,24 @@ void uv_text::set_color(GLubyte red,GLubyte green,GLubyte blue)
 	this->green=green;
 }
 
+void uv_text::pushtext(const string str)
+{
+   lines.clear();
+   lines.push_back(str);
+   manual = true;
+};
+
 void uv_text::splitup()
 {
 	lines.clear();
 	int pos=0;
-	//int lastpos=0;
-	while (text.str().find('\n',pos) != string::npos)
-	{
-		lines.push_back(text.str().substr(pos, text.str().find('\n',pos)-pos));
-		pos = this->text.str().find('\n',pos)+1;
-	}
+	int lastpos=0;
+	//while (text.str().find('\n',pos) != string::npos)
+	//{
+                lines.push_back(text.str());
+		//lines.push_back(text.str().substr(pos, text.str().find('\n',pos)-pos));
+		//pos = this->text.str().find('\n',pos)+1;
+	//}
 	if (lines.empty()) lines.push_back(this->text.str());
 }
 

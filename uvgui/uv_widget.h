@@ -119,7 +119,7 @@ public:
         return mouseover;
     };
     //key=Taste, mod=Modifiers, what=UP,Down
-    virtual void key_action(int key,int mod, int what)
+    virtual void key_action(int key, int sym, int mod, int what)
     {
 
     };

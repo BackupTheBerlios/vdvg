@@ -56,6 +56,7 @@ private:
     void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base );
     void pushScreenCoordinateMatrix();
 	float len;
+        bool manual;
 
 public:
     uv_text(int mx,int my,int mw,int mh,uv_group *parent,char *label); //does currently nothing
@@ -64,11 +65,12 @@ public:
 	void set_color(GLubyte red,GLubyte green,GLubyte blue);
 	stringstream text;
     void clean();
+    void pushtext(const string str);
     void print(int x, int y);
 	int get_height();
 	int get_width();
 	void draw(){
-	
+
 		print(get_absolute_x(),get_absolute_y());
 		};
 };

@@ -36,6 +36,8 @@ void uv_mainwindow::init_SDL (int breite, int hoehe, bool fullscreen, int bit,
         fprintf (stderr, "Couldn't initialize SDL: %s\n", SDL_GetError ());
         exit (1);
     }
+    //Unicode
+    SDL_EnableUNICODE(1);
     // Wenn keine Bit Angaben vorhanden sind, dann eine per default
     // erstellen:
     if (bit == 0)
@@ -166,7 +168,8 @@ void uv_mainwindow::run()
 {
     SDL_Event event;
     bool last_was_mouse_down = false;
-	bool last_was_key_down = false;
+    bool last_was_key_down[256];
+    for(int i=0; i<256; i++) last_was_key_down[i] = false;
     while (SDL_PollEvent(&event) >= 0)
     {
         switch (event.type)
@@ -174,19 +177,20 @@ void uv_mainwindow::run()
         case SDL_QUIT:
             return;
         case SDL_KEYDOWN:
-			if(event.key.keysym.sym == SDLK_ESCAPE) 
-                return;
-			if(last_was_key_down)
-				break;
-			key_action(event.key.keysym.sym, event.key.keysym.mod, event.key.type);
-			last_was_key_down = true;
-			break;
-			
+	   if(event.key.keysym.sym == SDLK_ESCAPE)
+              return;
+	   if(last_was_key_down[event.key.keysym.sym] || (event.key.keysym.unicode > 256))// || event.key.keysym.unicode == 0)
+	      break;
+	   key_action(event.key.keysym.unicode, event.key.keysym.sym, event.key.keysym.mod, event.key.type);
+           //key_action(event.key.keysym.sym, event.key.keysym.mod, event.key.type);
+	   last_was_key_down[event.key.keysym.sym] = true;
+	   break;
+
         case SDL_KEYUP:
 			 if(!last_was_key_down)
                 break;
-            key_action(event.key.keysym.sym, event.key.keysym.mod, event.key.type);
-			last_was_key_down = false;
+            //key_action(event.key.keysym.sym, event.key.keysym.mod, event.key.type);
+			last_was_key_down[event.key.keysym.sym] = false;
             break;
 			
         case SDL_MOUSEMOTION:
@@ -223,9 +227,9 @@ void uv_mainwindow::run()
     };
 };
 //---------------------------------------------------------------------------
-void uv_mainwindow::key_action (int key,int mod, int what)
+void uv_mainwindow::key_action (int key, int sym, int mod, int what)
 {
-    key_action_childs(key, mod, what);
+    key_action_childs(key, sym, mod, what);
 };
 //---------------------------------------------------------------------------
 bool uv_mainwindow::mouse_action (int x, int y, int button, int what)

@@ -23,7 +23,7 @@ public:
     uv_button(int mx, int my,int mw,int mh, uv_group *parent, char *mlabel=0);
     void draw();
     bool mouse_action(int x, int y, int button, int what);
-    void key_action(int key, int mod, int what);
+    void key_action(int key, int sym, int mod, int what);
 };
 
 #endif

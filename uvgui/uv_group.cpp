@@ -151,9 +151,9 @@ bool uv_group::mouse_move_rel_childs(int rel_x, int rel_y)
     return true;
 };
 //---------------------------------------------------------------------------
-bool uv_group::key_action_childs(int key, int mod, int what)
+bool uv_group::key_action_childs(int key, int sym, int mod, int what)
 {
-   (childs.outpos(childs.Elemente()-1))->key_action(key, mod, what);
+   (childs.outpos(childs.Elemente()-1))->key_action(key, sym, mod, what);
 	return 1;
 };
 //---------------------------------------------------------------------------
